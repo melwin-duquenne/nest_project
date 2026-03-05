@@ -4,11 +4,13 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Project } from '../../projects/entities/project.entity';
 import { User } from '../../users/entities/user.entity';
+import { Comment } from '../../comments/entities/comment.entity';
 import { TaskPriority, TaskStatus } from '../dto/create-task.dto';
 
 @Entity('tasks')
@@ -35,6 +37,9 @@ export class Task {
   @ManyToOne(() => User, { onDelete: 'SET NULL', nullable: true })
   @JoinColumn({ name: 'assignee_id' })
   assignee!: User | null;
+
+  @OneToMany(() => Comment, (comment) => comment.task)
+  comments!: Comment[];
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date;

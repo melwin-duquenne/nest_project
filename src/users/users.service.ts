@@ -32,13 +32,14 @@ export class UsersService {
   }
 
   async create(dto: CreateUserDto): Promise<User> {
-    const existing = await this.findByEmail(dto.email);
+    const normalizedEmail = dto.email.toLowerCase().trim();
+    const existing = await this.findByEmail(normalizedEmail);
     if (existing)
-      throw new ConflictException(`Email ${dto.email} already in use`);
+      throw new ConflictException(`Email ${normalizedEmail} already in use`);
 
-    const passwordHash = await bcrypt.hash(dto.password, 10);
+    const passwordHash = await bcrypt.hash(dto.password, 12);
     const user = this.usersRepository.create({
-      email: dto.email,
+      email: normalizedEmail,
       name: dto.name,
       role: dto.role,
       passwordHash,
@@ -48,10 +49,14 @@ export class UsersService {
 
   async update(id: string, dto: UpdateUserDto): Promise<User> {
     const user = await this.findOne(id);
-    if (dto.email && dto.email !== user.email) {
-      const existing = await this.findByEmail(dto.email);
-      if (existing)
-        throw new ConflictException(`Email ${dto.email} already in use`);
+    if (dto.email) {
+      const normalizedEmail = dto.email.toLowerCase().trim();
+      if (normalizedEmail !== user.email) {
+        const existing = await this.findByEmail(normalizedEmail);
+        if (existing)
+          throw new ConflictException(`Email ${normalizedEmail} already in use`);
+      }
+      dto.email = normalizedEmail;
     }
     Object.assign(user, dto);
     return this.usersRepository.save(user);

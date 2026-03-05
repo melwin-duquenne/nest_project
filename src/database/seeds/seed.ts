@@ -6,7 +6,7 @@ import { Team } from '../../teams/entities/team.entity';
 import { Project } from '../../projects/entities/project.entity';
 import { Task } from '../../tasks/entities/task.entity';
 import { Comment } from '../../comments/entities/comment.entity';
-import { UserRole } from '../../users/interfaces/user.interface';
+import { UserRole } from '../../users/enum/user.enum';
 import { ProjectStatus } from '../../projects/dto/create-project.dto';
 import { TaskPriority, TaskStatus } from '../../tasks/dto/create-task.dto';
 

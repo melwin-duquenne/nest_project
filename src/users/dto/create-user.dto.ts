@@ -5,8 +5,9 @@ import {
   MinLength,
   MaxLength,
   IsOptional,
+  Matches,
 } from 'class-validator';
-import { UserRole } from '../interfaces/user.interface';
+import { UserRole } from '../enum/user.enum';
 
 export class CreateUserDto {
   @IsEmail({}, { message: 'Adresse email invalide' })
@@ -25,5 +26,9 @@ export class CreateUserDto {
 
   @IsString()
   @MinLength(8, { message: 'Le mot de passe doit faire au moins 8 caractères' })
+  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/, {
+    message:
+      'Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial',
+  })
   password: string;
 }
