@@ -6,12 +6,7 @@ import {
   MaxLength,
   IsOptional,
 } from 'class-validator';
-
-export enum UserRole {
-  ADMIN = 'admin',
-  MEMBER = 'member',
-  VIEWER = 'viewer',
-}
+import { UserRole } from '../interfaces/user.interface';
 
 export class CreateUserDto {
   @IsEmail({}, { message: 'Adresse email invalide' })

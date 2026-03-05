@@ -1,8 +1,5 @@
 @baseUrl = http://localhost:3000/api
 
-### Lister tous les utilisateurs
-GET {{baseUrl}}/users
-
 ### Créer un utilisateur
 POST {{baseUrl}}/users
 Content-Type: application/json
@@ -10,41 +7,18 @@ Content-Type: application/json
 {
   "email": "alice@taskflow.dev",
   "name": "Alice Dupont",
+  "password": "MotDePasse123",
   "role": "admin"
 }
 
-### Créer un deuxième utilisateur
-POST {{baseUrl}}/users
-Content-Type: application/json
+### Lister les utilisateurs (sans passwordHash)
+GET {{baseUrl}}/users
 
-{
-  "email": "bob@taskflow.dev",
-  "name": "Bob Martin",
-  "role": "member"
-}
+### Récupérer par ID (remplacer l'UUID)
+GET {{baseUrl}}/users/c262dc4c-f352-4769-bd40-5dae2d6b368b
 
-### Récupérer un utilisateur (remplacer l'ID)
-GET {{baseUrl}}/users/REMPLACER_PAR_UN_ID
+### UUID malformé → 400
+GET {{baseUrl}}/users/pas-un-uuid
 
-### Mettre à jour un utilisateur
-PATCH {{baseUrl}}/users/REMPLACER_PAR_UN_ID
-Content-Type: application/json
-
-{
-  "name": "Alice Dupont-Martin"
-}
-
-### Supprimer un utilisateur
-DELETE {{baseUrl}}/users/300
-
-### Cas 404 — ID inexistant
-GET {{baseUrl}}/users/00000000-0000-0000-0000-000000000000
-
-### Cas 409 — Email déjà utilisé
-POST {{baseUrl}}/users
-Content-Type: application/json
-
-{
-  "email": "alice@taskflow.dev",
-  "name": "Autre Alice"
-}
+### Supprimer
+DELETE {{baseUrl}}/users/c262dc4c-f352-4769-bd40-5dae2d6b368b

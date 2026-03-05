@@ -3,63 +3,62 @@ import {
   NotFoundException,
   ConflictException,
 } from '@nestjs/common';
-import { randomUUID } from 'crypto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User, UserRole } from './interfaces/user.interface';
+import { User } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
-  private users: User[] = [];
+  constructor(
+    @InjectRepository(User)
+    private readonly usersRepository: Repository<User>,
+  ) {}
 
-  findAll(): User[] {
-    return this.users;
+  async findAll(): Promise<User[]> {
+    return this.usersRepository.find();
   }
 
-  findOne(id: string): User {
-    const user = this.users.find((u) => u.id === id);
+  async findOne(id: string): Promise<User> {
+    const user = await this.usersRepository.findOne({ where: { id } });
     if (!user) throw new NotFoundException(`User #${id} not found`);
     return user;
   }
 
-  findByEmail(email: string): User | undefined {
-    return this.users.find((u) => u.email === email);
+  async findByEmail(email: string): Promise<User | null> {
+    return this.usersRepository.findOne({ where: { email } });
   }
 
-  create(dto: CreateUserDto): User {
-    if (this.findByEmail(dto.email)) {
+  async create(dto: CreateUserDto): Promise<User> {
+    const existing = await this.findByEmail(dto.email);
+    if (existing)
       throw new ConflictException(`Email ${dto.email} already in use`);
-    }
-    const now = new Date();
-    const user: User = {
-      id: randomUUID(),
+
+    const passwordHash = await bcrypt.hash(dto.password, 10);
+    const user = this.usersRepository.create({
       email: dto.email,
       name: dto.name,
-      role: dto.role ?? UserRole.MEMBER,
-      createdAt: now,
-      updatedAt: now,
-    };
-    this.users.push(user);
-    return user;
+      role: dto.role,
+      passwordHash,
+    });
+    return this.usersRepository.save(user);
   }
 
-  update(id: string, dto: UpdateUserDto): User {
-    const user = this.findOne(id);
+  async update(id: string, dto: UpdateUserDto): Promise<User> {
+    const user = await this.findOne(id);
     if (dto.email && dto.email !== user.email) {
-      if (this.findByEmail(dto.email)) {
+      const existing = await this.findByEmail(dto.email);
+      if (existing)
         throw new ConflictException(`Email ${dto.email} already in use`);
-      }
-      user.email = dto.email;
     }
-    if (dto.name !== undefined) user.name = dto.name;
-    if (dto.role !== undefined) user.role = dto.role;
-    user.updatedAt = new Date();
-    return user;
+    Object.assign(user, dto);
+    return this.usersRepository.save(user);
   }
 
-  remove(id: string): void {
-    const index = this.users.findIndex((u) => u.id === id);
-    if (index === -1) throw new NotFoundException(`User #${id} not found`);
-    this.users.splice(index, 1);
+  async remove(id: string): Promise<void> {
+    const user = await this.findOne(id);
+    await this.usersRepository.remove(user);
   }
 }
