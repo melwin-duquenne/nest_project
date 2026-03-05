@@ -13,33 +13,53 @@ export class UsersService {
   private users: User[] = [];
 
   findAll(): User[] {
-    // TODO: retourner tous les utilisateurs
+    return this.users;
   }
 
   findOne(id: string): User {
-    // TODO: trouver l'utilisateur par id
-    // Lever NotFoundException si introuvable
+    const user = this.users.find((u) => u.id === id);
+    if (!user) throw new NotFoundException(`User #${id} not found`);
+    return user;
   }
 
   findByEmail(email: string): User | undefined {
-    // TODO: trouver l'utilisateur par email (peut retourner undefined)
+    return this.users.find((u) => u.email === email);
   }
 
   create(dto: CreateUserDto): User {
-    // TODO:
-    // 1. Vérifier qu'aucun utilisateur n'a déjà cet email (ConflictException sinon)
-    // 2. Créer un objet User avec randomUUID(), les champs du dto, et les dates
-    // 3. Ajouter à this.users et retourner le nouvel utilisateur
+    if (this.findByEmail(dto.email)) {
+      throw new ConflictException(`Email ${dto.email} already in use`);
+    }
+    const now = new Date();
+    const user: User = {
+      id: randomUUID(),
+      email: dto.email,
+      name: dto.name,
+      role: dto.role ?? UserRole.MEMBER,
+      createdAt: now,
+      updatedAt: now,
+    };
+    this.users.push(user);
+    return user;
   }
 
   update(id: string, dto: UpdateUserDto): User {
-    // TODO:
-    // 1. Récupérer l'utilisateur (findOne lève déjà 404)
-    // 2. Si l'email change, vérifier qu'il n'est pas déjà pris (ConflictException)
-    // 3. Mettre à jour les champs et updatedAt, retourner l'utilisateur
+    const user = this.findOne(id);
+    if (dto.email && dto.email !== user.email) {
+      if (this.findByEmail(dto.email)) {
+        throw new ConflictException(`Email ${dto.email} already in use`);
+      }
+      user.email = dto.email;
+    }
+    if (dto.name !== undefined) user.name = dto.name;
+    if (dto.role !== undefined) user.role = dto.role;
+    user.updatedAt = new Date();
+    return user;
   }
 
   remove(id: string): void {
-    // TODO: supprimer l'utilisateur du tableau (NotFoundException si introuvable)
+    const index = this.users.findIndex((u) => u.id === id);
+    if (index === -1) throw new NotFoundException(`User #${id} not found`);
+    this.users.splice(index, 1);
   }
 }

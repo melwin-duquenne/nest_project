@@ -35,7 +35,7 @@ Content-Type: application/json
 }
 
 ### Supprimer un utilisateur
-DELETE {{baseUrl}}/users/REMPLACER_PAR_UN_ID
+DELETE {{baseUrl}}/users/300
 
 ### Cas 404 — ID inexistant
 GET {{baseUrl}}/users/00000000-0000-0000-0000-000000000000
