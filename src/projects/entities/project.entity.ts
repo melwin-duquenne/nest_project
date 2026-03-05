@@ -4,10 +4,12 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Team } from '../../teams/entities/team.entity';
+import { Task } from '../../tasks/entities/task.entity';
 import { ProjectStatus } from '../dto/create-project.dto';
 
 @Entity('projects')
@@ -31,6 +33,9 @@ export class Project {
   @ManyToOne(() => Team, (team) => team.projects, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'team_id' })
   team!: Team;
+
+  @OneToMany(() => Task, (task) => task.project)
+  tasks!: Task[];
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date;
