@@ -2,7 +2,13 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class AppService {
-  getHello(): string {
-    return 'Hello World!';
+  getHello(): {
+    message: string;
+    version: string;
+  } {
+    return {
+      message: 'TaskFlow API',
+      version: '1.0.0',
+    };
   }
 }
