@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -23,6 +24,9 @@ export class User {
 
   @Column({ type: 'enum', enum: UserRole, default: UserRole.MEMBER })
   role!: UserRole;
+
+  @ManyToMany('Team', 'members')
+  teams!: any[];
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date;
