@@ -3,6 +3,7 @@ import {
   NotFoundException,
   ConflictException,
   ForbiddenException,
+  Logger,
 } from '@nestjs/common';
 import { UserRole } from './enum/user.enum';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -14,6 +15,8 @@ import { User } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
+  private readonly logger = new Logger(UsersService.name);
+
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
@@ -42,6 +45,7 @@ export class UsersService {
   }
 
   async create(dto: CreateUserDto): Promise<User> {
+    this.logger.log(`Création d'un utilisateur : ${dto.email}`);
     const normalizedEmail = dto.email.toLowerCase().trim();
     const existing = await this.findByEmail(normalizedEmail);
     if (existing)
@@ -80,6 +84,7 @@ export class UsersService {
   }
 
   async remove(id: string): Promise<void> {
+    this.logger.warn(`Suppression de l'utilisateur : ${id}`);
     const user = await this.findOne(id);
     await this.usersRepository.remove(user);
   }
