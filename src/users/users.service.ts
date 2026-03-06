@@ -31,6 +31,14 @@ export class UsersService {
     return this.usersRepository.findOne({ where: { email } });
   }
 
+  async findByEmailWithPassword(email: string): Promise<User | null> {
+    return this.usersRepository
+      .createQueryBuilder('user')
+      .addSelect('user.passwordHash')
+      .where('user.email = :email', { email })
+      .getOne();
+  }
+
   async create(dto: CreateUserDto): Promise<User> {
     const normalizedEmail = dto.email.toLowerCase().trim();
     const existing = await this.findByEmail(normalizedEmail);

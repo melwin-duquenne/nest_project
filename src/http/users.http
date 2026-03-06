@@ -7,7 +7,7 @@ Content-Type: application/json
 {
   "email": "alice@taskflow.dev",
   "name": "Alice Dupont",
-  "password": "MotDePasse123",
+  "password": "MotDePasse123/",
   "role": "admin"
 }
 

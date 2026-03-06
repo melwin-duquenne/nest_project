@@ -26,6 +26,7 @@ async function bootstrap() {
     .addTag('projects')
     .addTag('tasks')
     .addTag('comments')
+    .addBearerAuth()
     .build();
   SwaggerModule.setup('api/docs', app, SwaggerModule.createDocument(app, config));
 
