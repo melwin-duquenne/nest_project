@@ -1,27 +1,38 @@
 @baseUrl = http://localhost:3000/api
-@token = REMPLACER_PAR_LE_TOKEN
+@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjNDkyOGEyNi1kZjg4LTQ0NGYtYmMzYy1iMzhlOTY3NDhlYzQiLCJlbWFpbCI6ImFsaWNlQHRhc2tmbG93LmRldiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc3MjgxMDI3MiwiZXhwIjoxNzcyODk2NjcyfQ.Rx1CMKCN4D7N9OqFGSNsUcPDqZLKphNqDMBPbvKDVyk
+@viewerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxOWQyOTk2Zi02YTMyLTRlNmEtYmY3ZC1kMTY1YWViOWRiOGYiLCJlbWFpbCI6ImNoYXJsaWVAdGFza2Zsb3cuZGV2Iiwicm9sZSI6InZpZXdlciIsImlhdCI6MTc3MjgxMDI2MCwiZXhwIjoxNzcyODk2NjYwfQ.hTTzwwb1p8jb_0PqCqZF1xUTyi_l2P7D2P5RgpuFTiU
+@bobToken = REMPLACER_TOKEN_BOB_MEMBER
 
-### Login ✅
+### Login Alice (admin)
 POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
-{
-  "email": "alice@taskflow.dev",
-  "password": "MotDePasse123/"
-}
+{ "email": "alice@taskflow.dev", "password": "MotDePasse123/" }
 
-### Login mauvais mot de passe → 401
+### Login Charlie (viewer)
 POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
-{
-  "email": "alice@taskflow.dev",
-  "password": "mauvais"
-}
+{ "email": "charlie@taskflow.dev", "password": "MotDePasse123/" }
 
-### Me — qui suis-je ?
-GET {{baseUrl}}/auth/me
-Authorization: Bearer {{token}}
+### ADMIN peut supprimer → 204
+DELETE {{baseUrl}}/users/USER_UUID
+Authorization: Bearer {{adminToken}}
 
-### Route protégée sans token → 401
-GET {{baseUrl}}/users
+### VIEWER ne peut pas supprimer → 403
+DELETE {{baseUrl}}/users/USER_UUID
+Authorization: Bearer {{viewerToken}}
+
+### MEMBER peut modifier son propre profil → 200
+PATCH {{baseUrl}}/users/BOB_UUID
+Authorization: Bearer {{bobToken}}
+Content-Type: application/json
+
+{ "name": "Bob Martin-Dupont" }
+
+### MEMBER ne peut PAS modifier le profil d'Alice → 403
+PATCH {{baseUrl}}/users/ALICE_UUID
+Authorization: Bearer {{bobToken}}
+Content-Type: application/json
+
+{ "name": "Alice Hacké" }

@@ -11,6 +11,17 @@ Content-Type: application/json
   "role": "admin"
 }
 
+
+### Créer un utilisateur
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+  "email": "charlie@taskflow.dev",
+  "name": "Charlie Martin",
+  "password": "MotDePasse123/",
+  "role": "viewer"
+}
 ### Lister les utilisateurs (sans passwordHash)
 GET {{baseUrl}}/users
 

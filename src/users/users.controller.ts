@@ -15,6 +15,9 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Public } from '../auth/decorators/public.decorator';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { UserRole } from './enum/user.enum';
 
 @ApiTags('users')
 @Controller('users')
@@ -24,7 +27,7 @@ export class UsersController {
   @Public()
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  @ApiOperation({ summary: 'Créer un utilisateur' })
+  @ApiOperation({ summary: 'Créer un utilisateur (inscription)' })
   @ApiResponse({ status: 201, description: 'Utilisateur créé' })
   @ApiResponse({ status: 400, description: 'Données invalides' })
   @ApiResponse({ status: 409, description: 'Email déjà utilisé' })
@@ -57,20 +60,24 @@ export class UsersController {
   @ApiParam({ name: 'id', type: 'string', format: 'uuid' })
   @ApiResponse({ status: 200, description: 'Utilisateur mis à jour' })
   @ApiResponse({ status: 400, description: 'UUID invalide ou données invalides' })
+  @ApiResponse({ status: 403, description: 'Accès refusé' })
   @ApiResponse({ status: 404, description: 'Utilisateur introuvable' })
   update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateUserDto: UpdateUserDto,
+    @CurrentUser() currentUser: { id: string; role: UserRole },
   ) {
-    return this.usersService.update(id, updateUserDto);
+    return this.usersService.update(id, updateUserDto, currentUser);
   }
 
   @Delete(':id')
+  @Roles(UserRole.ADMIN)
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Supprimer un utilisateur' })
   @ApiParam({ name: 'id', type: 'string', format: 'uuid' })
   @ApiResponse({ status: 204, description: 'Utilisateur supprimé' })
   @ApiResponse({ status: 400, description: 'UUID invalide' })
+  @ApiResponse({ status: 403, description: 'Accès refusé' })
   @ApiResponse({ status: 404, description: 'Utilisateur introuvable' })
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.remove(id);

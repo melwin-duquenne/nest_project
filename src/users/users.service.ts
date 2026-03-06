@@ -2,7 +2,9 @@ import {
   Injectable,
   NotFoundException,
   ConflictException,
+  ForbiddenException,
 } from '@nestjs/common';
+import { UserRole } from './enum/user.enum';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
@@ -55,7 +57,14 @@ export class UsersService {
     return this.usersRepository.save(user);
   }
 
-  async update(id: string, dto: UpdateUserDto): Promise<User> {
+  async update(
+    id: string,
+    dto: UpdateUserDto,
+    currentUser: { id: string; role: UserRole },
+  ): Promise<User> {
+    if (currentUser.role !== UserRole.ADMIN && currentUser.id !== id) {
+      throw new ForbiddenException('You can only update your own profile');
+    }
     const user = await this.findOne(id);
     if (dto.email) {
       const normalizedEmail = dto.email.toLowerCase().trim();

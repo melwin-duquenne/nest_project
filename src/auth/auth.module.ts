@@ -8,6 +8,7 @@ import { AuthService } from './auth.service';
 import { LocalStrategy } from './decorators/strategies/local.strategy';
 import { JwtStrategy } from './decorators/strategies/jwt.strategy';
 import { JwtAuthGuard } from './decorators/guards/jwt-auth.guard';
+import { RolesGuard } from './decorators/guards/roles.guard';
 import { UsersModule } from '../users/users.module';
 
 @Module({
@@ -29,6 +30,7 @@ import { UsersModule } from '../users/users.module';
     LocalStrategy,
     JwtStrategy,
     { provide: APP_GUARD, useClass: JwtAuthGuard },
+    { provide: APP_GUARD, useClass: RolesGuard },
   ],
   exports: [JwtModule],
 })
