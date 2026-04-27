@@ -15,7 +15,7 @@ import { ConfigService } from '@nestjs/config';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '.env',
+      envFilePath: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
     }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
@@ -27,9 +27,10 @@ import { ConfigService } from '@nestjs/config';
         username: config.get<string>('DB_USER', 'taskflow'),
         password: config.get<string>('DB_PASSWORD', 'taskflow'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        synchronize: false,
+        synchronize: config.get('NODE_ENV') === 'test',
+        dropSchema: config.get('NODE_ENV') === 'test',
         migrations: [__dirname + '/database/migrations/*{.ts,.js}'],
-        logging: config.get('NODE_ENV') === 'development',
+        logging: false,
       }),
     }),
     UsersModule,

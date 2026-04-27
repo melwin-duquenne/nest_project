@@ -31,10 +31,10 @@ import { UserRole } from './enum/user.enum';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Public()
+  @Roles(UserRole.ADMIN)
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  @ApiOperation({ summary: 'Créer un utilisateur (inscription)' })
+  @ApiOperation({ summary: 'Créer un utilisateur (admin uniquement)' })
   @ApiResponse({ status: 201, description: 'Utilisateur créé' })
   @ApiResponse({ status: 400, description: 'Données invalides' })
   @ApiResponse({ status: 409, description: 'Email déjà utilisé' })
