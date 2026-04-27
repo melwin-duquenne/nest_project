@@ -10,12 +10,19 @@ import {
   HttpStatus,
   ParseUUIDPipe,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiParam,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 
 @ApiTags('tasks')
+@ApiBearerAuth('JWT-auth')
 @Controller('tasks')
 export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
@@ -25,7 +32,10 @@ export class TasksController {
   @ApiOperation({ summary: 'Créer une tâche' })
   @ApiResponse({ status: 201, description: 'Tâche créée' })
   @ApiResponse({ status: 400, description: 'Données invalides' })
-  @ApiResponse({ status: 404, description: 'Projet ou utilisateur introuvable' })
+  @ApiResponse({
+    status: 404,
+    description: 'Projet ou utilisateur introuvable',
+  })
   create(@Body() createTaskDto: CreateTaskDto) {
     return this.tasksService.create(createTaskDto);
   }
@@ -54,7 +64,10 @@ export class TasksController {
   @ApiOperation({ summary: 'Mettre à jour une tâche' })
   @ApiParam({ name: 'id', type: 'string', format: 'uuid' })
   @ApiResponse({ status: 200, description: 'Tâche mise à jour' })
-  @ApiResponse({ status: 400, description: 'UUID invalide ou données invalides' })
+  @ApiResponse({
+    status: 400,
+    description: 'UUID invalide ou données invalides',
+  })
   @ApiResponse({ status: 404, description: 'Tâche introuvable' })
   update(
     @Param('id', ParseUUIDPipe) id: string,

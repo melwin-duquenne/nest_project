@@ -10,12 +10,19 @@ import {
   HttpStatus,
   ParseUUIDPipe,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiParam,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { CommentsService } from './comments.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 
 @ApiTags('comments')
+@ApiBearerAuth('JWT-auth')
 @Controller('comments')
 export class CommentsController {
   constructor(private readonly commentsService: CommentsService) {}
@@ -54,7 +61,10 @@ export class CommentsController {
   @ApiOperation({ summary: 'Mettre à jour un commentaire' })
   @ApiParam({ name: 'id', type: 'string', format: 'uuid' })
   @ApiResponse({ status: 200, description: 'Commentaire mis à jour' })
-  @ApiResponse({ status: 400, description: 'UUID invalide ou données invalides' })
+  @ApiResponse({
+    status: 400,
+    description: 'UUID invalide ou données invalides',
+  })
   @ApiResponse({ status: 404, description: 'Commentaire introuvable' })
   update(
     @Param('id', ParseUUIDPipe) id: string,

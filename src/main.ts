@@ -7,6 +7,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.enableCors();
   app.setGlobalPrefix('api');
   app.useGlobalPipes(
     new ValidationPipe({
@@ -19,18 +20,33 @@ async function bootstrap() {
     }),
   );
 
-  const config = new DocumentBuilder()
-    .setTitle('TaskFlow API')
-    .setDescription('API de gestion de tâches inspirée de Trello')
-    .setVersion('1.0')
-    .addTag('users')
-    .addTag('teams')
-    .addTag('projects')
-    .addTag('tasks')
-    .addTag('comments')
-    .addBearerAuth()
-    .build();
-  SwaggerModule.setup('api/docs', app, SwaggerModule.createDocument(app, config));
+  if (process.env.NODE_ENV !== 'production') {
+    const config = new DocumentBuilder()
+      .setTitle('TaskFlow API')
+      .setDescription('API RESTful de gestion de projets et tâches')
+      .setVersion('1.0')
+      .addBearerAuth(
+        {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+          description: 'Token JWT obtenu via POST /api/auth/login',
+        },
+        'JWT-auth',
+      )
+      .addTag('auth', 'Authentification')
+      .addTag('users', 'Gestion des utilisateurs')
+      .addTag('teams', 'Gestion des équipes')
+      .addTag('projects', 'Gestion des projets')
+      .addTag('tasks', 'Gestion des tâches')
+      .addTag('comments', 'Commentaires')
+      .build();
+
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('docs', app, document, {
+      swaggerOptions: { persistAuthorization: true },
+    });
+  }
 
   app.useGlobalFilters(new GlobalExceptionFilter());
   app.useGlobalInterceptors(new LoggingInterceptor());

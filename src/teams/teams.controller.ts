@@ -10,12 +10,20 @@ import {
   HttpStatus,
   ParseUUIDPipe,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiParam,
+  ApiBody,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { TeamsService } from './teams.service';
 import { CreateTeamDto } from './dto/create-team.dto';
 import { UpdateTeamDto } from './dto/update-team.dto';
 
 @ApiTags('teams')
+@ApiBearerAuth('JWT-auth')
 @Controller('teams')
 export class TeamsController {
   constructor(private readonly teamsService: TeamsService) {}
@@ -53,7 +61,10 @@ export class TeamsController {
   @ApiOperation({ summary: 'Mettre à jour une équipe' })
   @ApiParam({ name: 'id', type: 'string', format: 'uuid' })
   @ApiResponse({ status: 200, description: 'Équipe mise à jour' })
-  @ApiResponse({ status: 400, description: 'UUID invalide ou données invalides' })
+  @ApiResponse({
+    status: 400,
+    description: 'UUID invalide ou données invalides',
+  })
   @ApiResponse({ status: 404, description: 'Équipe introuvable' })
   update(
     @Param('id', ParseUUIDPipe) id: string,
@@ -76,11 +87,24 @@ export class TeamsController {
   @Post(':id/members')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Ajouter un membre à une équipe' })
-  @ApiParam({ name: 'id', type: 'string', format: 'uuid', description: 'ID de l\'équipe' })
-  @ApiBody({ schema: { type: 'object', properties: { userId: { type: 'string', format: 'uuid' } } } })
+  @ApiParam({
+    name: 'id',
+    type: 'string',
+    format: 'uuid',
+    description: "ID de l'équipe",
+  })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: { userId: { type: 'string', format: 'uuid' } },
+    },
+  })
   @ApiResponse({ status: 200, description: 'Membre ajouté' })
   @ApiResponse({ status: 400, description: 'UUID invalide' })
-  @ApiResponse({ status: 404, description: 'Équipe ou utilisateur introuvable' })
+  @ApiResponse({
+    status: 404,
+    description: 'Équipe ou utilisateur introuvable',
+  })
   @ApiResponse({ status: 409, description: 'Utilisateur déjà membre' })
   addMember(
     @Param('id', ParseUUIDPipe) id: string,
@@ -91,9 +115,19 @@ export class TeamsController {
 
   @Delete(':id/members/:userId')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Retirer un membre d\'une équipe' })
-  @ApiParam({ name: 'id', type: 'string', format: 'uuid', description: 'ID de l\'équipe' })
-  @ApiParam({ name: 'userId', type: 'string', format: 'uuid', description: 'ID de l\'utilisateur' })
+  @ApiOperation({ summary: "Retirer un membre d'une équipe" })
+  @ApiParam({
+    name: 'id',
+    type: 'string',
+    format: 'uuid',
+    description: "ID de l'équipe",
+  })
+  @ApiParam({
+    name: 'userId',
+    type: 'string',
+    format: 'uuid',
+    description: "ID de l'utilisateur",
+  })
   @ApiResponse({ status: 200, description: 'Membre retiré' })
   @ApiResponse({ status: 400, description: 'UUID invalide' })
   @ApiResponse({ status: 404, description: 'Équipe introuvable' })
