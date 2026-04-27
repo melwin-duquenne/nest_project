@@ -10,6 +10,7 @@ import { CommentsModule } from './comments/comments.module';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
+import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { ConfigService } from '@nestjs/config';
         logging: false,
       }),
     }),
+    PrismaModule,
     UsersModule,
     TeamsModule,
     ProjectsModule,
