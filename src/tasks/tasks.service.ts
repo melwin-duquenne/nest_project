@@ -6,6 +6,7 @@ import { UpdateTaskDto } from './dto/update-task.dto';
 import { Task } from './entities/task.entity';
 import { ProjectsService } from '../projects/projects.service';
 import { UsersService } from '../users/users.service';
+import { NotificationsGateway } from '../notifications/notifications.gateway';
 
 @Injectable()
 export class TasksService {
@@ -14,6 +15,7 @@ export class TasksService {
     private readonly tasksRepository: Repository<Task>,
     private readonly projectsService: ProjectsService,
     private readonly usersService: UsersService,
+    private readonly notificationsGateway: NotificationsGateway,
   ) {}
 
   async findAll(): Promise<Task[]> {
@@ -47,6 +49,8 @@ export class TasksService {
 
   async update(id: string, dto: UpdateTaskDto): Promise<Task> {
     const task = await this.findOne(id);
+    const previousAssigneeId = task.assignee?.id;
+
     if (dto.projectId) {
       task.project = await this.projectsService.findOne(dto.projectId);
     }
@@ -57,7 +61,18 @@ export class TasksService {
     }
     const { projectId: _p, assigneeId: _a, ...rest } = dto;
     Object.assign(task, rest);
-    return this.tasksRepository.save(task);
+    const updated = await this.tasksRepository.save(task);
+
+    if (dto.assigneeId && dto.assigneeId !== previousAssigneeId) {
+      this.notificationsGateway.sendToUser(dto.assigneeId, 'task:assigned', {
+        taskId: updated.id,
+        taskTitle: updated.title,
+        message: `Vous avez été assigné à la tâche "${updated.title}"`,
+        timestamp: new Date().toISOString(),
+      });
+    }
+
+    return updated;
   }
 
   async remove(id: string): Promise<void> {
