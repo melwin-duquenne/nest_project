@@ -1,98 +1,230 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# TaskFlow API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+API RESTful de gestion de projets et tâches (NestJS + PostgreSQL + Prisma + TypeORM).
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+---
 
-## Description
+## Prérequis
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- [Node.js](https://nodejs.org/) >= 20
+- [Docker](https://www.docker.com/) + Docker Compose
+- `npm`
 
-## Project setup
+---
+
+## 1. Installation
 
 ```bash
-$ npm install
+git clone <url-du-repo>
+cd trello
+npm install
 ```
 
-## Compile and run the project
+---
+
+## 2. Variables d'environnement
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+cp .env.example .env
 ```
 
-## Run tests
+Ouvrez `.env` et remplissez les deux champs obligatoires :
+
+| Variable | Description |
+|---|---|
+| `DB_PASSWORD` | Mot de passe PostgreSQL |
+| `JWT_SECRET` | Clé secrète JWT (voir section suivante) |
+
+---
+
+## 3. Générer la clé secrète JWT
+
+Le projet utilise JWT avec une clé symétrique (HMAC-SHA256). Générez-en une forte :
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
 ```
 
-## Deployment
+Copiez le résultat dans `JWT_SECRET` de votre `.env`.
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+---
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+## 4. Base de données avec Docker
+
+### Lancer uniquement PostgreSQL (développement local)
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+docker compose up -d
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+Cela démarre un conteneur PostgreSQL sur le port défini dans `.env` (`DB_PORT`, défaut : `5432`).
 
-## Resources
+Pour arrêter :
 
-Check out a few resources that may come in handy when working with NestJS:
+```bash
+docker compose down
+```
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+Pour arrêter et supprimer les volumes (repart de zéro) :
 
-## Support
+```bash
+docker compose down -v
+```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+---
 
-## Stay in touch
+## 5. Migrations TypeORM
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+Les migrations gèrent le schéma de la base de données.
 
-## License
+```bash
+# Appliquer toutes les migrations en attente
+npm run migration:run
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+# Générer une nouvelle migration depuis les changements d'entités
+npm run migration:generate src/database/migrations/NomDeLaMigration
+
+# Annuler la dernière migration
+npm run migration:revert
+
+# Voir l'état des migrations
+npm run migration:show
+```
+
+> Les migrations utilisent la connexion définie dans `src/database/data-source.ts` (variables `DB_*` du `.env`).
+
+---
+
+## 6. Prisma
+
+Prisma est utilisé en parallèle de TypeORM pour certaines requêtes.
+
+```bash
+# Générer le client Prisma (à faire après chaque modification de schema.prisma)
+npx prisma generate
+
+# Appliquer le schéma Prisma à la base (dev uniquement — crée les tables si absentes)
+npx prisma db push
+
+# Ouvrir Prisma Studio (interface visuelle de la BDD)
+npx prisma studio
+```
+
+> Prisma utilise `DATABASE_URL` depuis le `.env` (format : `postgresql://user:password@host:port/dbname`).
+
+---
+
+## 7. Données de test (seed)
+
+Peuple la base avec des utilisateurs et données de démonstration :
+
+```bash
+npm run seed
+```
+
+---
+
+## 8. Lancer l'application
+
+```bash
+# Développement avec rechargement automatique
+npm run start:dev
+
+# Développement sans rechargement
+npm run start
+
+# Production (nécessite un build préalable)
+npm run build
+npm run start:prod
+```
+
+L'API est accessible sur `http://localhost:3000/api`.
+La documentation Swagger est disponible sur `http://localhost:3000/docs` (hors production).
+
+---
+
+## 9. Tests
+
+### Tests unitaires
+
+```bash
+npm run test
+```
+
+### Tests unitaires avec couverture
+
+```bash
+npm run test:cov
+```
+
+### Tests end-to-end (e2e)
+
+Les tests e2e utilisent une base de données dédiée (`taskflow_test`) avec les variables de `.env.test`.
+
+```bash
+# S'assurer que PostgreSQL tourne (docker compose up -d)
+npm run test:e2e
+```
+
+### Mode watch (relance automatique à chaque modification)
+
+```bash
+npm run test:watch
+```
+
+---
+
+## 10. Docker Compose — stack complète (production)
+
+Lance l'API et PostgreSQL ensemble via le `Dockerfile` multi-stage :
+
+```bash
+# Créer le fichier d'environnement de production
+cp .env.example .env.production
+# Remplir .env.production avec les vraies valeurs
+
+docker compose -f docker-compose.prod.yml up -d
+```
+
+Pour voir les logs :
+
+```bash
+docker compose -f docker-compose.prod.yml logs -f api
+```
+
+Pour arrêter :
+
+```bash
+docker compose -f docker-compose.prod.yml down
+```
+
+---
+
+## Récapitulatif — démarrage rapide
+
+```bash
+# 1. Installer les dépendances
+npm install
+
+# 2. Configurer l'environnement
+cp .env.example .env
+# → Remplir DB_PASSWORD et JWT_SECRET dans .env
+
+# 3. Démarrer PostgreSQL
+docker compose up -d
+
+# 4. Appliquer les migrations
+npm run migration:run
+
+# 5. Générer le client Prisma
+npx prisma generate
+
+# 6. (Optionnel) Insérer des données de test
+npm run seed
+
+# 7. Lancer l'API
+npm run start:dev
+```
+
+API : `http://localhost:3000/api`
+Swagger : `http://localhost:3000/docs`

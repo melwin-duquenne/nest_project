@@ -34,7 +34,7 @@ import { HealthModule } from './health/health.module';
         port: config.get<number>('DB_PORT', 5432),
         database: config.get<string>('DB_NAME', 'taskflow'),
         username: config.get<string>('DB_USER', 'taskflow'),
-        password: config.get<string>('DB_PASSWORD', 'taskflow'),
+        password: config.getOrThrow<string>('DB_PASSWORD'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
         synchronize: config.get('NODE_ENV') === 'test',
         dropSchema: config.get('NODE_ENV') === 'test',
