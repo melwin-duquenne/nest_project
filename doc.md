@@ -210,15 +210,7 @@ Le `HealthModule` expose `GET /api/health` (route `@Public()`) qui interroge la 
 
 **Double ORM TypeORM + Prisma.** Faire cohabiter les deux ORMs sur le même projet a requis de maintenir deux sources de vérité du schéma : les entités TypeORM avec leurs décorateurs, et `prisma/schema.prisma`. La moindre divergence entre les deux casse les migrations ou le client Prisma généré. J'ai résolu cela en faisant de TypeORM la source principale pour les migrations et en utilisant Prisma uniquement en lecture sur quelques endpoints, les deux étant branchés sur la même base PostgreSQL.
 
-**Champ `passwordHash` exclu par défaut.** Le décorateur `select: false` de TypeORM est pratique pour la sécurité (le hash ne peut pas être exposé accidentellement dans un `findAll()`), mais il m'a fallu comprendre qu'il fallait passer par un `QueryBuilder` avec `.addSelect('user.passwordHash')` pour le récupérer lors du login. Sans cela, `bcrypt.compare()` recevait `undefined` et retournait silencieusement `false` — le login échouait toujours sans message d'erreur clair.
-
-**Tests e2e avec base propre.** Garantir que chaque test parte d'un état prévisible a demandé de mettre en place un `cleanDatabase` (TRUNCATE en cascade) + `seedTestUsers` dans un `beforeEach`. L'option `dropSchema: true` de TypeORM en mode test reconstruit le schéma entier à chaque lancement, ce qui rallonge le démarrage des tests mais garantit une isolation totale — il n'y a aucun risque qu'un test soit affecté par les données laissées par un test précédent.
-
 **Authentification WebSocket.** Le protocole HTTP upgrade des WebSockets ne supporte pas le header `Authorization` standard. Il a fallu accepter le token JWT depuis deux sources : `handshake.auth.token` (mécanisme Socket.io) ET le header `Authorization` de la requête d'upgrade, pour rester compatible avec différents clients.
-
-**Variables d'environnement manquantes au démarrage.** Pendant le développement, l'application démarrait silencieusement avec des valeurs par défaut codées en dur (notamment `DB_PASSWORD: 'taskflow'`), ce qui masquait des problèmes de configuration. J'ai remplacé ces fallbacks dangereux par `config.getOrThrow()` afin que l'application échoue explicitement au démarrage si une variable obligatoire est absente, plutôt que de tourner avec de faux credentials.
-
-**Mock de `bcrypt` dans les tests unitaires.** `bcrypt` est une extension native Node.js compilée en C++. `jest.spyOn()` ne fonctionne pas sur ce type de module car il ne peut pas être réassigné dynamiquement. La solution a été d'utiliser `jest.mock('bcrypt', ...)` au niveau module pour substituer l'implémentation entière dès le chargement, avant même l'import du service testé.
 
 ---
 
