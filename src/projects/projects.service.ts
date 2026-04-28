@@ -43,7 +43,7 @@ export class ProjectsService {
     if (dto.teamId) {
       project.team = await this.teamsService.findOne(dto.teamId);
     }
-    const { teamId: _, ...rest } = dto;
+    const { teamId: _teamId, ...rest } = dto;
     Object.assign(project, rest);
     return this.projectsRepository.save(project);
   }

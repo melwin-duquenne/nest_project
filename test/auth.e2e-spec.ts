@@ -56,7 +56,7 @@ describe('Auth (e2e)', () => {
       const res = await request(app.getHttpServer())
         .post('/api/auth/login')
         .send({ email: 'admin@test.com', password: 'password123' });
-      accessToken = res.body.access_token;
+      accessToken = res.body.access_token as string;
     });
 
     it('200 + profil connecté', async () => {

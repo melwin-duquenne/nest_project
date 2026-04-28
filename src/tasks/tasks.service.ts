@@ -59,7 +59,7 @@ export class TasksService {
         ? await this.usersService.findOne(dto.assigneeId)
         : null;
     }
-    const { projectId: _p, assigneeId: _a, ...rest } = dto;
+    const { projectId: _projectId, assigneeId: _assigneeId, ...rest } = dto;
     Object.assign(task, rest);
     const updated = await this.tasksRepository.save(task);
 

@@ -2,13 +2,16 @@ import { Injectable, NestInterceptor, ExecutionContext, CallHandler, Logger } fr
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
+interface HttpRequest { method: string; url: string; }
+interface HttpResponse { statusCode: number; }
+
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
   private readonly logger = new Logger('HTTP');
 
-  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    const req = context.switchToHttp().getRequest();
-    const res = context.switchToHttp().getResponse();
+  intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
+    const req = context.switchToHttp().getRequest<HttpRequest>();
+    const res = context.switchToHttp().getResponse<HttpResponse>();
     const { method, url } = req;
     const start = Date.now();
 

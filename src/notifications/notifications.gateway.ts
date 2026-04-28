@@ -11,6 +11,8 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { Server, Socket } from 'socket.io';
 
+interface JwtPayload { sub: string; email: string; role: string; }
+
 @Injectable()
 @WebSocketGateway({
   cors: { origin: '*' },
@@ -26,9 +28,9 @@ export class NotificationsGateway
 
   constructor(private readonly jwtService: JwtService) {}
 
-  async handleConnection(client: Socket) {
+  handleConnection(client: Socket) {
     const token =
-      (client.handshake.auth?.token as string) ||
+      (client.handshake.auth as { token?: string }).token ||
       client.handshake.headers.authorization?.replace('Bearer ', '');
 
     if (!token) {
@@ -38,9 +40,9 @@ export class NotificationsGateway
     }
 
     try {
-      const payload = this.jwtService.verify(token);
-      client.data.user = payload;
-      client.join(`user:${payload.sub}`);
+      const payload = this.jwtService.verify<JwtPayload>(token);
+      client.data = { user: payload };
+      void client.join(`user:${payload.sub}`);
       this.logger.log(`Client connecté : ${client.id} → user:${payload.sub}`);
     } catch {
       this.logger.warn(`Token invalide : ${client.id}`);
@@ -57,7 +59,7 @@ export class NotificationsGateway
     @ConnectedSocket() client: Socket,
     @MessageBody() projectId: string,
   ) {
-    client.join(`project:${projectId}`);
+    void client.join(`project:${projectId}`);
     this.logger.log(`${client.id} a rejoint project:${projectId}`);
     return { joined: projectId };
   }

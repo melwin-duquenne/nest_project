@@ -21,12 +21,12 @@ describe('Users (e2e)', () => {
     const adminRes = await request(app.getHttpServer())
       .post('/api/auth/login')
       .send({ email: 'admin@test.com', password: 'password123' });
-    adminToken = adminRes.body.access_token;
+    adminToken = adminRes.body.access_token as string;
 
     const memberRes = await request(app.getHttpServer())
       .post('/api/auth/login')
       .send({ email: 'member@test.com', password: 'password123' });
-    memberToken = memberRes.body.access_token;
+    memberToken = memberRes.body.access_token as string;
   });
 
   afterAll(async () => {
@@ -86,7 +86,7 @@ describe('Users (e2e)', () => {
       .send({ email: 'cycle@test.com', name: 'Cycle User', password: 'P@ssword1' });
 
     expect(createRes.status).toBe(201);
-    const { id } = createRes.body;
+    const id = createRes.body.id as string;
 
     const getRes = await request(app.getHttpServer())
       .get(`/api/users/${id}`)
