@@ -59,6 +59,7 @@ jobs:
           DB_PASSWORD: taskflow
           JWT_SECRET: test-secret-key-for-ci
           JWT_EXPIRES_IN: 1h
+          DATABASE_URL: postgresql://taskflow:taskflow@localhost:5432/taskflow_test
 
   build-docker:
     name: Build Docker Image
