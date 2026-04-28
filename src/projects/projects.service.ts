@@ -43,6 +43,7 @@ export class ProjectsService {
     if (dto.teamId) {
       project.team = await this.teamsService.findOne(dto.teamId);
     }
+    // Exclut teamId du reste car déjà traité comme relation ci-dessus
     const { teamId: _teamId, ...rest } = dto;
     Object.assign(project, rest);
     return this.projectsRepository.save(project);

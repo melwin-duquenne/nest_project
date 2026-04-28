@@ -1,3 +1,5 @@
+// Service utilisateurs via Prisma — implémentation alternative du CRUD avec Prisma ORM
+// Même logique métier que UsersService (TypeORM) mais avec le client Prisma
 import {
   Injectable,
   NotFoundException,
@@ -8,6 +10,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
+// Sélection explicite des champs retournés — exclut toujours passwordHash des réponses
 const USER_SELECT = {
   id: true,
   email: true,
@@ -41,6 +44,7 @@ export class UsersPrismaService {
   async create(dto: CreateUserDto) {
     const normalizedEmail = dto.email.toLowerCase().trim();
 
+    // findUnique est plus performant que findFirst pour une contrainte unique
     const existing = await this.prisma.user.findUnique({
       where: { email: normalizedEmail },
     });
@@ -48,6 +52,7 @@ export class UsersPrismaService {
 
     const passwordHash = await bcrypt.hash(dto.password, 12);
 
+    // select:USER_SELECT dans create() évite de re-fetcher après l'insertion
     return this.prisma.user.create({
       data: {
         email: normalizedEmail,
@@ -60,13 +65,14 @@ export class UsersPrismaService {
   }
 
   async update(id: string, dto: UpdateUserDto) {
-    await this.findOne(id);
+    await this.findOne(id);  // Lève 404 si l'utilisateur n'existe pas
 
     if (dto.email) {
       const normalizedEmail = dto.email.toLowerCase().trim();
       const existing = await this.prisma.user.findUnique({
         where: { email: normalizedEmail },
       });
+      // Autorise si c'est le même utilisateur qui conserve son email
       if (existing && existing.id !== id) {
         throw new ConflictException(`Email ${normalizedEmail} already in use`);
       }
@@ -81,7 +87,7 @@ export class UsersPrismaService {
   }
 
   async remove(id: string) {
-    await this.findOne(id);
+    await this.findOne(id);  // Lève 404 si l'utilisateur n'existe pas
     await this.prisma.user.delete({ where: { id } });
   }
 }

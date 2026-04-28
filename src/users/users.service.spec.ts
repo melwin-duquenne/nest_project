@@ -1,8 +1,11 @@
+// Tests unitaires de UsersService — vérifie la logique métier sans base de données réelle
+// Utilise un faux repository (mock) pour isoler le service de TypeORM
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { ConflictException, NotFoundException } from '@nestjs/common';
 import { UsersService } from './users.service';
 
+// jest.mock au niveau module — bcrypt est natif C++, on ne peut pas utiliser jest.spyOn
 jest.mock('bcrypt', () => ({ hash: jest.fn().mockResolvedValue('hashed') }));
 import { User } from './entities/user.entity';
 import { UserRole } from './enum/user.enum';
@@ -26,6 +29,7 @@ describe('UsersService', () => {
   beforeEach(async () => {
     repo = createMockRepository<User>();
 
+    // Crée un module de test minimal avec le service + le mock du repository
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UsersService,
@@ -86,6 +90,7 @@ describe('UsersService', () => {
 
     it('crée et retourne un utilisateur', async () => {
       const newUser = { ...mockUser, email: dto.email, name: dto.name };
+      // findOne appelé 2 fois : 1re pour vérifier l'unicité email, 2e pour le re-fetch après save
       repo.findOne
         .mockResolvedValueOnce(null) // findByEmail : pas de doublon
         .mockResolvedValueOnce(newUser as User); // findOne après save

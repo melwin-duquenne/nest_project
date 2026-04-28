@@ -1,3 +1,5 @@
+// DTO de création d'utilisateur — valide et documente les données attendues dans le body
+// class-validator applique les règles de validation, @ApiProperty génère la doc Swagger
 import {
   IsEmail,
   IsEnum,
@@ -27,6 +29,7 @@ export class CreateUserDto {
   @MaxLength(100, { message: 'Le nom ne doit pas dépasser 100 caractères' })
   name: string;
 
+  // Champ optionnel — si absent, l'entité utilise la valeur par défaut MEMBER
   @ApiPropertyOptional({
     enum: UserRole,
     default: UserRole.MEMBER,
@@ -38,6 +41,8 @@ export class CreateUserDto {
   @IsOptional()
   role?: UserRole;
 
+  // writeOnly:true dans Swagger = champ visible uniquement en entrée, jamais retourné
+  // Regex : au moins une majuscule, une minuscule, un chiffre et un caractère spécial
   @ApiProperty({
     example: 'P@ssw0rd!',
     description:

@@ -1,3 +1,4 @@
+// Contrôleur utilisateurs — expose les routes CRUD sous /api/users
 import {
   Controller,
   Get,
@@ -25,11 +26,12 @@ import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { UserRole } from './enum/user.enum';
 
 @ApiTags('users')
-@ApiBearerAuth('JWT-auth')
+@ApiBearerAuth('JWT-auth')  // Toutes les routes nécessitent un token JWT
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  // Réservé aux admins — @Roles(ADMIN) + RolesGuard global refusent les autres rôles (403)
   @Roles(UserRole.ADMIN)
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -41,6 +43,7 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
+  // Accessible à tous les utilisateurs authentifiés (pas de @Roles → RolesGuard laisse passer)
   @Get()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Lister tous les utilisateurs' })
@@ -49,6 +52,7 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
+  // ParseUUIDPipe valide le format UUID avant d'appeler le service (400 si format invalide)
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Récupérer un utilisateur par ID' })
@@ -60,6 +64,7 @@ export class UsersController {
     return this.usersService.findOne(id);
   }
 
+  // La vérification admin/propriétaire est faite dans UsersService.update()
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Mettre à jour un utilisateur' })
@@ -79,6 +84,7 @@ export class UsersController {
     return this.usersService.update(id, updateUserDto, currentUser);
   }
 
+  // Réservé aux admins — suppression physique de l'utilisateur
   @Delete(':id')
   @Roles(UserRole.ADMIN)
   @HttpCode(HttpStatus.NO_CONTENT)

@@ -1,3 +1,5 @@
+// Factory de mock Repository — remplace le vrai TypeORM Repository dans les tests unitaires
+// Chaque méthode est un jest.fn() que les tests peuvent configurer avec .mockResolvedValue()
 import { Repository } from 'typeorm';
 
 export const createMockRepository = <T extends object>(): jest.Mocked<
