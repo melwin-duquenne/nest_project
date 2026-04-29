@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>TP 03 &mdash; Controllers&comma; Services &amp; CRUD en m&eacute;moire</title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+/* From extension jebbs.markdown-extended */
+@font-face {
+  font-family: "Material Icons";
+  font-style: normal;
+  font-weight: 400;
+  src: local("Material Icons"), local("MaterialIcons-Regular"), url("data:application/x-font-woff;charset=utf-8;base64,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") format("woff");
+}
+
+.admonition {
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12), 0 3px 1px -2px rgba(0, 0, 0, .2);
+  position: relative;
+  margin: 1.5625em 0;
+  padding: 0 1.2rem;
+  border-left: .4rem solid rgba(68, 138, 255, .8);
+  border-radius: .2rem;
+  background-color: rgba(255, 255, 255, 0.05);
+  overflow: auto;
+}
+
+.admonition>p {
+  margin-top: .8rem;
+}
+
+.admonition>.admonition-title {
+  margin: 0 -1.2rem;
+  padding: .8rem 1.2rem .8rem 3.6rem;
+  border-bottom: 1px solid rgba(68, 138, 255, .2);
+  background-color: rgba(68, 138, 255, .1);
+  font-weight: 700;
+}
+
+.admonition>.admonition-title:before {
+  position: absolute;
+  left: 1.2rem;
+  font-size: 1.5rem;
+  color: rgba(68, 138, 255, .8);
+  content: "\E3C9";
+}
+
+.admonition>.admonition-title:before {
+  font-family: Material Icons;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: 400;
+  line-height: 2rem;
+  text-transform: none;
+  white-space: nowrap;
+  speak: none;
+  word-wrap: normal;
+  direction: ltr;
+}
+
+.admonition.summary,
+.admonition.abstract,
+.admonition.tldr {
+  border-left-color: rgba(0, 176, 255, .8);
+}
+
+.admonition.summary>.admonition-title,
+.admonition.abstract>.admonition-title,
+.admonition.tldr>.admonition-title {
+  background-color: rgba(0, 176, 255, .1);
+  border-bottom-color: rgba(0, 176, 255, .2);
+}
+
+.admonition.summary>.admonition-title:before,
+.admonition.abstract>.admonition-title:before,
+.admonition.tldr>.admonition-title:before {
+  color: rgba(0, 176, 255, 1);
+  ;
+  content: "\E8D2";
+}
+
+.admonition.hint,
+.admonition.tip {
+  border-left-color: rgba(0, 191, 165, .8);
+}
+
+.admonition.hint>.admonition-title,
+.admonition.tip>.admonition-title {
+  background-color: rgba(0, 191, 165, .1);
+  border-bottom-color: rgba(0, 191, 165, .2);
+}
+
+.admonition.hint>.admonition-title:before,
+.admonition.tip>.admonition-title:before {
+  color: rgba(0, 191, 165, 1);
+  content: "\E80E";
+}
+
+.admonition.info,
+.admonition.todo {
+  border-left-color: rgba(0, 184, 212, .8);
+}
+
+.admonition.info>.admonition-title,
+.admonition.todo>.admonition-title {
+  background-color: rgba(0, 184, 212, .1);
+  border-bottom-color: rgba(0, 184, 212, .2);
+}
+
+.admonition.info>.admonition-title:before,
+.admonition.todo>.admonition-title:before {
+  color: rgba(0, 184, 212, 1);
+  ;
+  content: "\E88E";
+}
+
+.admonition.success,
+.admonition.check,
+.admonition.done {
+  border-left-color: rgba(0, 200, 83, .8);
+}
+
+.admonition.success>.admonition-title,
+.admonition.check>.admonition-title,
+.admonition.done>.admonition-title {
+  background-color: rgba(0, 200, 83, .1);
+  border-bottom-color: rgba(0, 200, 83, .2);
+}
+
+.admonition.success>.admonition-title:before,
+.admonition.check>.admonition-title:before,
+.admonition.done>.admonition-title:before {
+  color: rgba(0, 200, 83, 1);
+  ;
+  content: "\E876";
+}
+
+.admonition.question,
+.admonition.help,
+.admonition.faq {
+  border-left-color: rgba(100, 221, 23, .8);
+}
+
+.admonition.question>.admonition-title,
+.admonition.help>.admonition-title,
+.admonition.faq>.admonition-title {
+  background-color: rgba(100, 221, 23, .1);
+  border-bottom-color: rgba(100, 221, 23, .2);
+}
+
+.admonition.question>.admonition-title:before,
+.admonition.help>.admonition-title:before,
+.admonition.faq>.admonition-title:before {
+  color: rgba(100, 221, 23, 1);
+  ;
+  content: "\E887";
+}
+
+.admonition.warning,
+.admonition.attention,
+.admonition.caution {
+  border-left-color: rgba(255, 145, 0, .8);
+}
+
+.admonition.warning>.admonition-title,
+.admonition.attention>.admonition-title,
+.admonition.caution>.admonition-title {
+  background-color: rgba(255, 145, 0, .1);
+  border-bottom-color: rgba(255, 145, 0, .2);
+}
+
+.admonition.attention>.admonition-title:before {
+  color: rgba(255, 145, 0, 1);
+  content: "\E417";
+}
+
+.admonition.warning>.admonition-title:before,
+.admonition.caution>.admonition-title:before {
+  color: rgba(255, 145, 0, 1);
+  content: "\E002";
+}
+
+.admonition.failure,
+.admonition.fail,
+.admonition.missing {
+  border-left-color: rgba(255, 82, 82, .8);
+}
+
+.admonition.failure>.admonition-title,
+.admonition.fail>.admonition-title,
+.admonition.missing>.admonition-title {
+  background-color: rgba(255, 82, 82, .1);
+  border-bottom-color: rgba(255, 82, 82, .2);
+}
+
+.admonition.failure>.admonition-title:before,
+.admonition.fail>.admonition-title:before,
+.admonition.missing>.admonition-title:before {
+  color: rgba(255, 82, 82, 1);
+  ;
+  content: "\E14C";
+}
+
+.admonition.danger,
+.admonition.error,
+.admonition.bug {
+  border-left-color: rgba(255, 23, 68, .8);
+}
+
+.admonition.danger>.admonition-title,
+.admonition.error>.admonition-title,
+.admonition.bug>.admonition-title {
+  background-color: rgba(255, 23, 68, .1);
+  border-bottom-color: rgba(255, 23, 68, .2);
+}
+
+.admonition.danger>.admonition-title:before {
+  color: rgba(255, 23, 68, 1);
+  content: "\E3E7";
+}
+
+.admonition.error>.admonition-title:before {
+  color: rgba(255, 23, 68, 1);
+  content: "\E14C";
+}
+
+.admonition.bug>.admonition-title:before {
+  color: rgba(255, 23, 68, 1);
+  content: "\E868";
+}
+
+.admonition.example,
+.admonition.snippet {
+  border-left-color: rgba(0, 184, 212, .8);
+}
+
+.admonition.example>.admonition-title,
+.admonition.snippet>.admonition-title {
+  background-color: rgba(0, 184, 212, .1);
+  border-bottom-color: rgba(0, 184, 212, .2);
+}
+
+.admonition.example>.admonition-title:before,
+.admonition.snippet>.admonition-title:before {
+  color: rgba(0, 184, 212, 1);
+  ;
+  content: "\E242";
+}
+
+.admonition.quote,
+.admonition.cite {
+  border-left-color: rgba(158, 158, 158, .8);
+}
+
+.admonition.quote>.admonition-title,
+.admonition.cite>.admonition-title {
+  background-color: rgba(158, 158, 158, .1);
+  border-bottom-color: rgba(158, 158, 158, .2);
+}
+
+.admonition.quote>.admonition-title:before,
+.admonition.cite>.admonition-title:before {
+  color: rgba(158, 158, 158, 1);
+  ;
+  content: "\E244";
+}
+.vscode-light kbd,
+.vscode-dark kbd,
+.vscode-high-contrast kbd {
+  display: inline-block;
+  padding: 3px 5px;
+  font: 11px "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  line-height: 10px;
+  vertical-align: middle;
+  border: solid 1px #d1d5da;
+  border-bottom-color: #c6cbd1;
+  border-radius: 3px;
+  box-shadow: inset 0 -1px 0 #c6cbd1;
+}
+
+.vscode-light kbd {
+  color: #444d56;
+  background-color: #fafbfc;
+}
+</style>
+            
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        
+        </head>
+        <body class="vscode-body vscode-light">
+            <h1 id="tp-03--controllers-services--crud-en-mémoire">TP 03 — Controllers, Services &amp; CRUD en mémoire</h1>
+<p><strong>Durée :</strong> 50 minutes
+<strong>Objectif :</strong> implémenter le CRUD complet pour <code>Users</code> avec un stockage en mémoire.</p>
+<hr>
+<h2 id="étape-1--interface-user">Étape 1 — Interface User</h2>
+<p>Créer <code>src/users/interfaces/user.interface.ts</code>.</p>
+<p>Définir :</p>
+<ul>
+<li>Un enum <code>UserRole</code> avec les valeurs <code>admin</code>, <code>member</code>, <code>viewer</code></li>
+<li>Une interface <code>User</code> avec les propriétés : <code>id</code>, <code>email</code>, <code>name</code>, <code>role</code>, <code>createdAt</code>, <code>updatedAt</code></li>
+</ul>
+<blockquote>
+<p>Choisissez les types TypeScript appropriés pour chaque propriété.</p>
+</blockquote>
+<hr>
+<h2 id="étape-2--dtos-temporaires">Étape 2 — DTOs temporaires</h2>
+<p>Pour l'instant, les DTOs sont de simples classes sans validation (on ajoutera <code>class-validator</code> en S04).</p>
+<p>Modifier <code>src/users/dto/create-user.dto.ts</code> :</p>
+<pre><code class="language-ts"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">UserRole</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;../interfaces/user.interface&#x27;</span>;
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">CreateUserDto</span> {
+  <span class="hljs-attr">email</span>: <span class="hljs-built_in">string</span>;
+  <span class="hljs-attr">name</span>: <span class="hljs-built_in">string</span>;
+  role?: <span class="hljs-title class_">UserRole</span>;
+}
+</code></pre>
+<p>Modifier <code>src/users/dto/update-user.dto.ts</code> — toutes les propriétés sont optionnelles :</p>
+<pre><code class="language-ts"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">UserRole</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;../interfaces/user.interface&#x27;</span>;
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">UpdateUserDto</span> {
+  email?: <span class="hljs-built_in">string</span>;
+  name?: <span class="hljs-built_in">string</span>;
+  role?: <span class="hljs-title class_">UserRole</span>;
+}
+</code></pre>
+<hr>
+<h2 id="étape-3--service-users">Étape 3 — Service Users</h2>
+<p>Remplacer <code>src/users/users.service.ts</code> par le squelette suivant et <strong>implémenter chaque méthode</strong> :</p>
+<pre><code class="language-ts"><span class="hljs-keyword">import</span> {
+  <span class="hljs-title class_">Injectable</span>,
+  <span class="hljs-title class_">NotFoundException</span>,
+  <span class="hljs-title class_">ConflictException</span>,
+} <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@nestjs/common&#x27;</span>;
+<span class="hljs-keyword">import</span> { randomUUID } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;crypto&#x27;</span>;
+<span class="hljs-keyword">import</span> { <span class="hljs-title class_">CreateUserDto</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./dto/create-user.dto&#x27;</span>;
+<span class="hljs-keyword">import</span> { <span class="hljs-title class_">UpdateUserDto</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./dto/update-user.dto&#x27;</span>;
+<span class="hljs-keyword">import</span> { <span class="hljs-title class_">User</span>, <span class="hljs-title class_">UserRole</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./interfaces/user.interface&#x27;</span>;
+
+<span class="hljs-meta">@Injectable</span>()
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">UsersService</span> {
+  <span class="hljs-keyword">private</span> <span class="hljs-attr">users</span>: <span class="hljs-title class_">User</span>[] = [];
+
+  <span class="hljs-title function_">findAll</span>(): <span class="hljs-title class_">User</span>[] {
+    <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span> retourner tous les utilisateurs</span>
+  }
+
+  <span class="hljs-title function_">findOne</span>(<span class="hljs-attr">id</span>: <span class="hljs-built_in">string</span>): <span class="hljs-title class_">User</span> {
+    <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span> trouver l&#x27;utilisateur par id</span>
+    <span class="hljs-comment">// Lever NotFoundException si introuvable</span>
+  }
+
+  <span class="hljs-title function_">findByEmail</span>(<span class="hljs-attr">email</span>: <span class="hljs-built_in">string</span>): <span class="hljs-title class_">User</span> | <span class="hljs-literal">undefined</span> {
+    <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span> trouver l&#x27;utilisateur par email (peut retourner undefined)</span>
+  }
+
+  <span class="hljs-title function_">create</span>(<span class="hljs-attr">dto</span>: <span class="hljs-title class_">CreateUserDto</span>): <span class="hljs-title class_">User</span> {
+    <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span></span>
+    <span class="hljs-comment">// 1. Vérifier qu&#x27;aucun utilisateur n&#x27;a déjà cet email (ConflictException sinon)</span>
+    <span class="hljs-comment">// 2. Créer un objet User avec randomUUID(), les champs du dto, et les dates</span>
+    <span class="hljs-comment">// 3. Ajouter à this.users et retourner le nouvel utilisateur</span>
+  }
+
+  <span class="hljs-title function_">update</span>(<span class="hljs-attr">id</span>: <span class="hljs-built_in">string</span>, <span class="hljs-attr">dto</span>: <span class="hljs-title class_">UpdateUserDto</span>): <span class="hljs-title class_">User</span> {
+    <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span></span>
+    <span class="hljs-comment">// 1. Récupérer l&#x27;utilisateur (findOne lève déjà 404)</span>
+    <span class="hljs-comment">// 2. Si l&#x27;email change, vérifier qu&#x27;il n&#x27;est pas déjà pris (ConflictException)</span>
+    <span class="hljs-comment">// 3. Mettre à jour les champs et updatedAt, retourner l&#x27;utilisateur</span>
+  }
+
+  <span class="hljs-title function_">remove</span>(<span class="hljs-attr">id</span>: <span class="hljs-built_in">string</span>): <span class="hljs-built_in">void</span> {
+    <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span> supprimer l&#x27;utilisateur du tableau (NotFoundException si introuvable)</span>
+  }
+}
+</code></pre>
+<hr>
+<h2 id="étape-4--controller-users">Étape 4 — Controller Users</h2>
+<p>Mettre à jour <code>src/users/users.controller.ts</code> pour exposer les 5 routes CRUD :</p>
+<table>
+<thead>
+<tr>
+<th>Méthode</th>
+<th>Route</th>
+<th>Handler</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><code>/users</code></td>
+<td><code>findAll()</code></td>
+<td>200</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/users/:id</code></td>
+<td><code>findOne(id)</code></td>
+<td>200</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/users</code></td>
+<td><code>create(dto)</code></td>
+<td><strong>201</strong></td>
+</tr>
+<tr>
+<td>PATCH</td>
+<td><code>/users/:id</code></td>
+<td><code>update(id, dto)</code></td>
+<td>200</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td><code>/users/:id</code></td>
+<td><code>remove(id)</code></td>
+<td><strong>204</strong></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Décorateurs utiles : <code>@Get()</code>, <code>@Post()</code>, <code>@Patch()</code>, <code>@Delete()</code>, <code>@Param()</code>, <code>@Body()</code>, <code>@HttpCode(HttpStatus.CREATED)</code>, <code>@HttpCode(HttpStatus.NO_CONTENT)</code></p>
+</blockquote>
+<hr>
+<h2 id="étape-5--tests-avec-rest-client">Étape 5 — Tests avec REST Client</h2>
+<p>Créer <code>src/http/users.http</code> :</p>
+<pre><code class="language-http">@baseUrl = http://localhost:3000/api
+
+### Lister tous les utilisateurs
+GET {{baseUrl}}/users
+
+### Créer un utilisateur
+POST {{baseUrl}}/users
+<span class="hljs-attribute">Content-Type</span><span class="hljs-punctuation">: </span>application/json
+
+{
+  &quot;email&quot;: &quot;alice@taskflow.dev&quot;,
+  &quot;name&quot;: &quot;Alice Dupont&quot;,
+  &quot;role&quot;: &quot;admin&quot;
+}
+
+### Créer un deuxième utilisateur
+POST {{baseUrl}}/users
+<span class="hljs-attribute">Content-Type</span><span class="hljs-punctuation">: </span>application/json
+
+{
+  &quot;email&quot;: &quot;bob@taskflow.dev&quot;,
+  &quot;name&quot;: &quot;Bob Martin&quot;,
+  &quot;role&quot;: &quot;member&quot;
+}
+
+### Récupérer un utilisateur (remplacer l&#x27;ID)
+GET {{baseUrl}}/users/REMPLACER_PAR_UN_ID
+
+### Mettre à jour un utilisateur
+PATCH {{baseUrl}}/users/REMPLACER_PAR_UN_ID
+<span class="hljs-attribute">Content-Type</span><span class="hljs-punctuation">: </span>application/json
+
+{
+  &quot;name&quot;: &quot;Alice Dupont-Martin&quot;
+}
+
+### Supprimer un utilisateur
+DELETE {{baseUrl}}/users/REMPLACER_PAR_UN_ID
+
+### Cas 404 — ID inexistant
+GET {{baseUrl}}/users/00000000-0000-0000-0000-000000000000
+
+### Cas 409 — Email déjà utilisé
+POST {{baseUrl}}/users
+<span class="hljs-attribute">Content-Type</span><span class="hljs-punctuation">: </span>application/json
+
+{
+  &quot;email&quot;: &quot;alice@taskflow.dev&quot;,
+  &quot;name&quot;: &quot;Autre Alice&quot;
+}
+</code></pre>
+<hr>
+<h2 id="validation-des-scénarios">Validation des scénarios</h2>
+<p>Tester tous les scénarios :</p>
+<table>
+<thead>
+<tr>
+<th>Scénario</th>
+<th>Route</th>
+<th>Réponse attendue</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Lister (vide)</td>
+<td><code>GET /api/users</code></td>
+<td><code>[]</code> (200)</td>
+</tr>
+<tr>
+<td>Créer Alice</td>
+<td><code>POST /api/users</code></td>
+<td>User créé (201)</td>
+</tr>
+<tr>
+<td>Créer Bob</td>
+<td><code>POST /api/users</code></td>
+<td>User créé (201)</td>
+</tr>
+<tr>
+<td>Lister</td>
+<td><code>GET /api/users</code></td>
+<td><code>[alice, bob]</code> (200)</td>
+</tr>
+<tr>
+<td>Récupérer Alice</td>
+<td><code>GET /api/users/:id</code></td>
+<td>Alice (200)</td>
+</tr>
+<tr>
+<td>Modifier Alice</td>
+<td><code>PATCH /api/users/:id</code></td>
+<td>Alice modifiée (200)</td>
+</tr>
+<tr>
+<td>ID inexistant</td>
+<td><code>GET /api/users/bad-id</code></td>
+<td>404 + message</td>
+</tr>
+<tr>
+<td>Email dupliqué</td>
+<td><code>POST /api/users</code> même email</td>
+<td>409 + message</td>
+</tr>
+<tr>
+<td>Supprimer Bob</td>
+<td><code>DELETE /api/users/:id</code></td>
+<td>(204 No Content)</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="checkpoint-">Checkpoint ✓</h2>
+<ul class="contains-task-list">
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> <code>GET /api/users</code> → <code>[]</code></li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> <code>POST /api/users</code> avec email + name → User créé avec <code>id</code>, <code>createdAt</code></li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> <code>GET /api/users/:id</code> → User (200) ou 404</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> <code>PATCH /api/users/:id</code> → User mis à jour</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> <code>DELETE /api/users/:id</code> → 204 No Content</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> Email dupliqué → 409</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> ID inexistant → 404 avec message clair</li>
+</ul>
+<hr>
+<h2 id="fil-rouge-après-s03">Fil rouge après S03</h2>
+<p>CRUD Users complet en mémoire, 404 et 409 gérés proprement.</p>
+<p><strong>Commit suggéré :</strong></p>
+<pre><code class="language-bash">git add .
+git commit -m <span class="hljs-string">&quot;feat(users): CRUD complet en mémoire + interface User + gestion d&#x27;erreurs&quot;</span>
+</code></pre>
+
+            
+            
+        </body>
+        </html>

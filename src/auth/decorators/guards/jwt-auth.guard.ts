@@ -11,6 +11,12 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   }
 
   canActivate(context: ExecutionContext) {
+    const request = context.switchToHttp().getRequest<{ path: string }>();
+
+    // Terminus wrappe le handler de @HealthCheck(), ce qui empêche le Reflector
+    // de lire le metadata @Public() — on bypass directement via le path
+    if (request.path?.startsWith('/api/health')) return true;
+
     // Vérifie si le handler ou la classe porte le metadata IS_PUBLIC_KEY (@Public())
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
       context.getHandler(),

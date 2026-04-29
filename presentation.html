@@ -1,666 +1,1505 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TaskFlow API — Soutenance</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-:root {
-  --bg:      #090d1a;
-  --bg2:     #0e1428;
-  --surface: rgba(255,255,255,.035);
-  --border:  rgba(255,255,255,.07);
-  --border2: rgba(255,255,255,.13);
-  --accent:  #4f9cf9;
-  --gold:    #e8b84b;
-  --green:   #3dd68c;
-  --red:     #f7615f;
-  --purple:  #b06ef3;
-  --teal:    #2dd4bf;
-  --text:    #eef2ff;
-  --sub:     #8899bb;
-  --muted:   #2d3a58;
-  --fd: 'Cormorant Garamond', Georgia, serif;
-  --fb: 'DM Sans', sans-serif;
-  --fm: 'JetBrains Mono', monospace;
-}
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TaskFlow API — Présentation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #090d1a;
+        --bg2: #0d1526;
+        --surface: rgba(255, 255, 255, 0.04);
+        --border: rgba(255, 255, 255, 0.07);
+        --border2: rgba(255, 255, 255, 0.12);
+        --accent: #4f9cf9;
+        --gold: #e8b84b;
+        --green: #3dd68c;
+        --red: #f7615f;
+        --purple: #b06ef3;
+        --teal: #2dd4bf;
+        --text: #eef2ff;
+        --sub: #8899bb;
+        --muted: #2d3a58;
+        --fd: 'Cormorant Garamond', Georgia, serif;
+        --fb: 'DM Sans', sans-serif;
+        --fm: 'JetBrains Mono', monospace;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+      body {
+        font-family: var(--fb);
+        background: var(--bg);
+        color: var(--text);
+        height: 100vh;
+        overflow: hidden;
+      }
 
-body {
-  font-family: var(--fb);
-  background: var(--bg);
-  color: var(--text);
-  height: 100vh;
-  overflow: hidden;
-}
+      body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        background-image: radial-gradient(
+          circle,
+          rgba(79, 156, 249, 0.09) 1px,
+          transparent 1px
+        );
+        background-size: 38px 38px;
+        pointer-events: none;
+      }
 
-body::before {
-  content: '';
-  position: fixed; inset: 0; z-index: 0;
-  background-image: radial-gradient(circle, rgba(79,156,249,.13) 1px, transparent 1px);
-  background-size: 36px 36px;
-  pointer-events: none;
-}
+      /* ── SLIDES ── */
+      .slides {
+        position: relative;
+        z-index: 1;
+      }
+      .slide {
+        display: none;
+        width: 100%;
+        height: 100vh;
+        padding: 52px 84px;
+        flex-direction: column;
+        position: relative;
+        overflow: hidden;
+      }
+      .slide.active {
+        display: flex;
+        animation: fadeIn 0.3s ease;
+      }
+      .slide.tp {
+        padding: 30px 76px;
+      }
 
-/* ── SLIDES ── */
-.slides { position: relative; z-index: 1; }
-.slide {
-  display: none; width: 100%; height: 100vh;
-  padding: 56px 88px;
-  flex-direction: column; justify-content: center;
-  position: relative; overflow: hidden;
-}
-.slide.active { display: flex; animation: fadeIn .3s ease; }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
+      .slide-num {
+        position: absolute;
+        top: 22px;
+        right: 32px;
+        font-family: var(--fm);
+        font-size: 0.68rem;
+        color: var(--muted);
+        letter-spacing: 0.06em;
+      }
+      .deco-num {
+        position: absolute;
+        right: 56px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-family: var(--fd);
+        font-size: 18rem;
+        font-weight: 700;
+        color: rgba(79, 156, 249, 0.025);
+        line-height: 1;
+        pointer-events: none;
+        user-select: none;
+      }
 
-.deco-num {
-  position: absolute; right: 64px; top: 50%; transform: translateY(-50%);
-  font-family: var(--fd); font-size: 20rem; font-weight: 700;
-  color: rgba(79,156,249,.035); line-height: 1;
-  pointer-events: none; user-select: none; letter-spacing: -.03em;
-}
+      /* ── TYPE ── */
+      h1 {
+        font-family: var(--fd);
+        font-size: 4.2rem;
+        font-weight: 600;
+        color: var(--text);
+        line-height: 1.05;
+      }
+      h2 {
+        font-family: var(--fd);
+        font-size: 2.2rem;
+        font-weight: 600;
+        color: var(--text);
+        line-height: 1.1;
+      }
+      h3 {
+        font-family: var(--fb);
+        font-size: 0.6rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.13em;
+        color: var(--sub);
+      }
+      p {
+        font-size: 1rem;
+        color: var(--sub);
+        line-height: 1.65;
+      }
 
-.accent-bar {
-  width: 44px; height: 3px; border-radius: 2px;
-  background: linear-gradient(90deg, var(--gold), transparent);
-  margin-bottom: 18px;
-}
-.accent-bar.green  { background: linear-gradient(90deg, var(--green), transparent); }
-.accent-bar.red    { background: linear-gradient(90deg, var(--red), transparent); }
-.accent-bar.purple { background: linear-gradient(90deg, var(--purple), transparent); }
-.accent-bar.teal   { background: linear-gradient(90deg, var(--teal), transparent); }
+      /* ── ACCENT BAR ── */
+      .abar {
+        width: 42px;
+        height: 3px;
+        border-radius: 2px;
+        background: linear-gradient(90deg, var(--gold), transparent);
+        margin-bottom: 18px;
+        flex-shrink: 0;
+      }
+      .abar.blue {
+        background: linear-gradient(90deg, var(--accent), transparent);
+      }
+      .abar.green {
+        background: linear-gradient(90deg, var(--green), transparent);
+      }
+      .abar.teal {
+        background: linear-gradient(90deg, var(--teal), transparent);
+      }
 
-h1 { font-family: var(--fd); font-size: 4rem; font-weight: 600; color: var(--text); line-height: 1.05; }
-h2 { font-family: var(--fd); font-size: 2.5rem; font-weight: 600; color: var(--text); line-height: 1.1; margin-bottom: 30px; }
-h3 { font-family: var(--fb); font-size: .65rem; font-weight: 600; text-transform: uppercase; letter-spacing: .13em; color: var(--sub); margin-bottom: 12px; }
-p  { font-size: 1rem; color: var(--sub); line-height: 1.65; }
+      /* ── TAGS ── */
+      .tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .tag {
+        font-family: var(--fm);
+        font-size: 0.7rem;
+        padding: 4px 12px;
+        border-radius: 3px;
+        border: 1px solid var(--border2);
+        color: var(--sub);
+        background: var(--surface);
+      }
 
-.sub-title { font-family: var(--fb); font-size: 1.1rem; color: var(--sub); margin-top: 10px; font-weight: 300; }
-.slide-num-badge { position: absolute; top: 28px; right: 36px; font-family: var(--fm); font-size: .7rem; color: var(--muted); letter-spacing: .06em; }
+      /* ── STAT BOXES ── */
+      .stats-row {
+        display: flex;
+        gap: 14px;
+      }
+      .stat-box {
+        flex: 1;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-top: 2px solid var(--gold);
+        border-radius: 10px;
+        padding: 18px 22px;
+      }
+      .stat-val {
+        font-family: var(--fd);
+        font-size: 2.4rem;
+        font-weight: 600;
+        color: var(--gold);
+        line-height: 1;
+      }
+      .stat-lbl {
+        font-size: 0.78rem;
+        color: var(--sub);
+        margin-top: 4px;
+      }
 
-/* ── TAGS ── */
-.tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 28px; }
-.tag { font-family: var(--fm); font-size: .72rem; padding: 4px 12px; border-radius: 3px; border: 1px solid var(--border2); color: var(--sub); background: var(--surface); transition: all .2s; }
-.tag:hover { border-color: var(--accent); color: var(--accent); }
+      /* ── TP HEADER ── */
+      .tp-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 14px;
+        flex-shrink: 0;
+      }
+      .tp-badges {
+        display: flex;
+        gap: 6px;
+      }
+      .tp-badge {
+        font-family: var(--fm);
+        font-size: 0.6rem;
+        font-weight: 600;
+        padding: 3px 10px;
+        border-radius: 4px;
+        background: rgba(79, 156, 249, 0.1);
+        border: 1px solid rgba(79, 156, 249, 0.22);
+        color: var(--accent);
+        letter-spacing: 0.05em;
+      }
+      .tp-header h2 {
+        margin-bottom: 0;
+      }
 
-/* ── STATS ── */
-.stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-top: 36px; }
-.stat-box { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px 24px; border-top: 2px solid var(--gold); }
-.stat-val { font-family: var(--fd); font-size: 2.6rem; font-weight: 600; color: var(--gold); line-height: 1; }
-.stat-lbl { font-size: .78rem; color: var(--sub); margin-top: 4px; }
+      /* ── TP LAYOUT (2 cols top + pourquoi full-width) ── */
+      .tp-layout {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr auto;
+        gap: 13px;
+        flex: 1;
+        min-height: 0;
+      }
 
-/* ── PLAN ── */
-.plan-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 13px; }
-.plan-card {
-  display: flex; align-items: center; gap: 20px;
-  padding: 20px 24px; border-radius: 10px;
-  background: var(--surface); border: 1px solid var(--border);
-  position: relative; overflow: hidden;
-  transition: background .2s;
-}
-.plan-card:hover { background: rgba(255,255,255,.055); }
-.plan-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; border-radius: 3px 0 0 3px; }
-.pc-blue::before   { background: var(--accent); }
-.pc-green::before  { background: var(--green); }
-.pc-red::before    { background: var(--red); }
-.pc-indigo::before { background: var(--purple); }
-.pc-teal::before   { background: var(--teal); }
-.pc-gray::before   { background: var(--sub); }
-.plan-n { font-family: var(--fd); font-size: 2.2rem; font-weight: 600; min-width: 30px; line-height: 1; }
-.pc-blue   .plan-n { color: var(--accent); }
-.pc-green  .plan-n { color: var(--green); }
-.pc-red    .plan-n { color: var(--red); }
-.pc-indigo .plan-n { color: var(--purple); }
-.pc-teal   .plan-n { color: var(--teal); }
-.pc-gray   .plan-n { color: var(--sub); }
-.plan-label { font-size: .62rem; text-transform: uppercase; letter-spacing: .1em; font-weight: 600; color: var(--sub); }
-.plan-title { font-size: 1rem; font-weight: 500; color: var(--text); margin-top: 3px; }
+      /* ── TP CARDS ── */
+      .tc {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 18px 22px;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        overflow: hidden;
+      }
+      .tc-dem {
+        border-top: 3px solid var(--gold);
+      }
+      .tc-mis {
+        border-top: 3px solid var(--accent);
+      }
 
-/* ── CARD ── */
-.card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px 22px; }
+      .tc-title {
+        font-family: var(--fb);
+        font-size: 0.58rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        margin-bottom: 14px;
+      }
+      .tc-dem .tc-title {
+        color: var(--gold);
+      }
+      .tc-mis .tc-title {
+        color: var(--accent);
+      }
 
-/* ── GRIDS ── */
-.g2  { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-.g3  { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; }
-.g32 { display: grid; grid-template-columns: 3fr 2fr; gap: 28px; }
+      /* ── TP LIST (numbered, big text) ── */
+      .tc-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        counter-reset: tc;
+      }
+      .tc-list li {
+        counter-increment: tc;
+        position: relative;
+        padding: 9px 0 9px 30px;
+        font-size: 1rem;
+        color: var(--sub);
+        line-height: 1.45;
+        border-bottom: 1px solid var(--border);
+      }
+      .tc-list li:last-child {
+        border-bottom: none;
+      }
+      .tc-list li::before {
+        content: counter(tc);
+        position: absolute;
+        left: 0;
+        top: 10px;
+        font-family: var(--fm);
+        font-size: 0.68rem;
+        font-weight: 700;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .tc-dem .tc-list li::before {
+        color: var(--gold);
+        background: rgba(232, 184, 75, 0.12);
+        border: 1px solid rgba(232, 184, 75, 0.25);
+      }
+      .tc-mis .tc-list li::before {
+        color: var(--accent);
+        background: rgba(79, 156, 249, 0.12);
+        border: 1px solid rgba(79, 156, 249, 0.25);
+      }
+      .tc-list li strong {
+        color: var(--text);
+        font-weight: 500;
+      }
 
-/* ── GOLD LINE ── */
-.gold-line { width: 100%; height: 1px; background: linear-gradient(90deg,var(--gold),transparent); margin: 20px 0; }
+      /* ── POURQUOI (full-width strip) ── */
+      .tc-why {
+        grid-column: 1 / -1;
+        background: rgba(61, 214, 140, 0.04);
+        border: 1px solid rgba(61, 214, 140, 0.14);
+        border-left: 4px solid var(--green);
+        border-radius: 10px;
+        padding: 16px 22px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .tc-why-label {
+        font-family: var(--fb);
+        font-size: 0.58rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        color: var(--green);
+      }
+      .tc-why-text {
+        font-size: 1.02rem;
+        color: var(--sub);
+        line-height: 1.68;
+      }
 
-/* ── CHECKLIST (slides démo) ── */
-.checklist { list-style: none; display: flex; flex-direction: column; gap: 14px; }
-.checklist li {
-  display: flex; align-items: flex-start; gap: 14px;
-  padding: 16px 20px; border-radius: 8px;
-  background: var(--surface); border: 1px solid var(--border);
-  font-size: .98rem; color: var(--sub);
-  transition: border-color .2s;
-}
-.checklist li:hover { border-color: var(--border2); }
-.check-icon {
-  font-family: var(--fm); font-size: .72rem; font-weight: 600;
-  padding: 3px 8px; border-radius: 3px; flex-shrink: 0; margin-top: 1px;
-}
-.ci-green  { background: rgba(61,214,140,.12); color: var(--green); border: 1px solid rgba(61,214,140,.25); }
-.ci-blue   { background: rgba(79,156,249,.12); color: var(--accent); border: 1px solid rgba(79,156,249,.25); }
-.ci-red    { background: rgba(247,97,95,.12);  color: var(--red);    border: 1px solid rgba(247,97,95,.25); }
-.ci-gold   { background: rgba(232,184,75,.12); color: var(--gold);   border: 1px solid rgba(232,184,75,.25); }
-.ci-purple { background: rgba(176,110,243,.12);color: var(--purple); border: 1px solid rgba(176,110,243,.25); }
-.ci-teal   { background: rgba(45,212,191,.12); color: var(--teal);   border: 1px solid rgba(45,212,191,.25); }
+      /* ── GENERIC CARD ── */
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 18px 22px;
+      }
 
-.check-text strong { color: var(--text); font-weight: 500; }
+      /* ── GRIDS ── */
+      .g2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 22px;
+      }
+      .g3 {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 16px;
+      }
+      .g32 {
+        display: grid;
+        grid-template-columns: 3fr 2fr;
+        gap: 24px;
+      }
 
-/* ── HTTP BADGES (petits) ── */
-.b { display:inline-block; padding:2px 7px; border-radius:3px; font-family:var(--fm); font-size:.7rem; font-weight:600; }
-.b200 { background:rgba(61,214,140,.1);  color:var(--green);  border:1px solid rgba(61,214,140,.2); }
-.b201 { background:rgba(61,214,140,.1);  color:#86efac;       border:1px solid rgba(61,214,140,.2); }
-.b401 { background:rgba(247,97,95,.1);   color:var(--red);    border:1px solid rgba(247,97,95,.2); }
-.b403 { background:rgba(247,97,95,.1);   color:var(--red);    border:1px solid rgba(247,97,95,.2); }
-.b409 { background:rgba(176,110,243,.1); color:var(--purple); border:1px solid rgba(176,110,243,.2); }
-.b400 { background:rgba(232,184,75,.1);  color:var(--gold);   border:1px solid rgba(232,184,75,.2); }
+      /* ── DATA MODEL ENTITIES ── */
+      .ent-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        justify-content: center;
+      }
+      .ent-box {
+        background: var(--bg2);
+        border: 1px solid var(--border2);
+        border-radius: 12px;
+        overflow: hidden;
+        min-width: 140px;
+        flex: 1;
+      }
+      .ent-head {
+        padding: 12px 16px;
+        font-family: var(--fm);
+        font-size: 0.92rem;
+        font-weight: 600;
+        color: var(--accent);
+        background: rgba(79, 156, 249, 0.08);
+        border-bottom: 1px solid var(--border2);
+      }
+      .ent-body {
+        padding: 10px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+      .ent-attr {
+        font-family: var(--fm);
+        font-size: 0.75rem;
+        color: var(--sub);
+      }
+      .ent-attr.pk {
+        color: var(--gold);
+      }
+      .ent-attr.rel {
+        color: var(--purple);
+      }
+      .ent-attr.en {
+        color: var(--teal);
+      }
+      .ent-arrow {
+        font-size: 1.4rem;
+        color: var(--muted);
+        padding: 0 4px;
+        flex-shrink: 0;
+      }
+      .ent-mm {
+        font-family: var(--fm);
+        font-size: 0.65rem;
+        color: var(--purple);
+        text-align: center;
+        margin-top: 3px;
+      }
 
-/* ── ENTITY ── */
-.ent { background: var(--bg2); border: 1px solid var(--border2); border-radius: 8px; overflow: hidden; }
-.ent-head { background: rgba(79,156,249,.08); border-bottom: 1px solid var(--border2); padding: 8px 14px; font-family: var(--fm); font-size: .78rem; font-weight: 600; color: var(--accent); }
-.ent-body { padding: 8px 14px; }
-.ef { font-family: var(--fm); font-size: .68rem; padding: 2px 0; }
-.ef-pk  { color: var(--gold); }
-.ef-fk  { color: var(--purple); }
-.ef-en  { color: var(--teal); }
-.ef-dim { color: var(--muted); }
-.ef-def { color: var(--sub); }
-.ent-arrow { display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:1rem; }
+      /* ── GOLD LINE ── */
+      .gold-line {
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(90deg, var(--gold), transparent);
+        margin: 18px 0;
+      }
 
-/* ── PERM TABLE ── */
-.perm-table { width:100%; border-collapse:collapse; font-size:.83rem; }
-.perm-table th { padding:8px 14px; color:var(--sub); font-size:.62rem; text-transform:uppercase; letter-spacing:.1em; border-bottom:1px solid var(--border2); font-weight:500; text-align:left; }
-.perm-table td { padding:10px 14px; border-bottom:1px solid var(--border); }
-.perm-table tr:last-child td { border-bottom:none; }
-.role-admin  { color:var(--gold);   font-weight:600; font-family:var(--fm); font-size:.78rem; }
-.role-member { color:var(--accent); font-weight:600; font-family:var(--fm); font-size:.78rem; }
-.role-viewer { color:var(--sub);    font-weight:600; font-family:var(--fm); font-size:.78rem; }
+      /* ── BILAN CHIPS ── */
+      .tech-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .tech-chip {
+        font-family: var(--fm);
+        font-size: 0.73rem;
+        padding: 5px 13px;
+        border-radius: 5px;
+        background: rgba(79, 156, 249, 0.08);
+        border: 1px solid rgba(79, 156, 249, 0.2);
+        color: var(--accent);
+      }
 
-/* ── SWAGGER MOCK ── */
-.sw-wrap { background:#f8f8f8; border-radius:10px; overflow:hidden; border:1px solid #ddd; }
-.sw-hd { background:#1b1b1b; padding:10px 16px; display:flex; align-items:center; gap:10px; }
-.sw-logo { background:#85ea2d; color:#000; font-weight:800; font-size:.68rem; padding:3px 7px; border-radius:3px; }
-.sw-title { color:#fff; font-size:.85rem; font-weight:600; }
-.sw-ver { background:#383838; color:#aaa; font-size:.65rem; padding:2px 6px; border-radius:3px; }
-.sw-auth-btn { margin-left:auto; border:1px solid #49cc90; color:#49cc90; background:transparent; padding:4px 12px; border-radius:4px; font-size:.72rem; cursor:pointer; font-family:var(--fb); }
-.sw-body { padding:10px 14px; }
-.sw-tag { background:#ebf3fb; border:1px solid #b0d0eb; border-radius:4px; padding:7px 12px; margin-bottom:5px; display:flex; gap:8px; }
-.sw-tag-name { font-weight:700; font-size:.8rem; color:#3b4151; font-family:var(--fm); }
-.sw-route { display:flex; align-items:center; gap:8px; padding:5px 10px; border:1px solid #e2e8f0; border-radius:4px; margin-bottom:4px; background:#fff; }
-.swm { font-weight:700; font-size:.67rem; min-width:48px; text-align:center; padding:3px 6px; border-radius:3px; }
-.swm-get  { background:#61affe; color:#fff; }
-.swm-post { background:#49cc90; color:#fff; }
-.swm-del  { background:#f93e3e; color:#fff; }
-.swm-pat  { background:#fca130; color:#fff; }
-.sw-path  { font-family:var(--fm); font-size:.76rem; color:#3b4151; }
+      .kp-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .kp-list li {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        font-size: 0.98rem;
+        color: var(--sub);
+        line-height: 1.45;
+      }
+      .kp-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--green);
+        flex-shrink: 0;
+        margin-top: 7px;
+      }
 
-/* ── CMD BLOCK ── */
-.cmd-block {
-  background: #040710; border: 1px solid var(--border2);
-  border-radius: 8px; padding: 14px 18px;
-  font-family: var(--fm); font-size: .8rem; color: var(--green);
-  line-height: 1.8;
-}
-.cmd-block .dim { color: var(--muted); }
-.cmd-block .acc { color: var(--accent); }
-
-/* ── NAV ── */
-.nav { position: fixed; bottom: 24px; right: 36px; z-index: 100; display: flex; align-items: center; gap: 10px; }
-.nav button { background: var(--surface); border: 1px solid var(--border2); color: var(--sub); padding: 8px 18px; border-radius: 6px; cursor: pointer; font-family: var(--fb); font-size: .85rem; transition: all .15s; }
-.nav button:hover { background: rgba(79,156,249,.1); border-color: var(--accent); color: var(--accent); }
-.nav .cnt { font-family: var(--fm); color: var(--muted); font-size: .78rem; min-width: 52px; text-align: center; }
-
-code { font-family: var(--fm); font-size: .82em; color: var(--accent); background: rgba(79,156,249,.08); padding: 1px 6px; border-radius: 3px; }
-</style>
-</head>
-<body>
-<div class="slides">
-
-<!-- ══════ 01 — TITRE ══════ -->
-<div class="slide active">
-  <div class="slide-num-badge">01 / 10</div>
-  <div class="deco-num">01</div>
-  <div class="accent-bar"></div>
-  <h1>TaskFlow<br>API</h1>
-  <p class="sub-title">API REST de gestion de projets &amp; tâches — NestJS · PostgreSQL</p>
-  <div class="tags">
-    <span class="tag">NestJS</span><span class="tag">TypeScript</span>
-    <span class="tag">PostgreSQL</span><span class="tag">TypeORM</span>
-    <span class="tag">Prisma</span><span class="tag">JWT · Passport</span>
-    <span class="tag">WebSocket Socket.io</span><span class="tag">Swagger</span>
-    <span class="tag">Jest · Supertest</span><span class="tag">Docker · GitHub CI</span>
-  </div>
-  <div class="stats">
-    <div class="stat-box"><div class="stat-val">7</div><div class="stat-lbl">Modules NestJS</div></div>
-    <div class="stat-box"><div class="stat-val">5</div><div class="stat-lbl">Entités PostgreSQL</div></div>
-    <div class="stat-box"><div class="stat-val">20+</div><div class="stat-lbl">Tests automatisés</div></div>
-  </div>
-</div>
-
-<!-- ══════ 02 — PLAN ══════ -->
-<div class="slide">
-  <div class="slide-num-badge">02 / 10</div>
-  <div class="deco-num">02</div>
-  <div class="accent-bar"></div>
-  <h2>Plan</h2>
-  <div class="plan-grid">
-    <div class="plan-card pc-blue">
-      <div class="plan-n">1</div>
-      <div><div class="plan-label">Architecture</div><div class="plan-title">Structure &amp; modèle de données</div></div>
-    </div>
-    <div class="plan-card pc-green">
-      <div class="plan-n">2</div>
-      <div><div class="plan-label">Démo live</div><div class="plan-title">Démarrage &amp; routes CRUD</div></div>
-    </div>
-    <div class="plan-card pc-red">
-      <div class="plan-n">3</div>
-      <div><div class="plan-label">Démo live</div><div class="plan-title">Auth JWT &amp; Autorisation par rôles</div></div>
-    </div>
-    <div class="plan-card pc-indigo">
-      <div class="plan-n">4</div>
-      <div><div class="plan-label">Démo live</div><div class="plan-title">Swagger UI</div></div>
-    </div>
-    <div class="plan-card pc-teal">
-      <div class="plan-n">5</div>
-      <div><div class="plan-label">Démo live</div><div class="plan-title">Tests automatisés</div></div>
-    </div>
-    <div class="plan-card pc-gray">
-      <div class="plan-n">6</div>
-      <div><div class="plan-label">Bilan</div><div class="plan-title">Choix techniques &amp; retour d'expérience</div></div>
-    </div>
-  </div>
-</div>
-
-<!-- ══════ 03 — ARCHITECTURE ══════ -->
-<div class="slide">
-  <div class="slide-num-badge">03 / 10</div>
-  <div class="deco-num">03</div>
-  <div class="accent-bar"></div>
-  <h2>Architecture</h2>
-  <div style="display:flex;gap:14px;align-items:stretch;height:68%;">
-    <div style="display:flex;flex-direction:column;justify-content:space-around;gap:10px;min-width:100px;">
-      <div class="card" style="text-align:center;border-top:2px solid var(--accent);padding:16px 12px;">
-        <div style="font-family:var(--fm);font-size:.62rem;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;">Client HTTP</div>
-        <div style="font-size:.78rem;color:var(--sub);">Swagger · REST</div>
-      </div>
-      <div style="text-align:center;color:var(--muted);font-size:.7rem;font-family:var(--fm);">⟵ HTTP ⟶</div>
-      <div class="card" style="text-align:center;border-top:2px solid var(--teal);padding:16px 12px;">
-        <div style="font-family:var(--fm);font-size:.62rem;color:var(--teal);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;">Client WS</div>
-        <div style="font-size:.78rem;color:var(--sub);">Socket.io</div>
-      </div>
-    </div>
-    <div style="display:flex;align-items:center;color:var(--muted);font-size:1.1rem;padding:0 2px;">→</div>
-    <div style="flex:1;border:1px solid var(--border2);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px;position:relative;">
-      <div style="position:absolute;top:-10px;left:16px;background:var(--bg);padding:0 10px;font-family:var(--fm);font-size:.62rem;font-weight:600;color:var(--accent);letter-spacing:.1em;text-transform:uppercase;">NestJS Application — Docker</div>
-      <div style="background:rgba(232,184,75,.05);border:1px solid rgba(232,184,75,.18);border-radius:8px;padding:9px 14px;display:flex;align-items:center;gap:12px;">
-        <div style="font-family:var(--fm);font-size:.58rem;font-weight:600;color:var(--gold);text-transform:uppercase;letter-spacing:.1em;min-width:72px;">Middleware</div>
-        <div style="display:flex;gap:7px;flex-wrap:wrap;">
-          <span style="font-family:var(--fm);font-size:.67rem;color:var(--gold);background:rgba(232,184,75,.1);border:1px solid rgba(232,184,75,.2);padding:2px 8px;border-radius:3px;">Helmet</span>
-          <span style="font-family:var(--fm);font-size:.67rem;color:var(--gold);background:rgba(232,184,75,.1);border:1px solid rgba(232,184,75,.2);padding:2px 8px;border-radius:3px;">ValidationPipe</span>
-          <span style="font-family:var(--fm);font-size:.67rem;color:var(--gold);background:rgba(232,184,75,.1);border:1px solid rgba(232,184,75,.2);padding:2px 8px;border-radius:3px;">LoggingInterceptor</span>
-          <span style="font-family:var(--fm);font-size:.67rem;color:var(--gold);background:rgba(232,184,75,.1);border:1px solid rgba(232,184,75,.2);padding:2px 8px;border-radius:3px;">GlobalExceptionFilter</span>
+      /* ── PROGRESS & NAV ── */
+      .progress {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        height: 2px;
+        background: linear-gradient(90deg, var(--accent), var(--teal));
+        transition: width 0.3s ease;
+        z-index: 200;
+      }
+      .nav {
+        position: fixed;
+        bottom: 16px;
+        right: 32px;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .nav button {
+        background: var(--surface);
+        border: 1px solid var(--border2);
+        color: var(--sub);
+        padding: 7px 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-family: var(--fb);
+        font-size: 0.82rem;
+        transition: all 0.15s;
+      }
+      .nav button:hover {
+        background: rgba(79, 156, 249, 0.1);
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .nav .cnt {
+        font-family: var(--fm);
+        color: var(--muted);
+        font-size: 0.75rem;
+        min-width: 50px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="slides">
+      <!-- ══════════════ 01 — TITRE ══════════════ -->
+      <div class="slide active" style="justify-content: center">
+        <div class="slide-num">01 / 13</div>
+        <div class="deco-num">01</div>
+        <div class="abar"></div>
+        <h1>TaskFlow<br />API</h1>
+        <p style="font-size: 1.1rem; margin-top: 10px; font-weight: 300">
+          API REST de gestion de projets &amp; tâches — NestJS · PostgreSQL
+        </p>
+        <div class="tags" style="margin-top: 30px">
+          <span class="tag">NestJS</span><span class="tag">TypeScript</span>
+          <span class="tag">PostgreSQL</span><span class="tag">TypeORM</span>
+          <span class="tag">Prisma</span><span class="tag">JWT · Passport</span>
+          <span class="tag">WebSockets</span><span class="tag">Swagger</span>
+          <span class="tag">Jest · Supertest</span
+          ><span class="tag">Docker</span>
+          <span class="tag">GitHub Actions</span>
+        </div>
+        <div class="stats-row" style="margin-top: 38px">
+          <div class="stat-box">
+            <div class="stat-val">16</div>
+            <div class="stat-lbl">TPs réalisés</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-val">5</div>
+            <div class="stat-lbl">Entités en base</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-val">2</div>
+            <div class="stat-lbl">ORMs comparés</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-val">CI/CD</div>
+            <div class="stat-lbl">GitHub Actions</div>
+          </div>
         </div>
       </div>
-      <div style="background:rgba(79,156,249,.05);border:1px solid rgba(79,156,249,.18);border-radius:8px;padding:9px 14px;display:flex;align-items:center;gap:12px;">
-        <div style="font-family:var(--fm);font-size:.58rem;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;min-width:72px;">Auth</div>
-        <div style="display:flex;gap:7px;flex-wrap:wrap;">
-          <span style="font-family:var(--fm);font-size:.67rem;color:var(--accent);background:rgba(79,156,249,.1);border:1px solid rgba(79,156,249,.2);padding:2px 8px;border-radius:3px;">JwtAuthGuard</span>
-          <span style="font-family:var(--fm);font-size:.67rem;color:var(--accent);background:rgba(79,156,249,.1);border:1px solid rgba(79,156,249,.2);padding:2px 8px;border-radius:3px;">RolesGuard</span>
-          <span style="font-family:var(--fm);font-size:.67rem;color:var(--accent);background:rgba(79,156,249,.1);border:1px solid rgba(79,156,249,.2);padding:2px 8px;border-radius:3px;">LocalStrategy</span>
-          <span style="font-family:var(--fm);font-size:.67rem;color:var(--accent);background:rgba(79,156,249,.1);border:1px solid rgba(79,156,249,.2);padding:2px 8px;border-radius:3px;">JwtStrategy</span>
+
+      <!-- ══════════════ 02 — PRÉSENTATION ══════════════ -->
+      <div class="slide" style="justify-content: flex-start">
+        <div class="slide-num">02 / 13</div>
+        <div class="deco-num">02</div>
+        <div class="abar blue"></div>
+        <h2 style="margin-bottom: 24px">Présentation du projet</h2>
+        <div class="g32" style="flex: 1; min-height: 0">
+          <div style="display: flex; flex-direction: column; gap: 18px">
+            <div class="card" style="border-left: 4px solid var(--accent)">
+              <h3 style="margin-bottom: 10px">Qu'est-ce que TaskFlow API ?</h3>
+              <p style="font-size: 1.02rem">
+                Une API REST complète de gestion de projets et de tâches,
+                inspirée de Trello. Elle permet à des équipes de collaborer sur
+                des projets, d'assigner des tâches et de recevoir des
+                notifications en temps réel.
+              </p>
+            </div>
+            <div>
+              <h3 style="margin-bottom: 14px">Ce que l'application permet</h3>
+              <div class="g2" style="gap: 12px">
+                <div class="card" style="border-top: 2px solid var(--gold)">
+                  <p style="font-size: 0.95rem">
+                    <strong style="color: var(--text)"
+                      >Gestion des utilisateurs</strong
+                    ><br />Inscription, connexion, rôles (admin, member, viewer)
+                  </p>
+                </div>
+                <div class="card" style="border-top: 2px solid var(--accent)">
+                  <p style="font-size: 0.95rem">
+                    <strong style="color: var(--text)"
+                      >Gestion des équipes</strong
+                    ><br />Création d'équipes, ajout / retrait de membres
+                  </p>
+                </div>
+                <div class="card" style="border-top: 2px solid var(--purple)">
+                  <p style="font-size: 0.95rem">
+                    <strong style="color: var(--text)"
+                      >Projets &amp; tâches</strong
+                    ><br />Suivi du statut, priorités, assignation
+                  </p>
+                </div>
+                <div class="card" style="border-top: 2px solid var(--teal)">
+                  <p style="font-size: 0.95rem">
+                    <strong style="color: var(--text)"
+                      >Notifications temps réel</strong
+                    ><br />Alertes WebSocket à chaque assignation
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 12px">
+            <div
+              class="card"
+              style="border-top: 2px solid var(--gold); text-align: center"
+            >
+              <div
+                style="
+                  font-family: var(--fd);
+                  font-size: 2.4rem;
+                  font-weight: 600;
+                  color: var(--gold);
+                "
+              >
+                16
+              </div>
+              <div
+                style="font-size: 0.8rem; color: var(--sub); margin-top: 3px"
+              >
+                TPs progressifs
+              </div>
+            </div>
+            <div
+              class="card"
+              style="border-top: 2px solid var(--accent); text-align: center"
+            >
+              <div
+                style="
+                  font-family: var(--fd);
+                  font-size: 2.4rem;
+                  font-weight: 600;
+                  color: var(--accent);
+                "
+              >
+                5
+              </div>
+              <div
+                style="font-size: 0.8rem; color: var(--sub); margin-top: 3px"
+              >
+                Entités en base
+              </div>
+            </div>
+            <div
+              class="card"
+              style="border-top: 2px solid var(--green); text-align: center"
+            >
+              <div
+                style="
+                  font-family: var(--fd);
+                  font-size: 1.9rem;
+                  font-weight: 600;
+                  color: var(--green);
+                "
+              >
+                JWT
+              </div>
+              <div
+                style="font-size: 0.8rem; color: var(--sub); margin-top: 3px"
+              >
+                Authentification + RBAC
+              </div>
+            </div>
+            <div
+              class="card"
+              style="border-top: 2px solid var(--teal); text-align: center"
+            >
+              <div
+                style="
+                  font-family: var(--fd);
+                  font-size: 1.9rem;
+                  font-weight: 600;
+                  color: var(--teal);
+                "
+              >
+                Live
+              </div>
+              <div
+                style="font-size: 0.8rem; color: var(--sub); margin-top: 3px"
+              >
+                Notifications WebSocket
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <div style="background:rgba(61,214,140,.05);border:1px solid rgba(61,214,140,.18);border-radius:8px;padding:9px 14px;display:flex;align-items:center;gap:12px;flex:1;">
-        <div style="font-family:var(--fm);font-size:.58rem;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:.1em;min-width:72px;">Domaines</div>
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;width:100%;">
-          <span style="font-family:var(--fm);font-size:.67rem;color:var(--green);background:rgba(61,214,140,.08);border:1px solid rgba(61,214,140,.18);padding:5px 8px;border-radius:4px;text-align:center;">users</span>
-          <span style="font-family:var(--fm);font-size:.67rem;color:var(--green);background:rgba(61,214,140,.08);border:1px solid rgba(61,214,140,.18);padding:5px 8px;border-radius:4px;text-align:center;">teams</span>
-          <span style="font-family:var(--fm);font-size:.67rem;color:var(--green);background:rgba(61,214,140,.08);border:1px solid rgba(61,214,140,.18);padding:5px 8px;border-radius:4px;text-align:center;">projects</span>
-          <span style="font-family:var(--fm);font-size:.67rem;color:var(--green);background:rgba(61,214,140,.08);border:1px solid rgba(61,214,140,.18);padding:5px 8px;border-radius:4px;text-align:center;">tasks</span>
-          <span style="font-family:var(--fm);font-size:.67rem;color:var(--green);background:rgba(61,214,140,.08);border:1px solid rgba(61,214,140,.18);padding:5px 8px;border-radius:4px;text-align:center;">comments</span>
-          <span style="font-family:var(--fm);font-size:.67rem;color:var(--green);background:rgba(61,214,140,.08);border:1px solid rgba(61,214,140,.18);padding:5px 8px;border-radius:4px;text-align:center;">auth</span>
-          <span style="font-family:var(--fm);font-size:.67rem;color:var(--teal);background:rgba(45,212,191,.08);border:1px solid rgba(45,212,191,.18);padding:5px 8px;border-radius:4px;text-align:center;">notifications</span>
-          <span style="font-family:var(--fm);font-size:.67rem;color:var(--teal);background:rgba(45,212,191,.08);border:1px solid rgba(45,212,191,.18);padding:5px 8px;border-radius:4px;text-align:center;">health</span>
+
+      <!-- ══════════════ 03 — MODÈLE DE DONNÉES ══════════════ -->
+      <div class="slide" style="justify-content: flex-start">
+        <div class="slide-num">03 / 13</div>
+        <div class="deco-num">03</div>
+        <div class="abar teal"></div>
+        <h2 style="margin-bottom: 28px">Modèle de données</h2>
+        <!-- Modules NestJS -->
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-shrink:0;">
+          <div style="font-family:var(--fm);font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--sub);white-space:nowrap;">7 Modules NestJS</div>
+          <div style="width:1px;height:14px;background:var(--border2);"></div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <span style="font-family:var(--fm);font-size:.67rem;padding:3px 10px;border-radius:4px;background:rgba(79,156,249,.1);border:1px solid rgba(79,156,249,.22);color:var(--accent);">users</span>
+            <span style="font-family:var(--fm);font-size:.67rem;padding:3px 10px;border-radius:4px;background:rgba(79,156,249,.1);border:1px solid rgba(79,156,249,.22);color:var(--accent);">teams</span>
+            <span style="font-family:var(--fm);font-size:.67rem;padding:3px 10px;border-radius:4px;background:rgba(79,156,249,.1);border:1px solid rgba(79,156,249,.22);color:var(--accent);">projects</span>
+            <span style="font-family:var(--fm);font-size:.67rem;padding:3px 10px;border-radius:4px;background:rgba(79,156,249,.1);border:1px solid rgba(79,156,249,.22);color:var(--accent);">tasks</span>
+            <span style="font-family:var(--fm);font-size:.67rem;padding:3px 10px;border-radius:4px;background:rgba(79,156,249,.1);border:1px solid rgba(79,156,249,.22);color:var(--accent);">comments</span>
+            <span style="font-family:var(--fm);font-size:.67rem;padding:3px 10px;border-radius:4px;background:rgba(247,97,95,.1);border:1px solid rgba(247,97,95,.22);color:var(--red);">auth</span>
+            <span style="font-family:var(--fm);font-size:.67rem;padding:3px 10px;border-radius:4px;background:rgba(45,212,191,.1);border:1px solid rgba(45,212,191,.22);color:var(--teal);">notifications</span>
+            <span style="font-family:var(--fm);font-size:.67rem;padding:3px 10px;border-radius:4px;background:rgba(61,214,140,.1);border:1px solid rgba(61,214,140,.22);color:var(--green);">health</span>
+          </div>
+        </div>
+        <div class="ent-row" style="margin-bottom: 16px">
+          <div class="ent-box">
+            <div class="ent-head">User</div>
+            <div class="ent-body">
+              <div class="ent-attr pk">id (UUID)</div>
+              <div class="ent-attr">email</div>
+              <div class="ent-attr">nom</div>
+              <div class="ent-attr en">rôle (admin / member / viewer)</div>
+              <div class="ent-attr" style="color: var(--muted)">
+                mot de passe (caché)
+              </div>
+              <div class="ent-mm">↔ Team (ManyToMany)</div>
+            </div>
+          </div>
+          <div class="ent-arrow">→</div>
+          <div class="ent-box">
+            <div class="ent-head">Team</div>
+            <div class="ent-body">
+              <div class="ent-attr pk">id (UUID)</div>
+              <div class="ent-attr">nom</div>
+              <div class="ent-attr rel">membres (User[])</div>
+              <div class="ent-attr rel">projets (Project[])</div>
+              <div class="ent-mm">→ Project (OneToMany)</div>
+            </div>
+          </div>
+          <div class="ent-arrow">→</div>
+          <div class="ent-box">
+            <div class="ent-head">Project</div>
+            <div class="ent-body">
+              <div class="ent-attr pk">id (UUID)</div>
+              <div class="ent-attr">nom</div>
+              <div class="ent-attr en">statut (actif / archivé)</div>
+              <div class="ent-attr rel">équipe (Team)</div>
+              <div class="ent-attr rel">tâches (Task[])</div>
+              <div class="ent-mm">→ Task (OneToMany)</div>
+            </div>
+          </div>
+          <div class="ent-arrow">→</div>
+          <div class="ent-box">
+            <div class="ent-head">Task</div>
+            <div class="ent-body">
+              <div class="ent-attr pk">id (UUID)</div>
+              <div class="ent-attr">titre</div>
+              <div class="ent-attr en">statut (todo / en cours / fait)</div>
+              <div class="ent-attr en">priorité (basse / haute / urgente)</div>
+              <div class="ent-attr rel">projet (Project)</div>
+              <div class="ent-attr rel">assigné (User, optionnel)</div>
+              <div class="ent-mm">→ Comment (OneToMany)</div>
+            </div>
+          </div>
+          <div class="ent-arrow">→</div>
+          <div class="ent-box">
+            <div class="ent-head">Comment</div>
+            <div class="ent-body">
+              <div class="ent-attr pk">id (UUID)</div>
+              <div class="ent-attr">contenu</div>
+              <div class="ent-attr rel">tâche (Task)</div>
+              <div class="ent-attr rel">auteur (User)</div>
+            </div>
+          </div>
+        </div>
+        <div class="g3">
+          <div class="card" style="border-left: 3px solid var(--green)">
+            <h3 style="margin-bottom: 8px">Suppression en cascade</h3>
+            <p style="font-size: 0.95rem">
+              Supprimer une équipe supprime ses projets, qui suppriment leurs
+              tâches. Si l'assigné d'une tâche est supprimé, la tâche survit
+              (l'assigné passe à null).
+            </p>
+          </div>
+          <div class="card" style="border-left: 3px solid var(--accent)">
+            <h3 style="margin-bottom: 8px">Identifiants UUID</h3>
+            <p style="font-size: 0.95rem">
+              Tous les identifiants sont des UUID générés automatiquement —
+              non-prédictibles, compatibles avec la distribution et les
+              microservices.
+            </p>
+          </div>
+          <div class="card" style="border-left: 3px solid var(--purple)">
+            <h3 style="margin-bottom: 8px">Énumérations en base</h3>
+            <p style="font-size: 0.95rem">
+              Les statuts, priorités et rôles sont des ENUM PostgreSQL —
+              l'intégrité est garantie au niveau de la base de données, pas
+              seulement dans le code.
+            </p>
+          </div>
         </div>
       </div>
-      <div style="background:rgba(176,110,243,.05);border:1px solid rgba(176,110,243,.18);border-radius:8px;padding:9px 14px;display:flex;align-items:center;gap:12px;">
-        <div style="font-family:var(--fm);font-size:.58rem;font-weight:600;color:var(--purple);text-transform:uppercase;letter-spacing:.1em;min-width:72px;">ORM</div>
-        <div style="display:flex;gap:7px;">
-          <span style="font-family:var(--fm);font-size:.67rem;color:var(--purple);background:rgba(176,110,243,.1);border:1px solid rgba(176,110,243,.2);padding:2px 8px;border-radius:3px;">TypeORM (principal)</span>
-          <span style="font-family:var(--fm);font-size:.67rem;color:var(--purple);background:rgba(176,110,243,.1);border:1px solid rgba(176,110,243,.2);padding:2px 8px;border-radius:3px;">Prisma</span>
-          <span style="font-family:var(--fm);font-size:.67rem;color:var(--purple);background:rgba(176,110,243,.1);border:1px solid rgba(176,110,243,.2);padding:2px 8px;border-radius:3px;">Migrations</span>
+
+      <!-- ══════════════ 04 — TP01+02 ══════════════ -->
+      <div class="slide tp">
+        <div class="slide-num">04 / 13</div>
+        <div class="deco-num">04</div>
+        <div class="tp-header">
+          <div class="tp-badges">
+            <span class="tp-badge">TP 01</span
+            ><span class="tp-badge">TP 02</span>
+          </div>
+          <h2>Base du projet</h2>
+        </div>
+        <div class="tp-layout">
+          <div class="tc tc-dem">
+            <div class="tc-title">Ce qui était demandé</div>
+            <ul class="tc-list">
+              <li>Créer et structurer un projet NestJS</li>
+              <li>Ajouter un endpoint de vérification de santé</li>
+              <li>Containeriser la base de données avec Docker</li>
+              <li>Organiser le code en modules distincts par domaine</li>
+              <li>Gérer les variables d'environnement de façon centralisée</li>
+            </ul>
+          </div>
+          <div class="tc tc-mis">
+            <div class="tc-title">Ce qui a été mis en place</div>
+            <ul class="tc-list">
+              <li>
+                Structure modulaire : utilisateurs, équipes, projets, tâches,
+                commentaires
+              </li>
+              <li>Base de données PostgreSQL lancée via Docker Compose</li>
+              <li>
+                Variables d'environnement centralisées dans un fichier .env
+              </li>
+              <li>Toutes les routes préfixées sous /api</li>
+              <li>Route /health pour vérifier que l'API répond correctement</li>
+            </ul>
+          </div>
+          <div class="tc-why">
+            <div class="tc-why-label">Pourquoi</div>
+            <p class="tc-why-text">
+              Poser une
+              <strong style="color: var(--text)"
+                >architecture modulaire dès le début</strong
+              >
+              évite d'accumuler de la dette technique. Chaque domaine métier
+              dans son propre module rend le code lisible, testable et
+              extensible sans impacter les autres parties de l'application.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════ 05 — TP03+04 ══════════════ -->
+      <div class="slide tp">
+        <div class="slide-num">05 / 13</div>
+        <div class="deco-num">05</div>
+        <div class="tp-header">
+          <div class="tp-badges">
+            <span class="tp-badge">TP 03</span
+            ><span class="tp-badge">TP 04</span>
+          </div>
+          <h2>CRUD &amp; Validation</h2>
+        </div>
+        <div class="tp-layout">
+          <div class="tc tc-dem">
+            <div class="tc-title">Ce qui était demandé</div>
+            <ul class="tc-list">
+              <li>
+                Implémenter toutes les opérations CRUD pour les utilisateurs
+              </li>
+              <li>
+                Gérer les erreurs : ressource introuvable et doublon d'email
+              </li>
+              <li>
+                Créer des objets de transfert de données pour les 5 entités
+              </li>
+              <li>Valider automatiquement toutes les requêtes entrantes</li>
+              <li>Rejeter les champs non autorisés dans les requêtes</li>
+            </ul>
+          </div>
+          <div class="tc tc-mis">
+            <div class="tc-title">Ce qui a été mis en place</div>
+            <ul class="tc-list">
+              <li>
+                Contrôleur avec 5 routes REST (liste, détail, création,
+                modification, suppression)
+              </li>
+              <li>Service dédié à la logique métier, séparé du contrôleur</li>
+              <li>
+                Règles de validation : email, énumération de rôle, longueur
+                minimale
+              </li>
+              <li>
+                Rejet automatique avec message d'erreur clair pour toute donnée
+                invalide
+              </li>
+              <li>
+                Héritage de structure entre DTOs pour éviter la duplication
+              </li>
+            </ul>
+          </div>
+          <div class="tc-why">
+            <div class="tc-why-label">Pourquoi</div>
+            <p class="tc-why-text">
+              Séparer le
+              <strong style="color: var(--text)">contrôleur</strong> (routing
+              HTTP) du
+              <strong style="color: var(--text)">service</strong> (logique
+              métier) est fondamental en NestJS. Valider les données à l'entrée
+              protège l'application : une requête invalide est rejetée
+              immédiatement, avant d'atteindre la base de données.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════ 06 — TP05+06+07 ══════════════ -->
+      <div class="slide tp">
+        <div class="slide-num">06 / 13</div>
+        <div class="deco-num">06</div>
+        <div class="tp-header">
+          <div class="tp-badges">
+            <span class="tp-badge">TP 05</span
+            ><span class="tp-badge">TP 06</span
+            ><span class="tp-badge">TP 07</span>
+          </div>
+          <h2>Persistance avec TypeORM</h2>
+        </div>
+        <div class="tp-layout">
+          <div class="tc tc-dem">
+            <div class="tc-title">Ce qui était demandé</div>
+            <ul class="tc-list">
+              <li>Connecter l'application à PostgreSQL avec un ORM</li>
+              <li>Modéliser les 5 entités avec leurs propriétés</li>
+              <li>
+                Gérer les relations entre entités (équipe–membres,
+                projet–tâches)
+              </li>
+              <li>Mettre en place un système de migrations de schéma</li>
+              <li>Peupler la base avec des données de test reproductibles</li>
+            </ul>
+          </div>
+          <div class="tc tc-mis">
+            <div class="tc-title">Ce qui a été mis en place</div>
+            <ul class="tc-list">
+              <li>
+                5 entités TypeORM avec identifiants UUID et horodatage
+                automatique
+              </li>
+              <li>
+                Mots de passe hachés avant stockage, jamais retournés dans les
+                réponses
+              </li>
+              <li>
+                Relation Équipe–Utilisateurs via une table de jonction
+                (many-to-many)
+              </li>
+              <li>
+                Système de migrations pour versionner les évolutions de schéma
+              </li>
+              <li>
+                Script de seed : 3 utilisateurs, 2 équipes, 2 projets, 3 tâches,
+                2 commentaires
+              </li>
+            </ul>
+          </div>
+          <div class="tc-why">
+            <div class="tc-why-label">Pourquoi</div>
+            <p class="tc-why-text">
+              Remplacer le stockage en mémoire par une vraie base de données
+              apporte la
+              <strong style="color: var(--text)">persistance des données</strong
+              >. Les migrations permettent d'évoluer le schéma en production
+              sans jamais perdre les données existantes, contrairement à la
+              synchronisation automatique.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════ 07 — TP08+09 ══════════════ -->
+      <div class="slide tp">
+        <div class="slide-num">07 / 13</div>
+        <div class="deco-num">07</div>
+        <div class="tp-header">
+          <div class="tp-badges">
+            <span class="tp-badge">TP 08</span
+            ><span class="tp-badge">TP 09</span>
+          </div>
+          <h2>Authentification &amp; Autorisation</h2>
+        </div>
+        <div class="tp-layout">
+          <div class="tc tc-dem">
+            <div class="tc-title">Ce qui était demandé</div>
+            <ul class="tc-list">
+              <li>Authentifier les utilisateurs avec des tokens JWT</li>
+              <li>Identifier l'utilisateur courant dans chaque requête</li>
+              <li>
+                Restreindre certaines routes selon le rôle de l'utilisateur
+              </li>
+              <li>Protéger toutes les routes par défaut</li>
+              <li>Empêcher un utilisateur de modifier le profil d'un autre</li>
+            </ul>
+          </div>
+          <div class="tc tc-mis">
+            <div class="tc-title">Ce qui a été mis en place</div>
+            <ul class="tc-list">
+              <li>Vérification de l'email et du mot de passe à la connexion</li>
+              <li>Génération et validation de tokens JWT signés</li>
+              <li>
+                Guard global : toutes les routes sont protégées par défaut
+              </li>
+              <li>
+                Décorateur pour marquer les routes publiques (login, etc.)
+              </li>
+              <li>Rôles admin, member, viewer avec restrictions par route</li>
+              <li>Un utilisateur ne peut modifier que son propre profil</li>
+            </ul>
+          </div>
+          <div class="tc-why">
+            <div class="tc-why-label">Pourquoi</div>
+            <p class="tc-why-text">
+              <strong style="color: var(--text)">Sécurité par défaut</strong> :
+              une route oubliée reste protégée, jamais exposée accidentellement.
+              Le système de rôles permet de gérer finement les permissions sans
+              répéter la même logique dans chaque service.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════ 08 — TP11+12 ══════════════ -->
+      <div class="slide tp">
+        <div class="slide-num">08 / 13</div>
+        <div class="deco-num">08</div>
+        <div class="tp-header">
+          <div class="tp-badges">
+            <span class="tp-badge">TP 11</span
+            ><span class="tp-badge">TP 12</span>
+          </div>
+          <h2>Qualité &amp; Documentation</h2>
+        </div>
+        <div class="tp-layout">
+          <div class="tc tc-dem">
+            <div class="tc-title">Ce qui était demandé</div>
+            <ul class="tc-list">
+              <li>Unifier le format des erreurs retournées par l'API</li>
+              <li>Gérer les erreurs de base de données (contrainte unique)</li>
+              <li>Logger chaque requête HTTP avec sa durée</li>
+              <li>Générer une documentation API interactive et navigable</li>
+              <li>Permettre de tester les routes directement depuis la doc</li>
+            </ul>
+          </div>
+          <div class="tc tc-mis">
+            <div class="tc-title">Ce qui a été mis en place</div>
+            <ul class="tc-list">
+              <li>
+                Filtre global qui formate toutes les erreurs de façon cohérente
+              </li>
+              <li>
+                Traduction des erreurs de contrainte unique en conflit 409
+              </li>
+              <li>
+                Journalisation de chaque requête : méthode, URL, statut, durée
+              </li>
+              <li>Documentation Swagger accessible sur /docs</li>
+              <li>
+                Tous les endpoints et champs annotés avec descriptions et
+                exemples
+              </li>
+            </ul>
+          </div>
+          <div class="tc-why">
+            <div class="tc-why-label">Pourquoi</div>
+            <p class="tc-why-text">
+              Une API sans logs est impossible à déboguer. Le filtre
+              d'exceptions unifie les erreurs pour le front-end. Le Swagger
+              devient le
+              <strong style="color: var(--text)"
+                >contrat vivant de l'API</strong
+              >
+              : les développeurs testent et comprennent les routes sans
+              documentation externe à maintenir.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════ 09 — TP13+14 ══════════════ -->
+      <div class="slide tp">
+        <div class="slide-num">09 / 13</div>
+        <div class="deco-num">09</div>
+        <div class="tp-header">
+          <div class="tp-badges">
+            <span class="tp-badge">TP 13</span
+            ><span class="tp-badge">TP 14</span>
+          </div>
+          <h2>Tests automatisés</h2>
+        </div>
+        <div class="tp-layout">
+          <div class="tc tc-dem">
+            <div class="tc-title">Ce qui était demandé</div>
+            <ul class="tc-list">
+              <li>Tester le service utilisateurs en isolation</li>
+              <li>Tester le système de contrôle d'accès par rôles</li>
+              <li>Atteindre une couverture de code supérieure à 70%</li>
+              <li>Tester les flux d'authentification de bout en bout</li>
+              <li>Tester le CRUD complet avec une vraie base de données</li>
+            </ul>
+          </div>
+          <div class="tc tc-mis">
+            <div class="tc-title">Ce qui a été mis en place</div>
+            <ul class="tc-list">
+              <li>Tests unitaires avec base de données simulée (mocks)</li>
+              <li>
+                4 scénarios pour le contrôle d'accès : libre, rôle correct,
+                refusé, multi-rôles
+              </li>
+              <li>Rapport de couverture de code généré à la demande</li>
+              <li>
+                Tests de bout en bout avec une vraie base de données dédiée
+              </li>
+              <li>Base de test réinitialisée et peuplée avant chaque test</li>
+            </ul>
+          </div>
+          <div class="tc-why">
+            <div class="tc-why-label">Pourquoi</div>
+            <p class="tc-why-text">
+              Les tests unitaires valident la
+              <strong style="color: var(--text)">logique en isolation</strong>,
+              très rapidement, sans base de données. Les tests de bout en bout
+              vérifient que toute la chaîne fonctionne ensemble. Les deux
+              niveaux se complètent pour détecter les régressions avant la
+              production.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════ 10 — TP16 ══════════════ -->
+      <div class="slide tp">
+        <div class="slide-num">10 / 13</div>
+        <div class="deco-num">10</div>
+        <div class="tp-header">
+          <div class="tp-badges"><span class="tp-badge">TP 16</span></div>
+          <h2>Migration vers Prisma</h2>
+        </div>
+        <div class="tp-layout">
+          <div class="tc tc-dem">
+            <div class="tc-title">Ce qui était demandé</div>
+            <ul class="tc-list">
+              <li>Intégrer Prisma comme alternative à TypeORM</li>
+              <li>Définir tout le schéma en un seul fichier centralisé</li>
+              <li>Réécrire l'accès aux données pour les utilisateurs</li>
+              <li>Exclure les données sensibles des réponses</li>
+              <li>Explorer la base via l'interface graphique Prisma Studio</li>
+            </ul>
+          </div>
+          <div class="tc tc-mis">
+            <div class="tc-title">Ce qui a été mis en place</div>
+            <ul class="tc-list">
+              <li>
+                Schéma centralisé décrivant tous les modèles et les énumérations
+              </li>
+              <li>
+                Service Prisma partagé et disponible dans toute l'application
+              </li>
+              <li>
+                Opérations de lecture, création, modification et suppression
+                réécrites
+              </li>
+              <li>
+                Mot de passe systématiquement exclu de toutes les réponses
+              </li>
+              <li>Migrations générées et appliquées par ligne de commande</li>
+            </ul>
+          </div>
+          <div class="tc-why">
+            <div class="tc-why-label">Pourquoi</div>
+            <p class="tc-why-text">
+              Comparer deux ORMs en conditions réelles permet de comprendre
+              leurs différences. Prisma offre un
+              <strong style="color: var(--text)"
+                >typage plus strict et un schéma unique</strong
+              >, plus lisible que des annotations dispersées dans le code.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════ 11 — TP17 ══════════════ -->
+      <div class="slide tp">
+        <div class="slide-num">11 / 13</div>
+        <div class="deco-num">11</div>
+        <div class="tp-header">
+          <div class="tp-badges"><span class="tp-badge">TP 17</span></div>
+          <h2>WebSockets &amp; Temps réel</h2>
+        </div>
+        <div class="tp-layout">
+          <div class="tc tc-dem">
+            <div class="tc-title">Ce qui était demandé</div>
+            <ul class="tc-list">
+              <li>
+                Envoyer une notification en temps réel à l'assignation d'une
+                tâche
+              </li>
+              <li>Segmenter les notifications par utilisateur et par projet</li>
+              <li>
+                Authentifier les connexions WebSocket avec le même token JWT
+              </li>
+              <li>Tester avec deux clients simultanés</li>
+            </ul>
+          </div>
+          <div class="tc tc-mis">
+            <div class="tc-title">Ce qui a été mis en place</div>
+            <ul class="tc-list">
+              <li>
+                Passerelle WebSocket dédiée aux notifications en temps réel
+              </li>
+              <li>
+                Authentification par token JWT dès l'établissement de la
+                connexion
+              </li>
+              <li>Canaux séparés par utilisateur et par projet</li>
+              <li>
+                Notification automatiquement émise quand une tâche est assignée
+              </li>
+              <li>Page de test pour simuler deux clients simultanément</li>
+            </ul>
+          </div>
+          <div class="tc-why">
+            <div class="tc-why-label">Pourquoi</div>
+            <p class="tc-why-text">
+              La
+              <strong style="color: var(--text)"
+                >collaboration en temps réel</strong
+              >
+              améliore radicalement l'expérience : on voit immédiatement quand
+              une tâche nous est assignée, sans recharger la page.
+              L'authentification au moment de la connexion garantit que seuls
+              les utilisateurs autorisés reçoivent les notifications.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════ 12 — TP18 ══════════════ -->
+      <div class="slide tp">
+        <div class="slide-num">12 / 13</div>
+        <div class="deco-num">12</div>
+        <div class="tp-header">
+          <div class="tp-badges"><span class="tp-badge">TP 18</span></div>
+          <h2>Docker &amp; CI/CD</h2>
+        </div>
+        <div class="tp-layout">
+          <div class="tc tc-dem">
+            <div class="tc-title">Ce qui était demandé</div>
+            <ul class="tc-list">
+              <li>Créer une image Docker optimisée pour la production</li>
+              <li>Configurer un environnement de production complet</li>
+              <li>Automatiser les tests et le build via GitHub Actions</li>
+              <li>Vérifier l'état de l'application depuis l'orchestrateur</li>
+              <li>Renforcer la sécurité des en-têtes HTTP</li>
+            </ul>
+          </div>
+          <div class="tc tc-mis">
+            <div class="tc-title">Ce qui a été mis en place</div>
+            <ul class="tc-list">
+              <li>
+                Build en deux étapes : construction puis exécution (image
+                allégée sans dev)
+              </li>
+              <li>Exécution sous un utilisateur non-root pour la sécurité</li>
+              <li>Endpoint de santé vérifié automatiquement par Docker</li>
+              <li>
+                Docker Compose de production avec volumes de données persistants
+              </li>
+              <li>
+                Pipeline CI : vérification → tests unitaires → tests E2E → build
+                Docker
+              </li>
+            </ul>
+          </div>
+          <div class="tc-why">
+            <div class="tc-why-label">Pourquoi</div>
+            <p class="tc-why-text">
+              Le déploiement doit être
+              <strong style="color: var(--text)"
+                >reproductible et automatisé</strong
+              >. Le build multi-étape produit une image légère. La pipeline CI
+              détecte les régressions à chaque modification du code, avant
+              qu'elles n'arrivent en production.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════ 13 — BILAN ══════════════ -->
+      <div class="slide" style="padding-top: 40px">
+        <div class="slide-num">13 / 13</div>
+        <div class="deco-num">13</div>
+        <div class="abar green"></div>
+        <h2 style="margin-bottom: 18px">Bilan</h2>
+
+        <!-- Mini stats -->
+        <div style="display:flex;gap:10px;margin-bottom:16px;flex-shrink:0;">
+          <div style="flex:1;background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--green);border-radius:10px;padding:12px 18px;">
+            <div style="font-family:var(--fd);font-size:1.9rem;font-weight:600;color:var(--green);line-height:1;">16</div>
+            <div style="font-size:.73rem;color:var(--sub);margin-top:3px;">TPs réalisés</div>
+          </div>
+          <div style="flex:1;background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--accent);border-radius:10px;padding:12px 18px;">
+            <div style="font-family:var(--fd);font-size:1.9rem;font-weight:600;color:var(--accent);line-height:1;">7</div>
+            <div style="font-size:.73rem;color:var(--sub);margin-top:3px;">Modules NestJS</div>
+          </div>
+          <div style="flex:1;background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);border-radius:10px;padding:12px 18px;">
+            <div style="font-family:var(--fd);font-size:1.9rem;font-weight:600;color:var(--gold);line-height:1;">5</div>
+            <div style="font-size:.73rem;color:var(--sub);margin-top:3px;">Entités en base</div>
+          </div>
+          <div style="flex:1;background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--teal);border-radius:10px;padding:12px 18px;">
+            <div style="font-family:var(--fd);font-size:1.9rem;font-weight:600;color:var(--teal);line-height:1;">12+</div>
+            <div style="font-size:.73rem;color:var(--sub);margin-top:3px;">Technologies maîtrisées</div>
+          </div>
+        </div>
+
+        <!-- 3 colonnes -->
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;flex:1;min-height:0;">
+
+          <!-- Ce qu'on a construit -->
+          <div class="card" style="border-top:3px solid var(--green);display:flex;flex-direction:column;gap:0;overflow:hidden;">
+            <h3 style="margin-bottom:12px;">Ce qu'on a construit</h3>
+            <ul style="list-style:none;display:flex;flex-direction:column;gap:0;">
+              <li style="font-size:.92rem;color:var(--sub);display:flex;gap:9px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--border);">
+                <span style="color:var(--green);flex-shrink:0;margin-top:2px;">◆</span>
+                <span>API REST <strong style="color:var(--text);">production-grade</strong> en NestJS + TypeScript</span>
+              </li>
+              <li style="font-size:.92rem;color:var(--sub);display:flex;gap:9px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--border);">
+                <span style="color:var(--green);flex-shrink:0;margin-top:2px;">◆</span>
+                <span>Architecture modulaire avec <strong style="color:var(--text);">7 modules</strong> indépendants</span>
+              </li>
+              <li style="font-size:.92rem;color:var(--sub);display:flex;gap:9px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--border);">
+                <span style="color:var(--green);flex-shrink:0;margin-top:2px;">◆</span>
+                <span>Base de données PostgreSQL avec <strong style="color:var(--text);">5 entités</strong> et leurs relations</span>
+              </li>
+              <li style="font-size:.92rem;color:var(--sub);display:flex;gap:9px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--border);">
+                <span style="color:var(--green);flex-shrink:0;margin-top:2px;">◆</span>
+                <span>Authentification JWT + contrôle d'accès par rôles</span>
+              </li>
+              <li style="font-size:.92rem;color:var(--sub);display:flex;gap:9px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--border);">
+                <span style="color:var(--green);flex-shrink:0;margin-top:2px;">◆</span>
+                <span>Tests unitaires et de bout en bout automatisés</span>
+              </li>
+              <li style="font-size:.92rem;color:var(--sub);display:flex;gap:9px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--border);">
+                <span style="color:var(--green);flex-shrink:0;margin-top:2px;">◆</span>
+                <span>Notifications en <strong style="color:var(--text);">temps réel</strong> via WebSockets</span>
+              </li>
+              <li style="font-size:.92rem;color:var(--sub);display:flex;gap:9px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--border);">
+                <span style="color:var(--green);flex-shrink:0;margin-top:2px;">◆</span>
+                <span>Documentation <strong style="color:var(--text);">Swagger</strong> interactive et annotée</span>
+              </li>
+              <li style="font-size:.92rem;color:var(--sub);display:flex;gap:9px;align-items:flex-start;padding:7px 0;">
+                <span style="color:var(--green);flex-shrink:0;margin-top:2px;">◆</span>
+                <span>Déploiement Docker + pipeline CI/CD sur GitHub Actions</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Les grands enseignements -->
+          <div class="card" style="border-top:3px solid var(--accent);display:flex;flex-direction:column;gap:0;overflow:hidden;">
+            <h3 style="margin-bottom:12px;">Les grands enseignements</h3>
+            <ul style="list-style:none;display:flex;flex-direction:column;gap:0;">
+              <li style="font-size:.92rem;color:var(--sub);display:flex;gap:9px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--border);">
+                <span style="color:var(--accent);flex-shrink:0;margin-top:2px;">→</span>
+                <span><strong style="color:var(--text);">Architecture modulaire</strong> : chaque domaine dans son module, extensible sans tout casser</span>
+              </li>
+              <li style="font-size:.92rem;color:var(--sub);display:flex;gap:9px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--border);">
+                <span style="color:var(--accent);flex-shrink:0;margin-top:2px;">→</span>
+                <span><strong style="color:var(--text);">Sécurité par défaut</strong> : toutes les routes protégées, on déverrouille explicitement</span>
+              </li>
+              <li style="font-size:.92rem;color:var(--sub);display:flex;gap:9px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--border);">
+                <span style="color:var(--accent);flex-shrink:0;margin-top:2px;">→</span>
+                <span><strong style="color:var(--text);">Migrations > synchronisation automatique</strong> : indispensable en production</span>
+              </li>
+              <li style="font-size:.92rem;color:var(--sub);display:flex;gap:9px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--border);">
+                <span style="color:var(--accent);flex-shrink:0;margin-top:2px;">→</span>
+                <span><strong style="color:var(--text);">Deux niveaux de tests</strong> : l'isolation valide la logique, l'intégration valide le tout</span>
+              </li>
+              <li style="font-size:.92rem;color:var(--sub);display:flex;gap:9px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--border);">
+                <span style="color:var(--accent);flex-shrink:0;margin-top:2px;">→</span>
+                <span><strong style="color:var(--text);">Comparer les outils</strong> : TypeORM vs Prisma — chaque ORM a ses forces</span>
+              </li>
+              <li style="font-size:.92rem;color:var(--sub);display:flex;gap:9px;align-items:flex-start;padding:7px 0;">
+                <span style="color:var(--accent);flex-shrink:0;margin-top:2px;">→</span>
+                <span><strong style="color:var(--text);">Docker dès le début</strong> : fini les "ça marche sur ma machine"</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Technologies par catégorie -->
+          <div class="card" style="border-top:3px solid var(--gold);display:flex;flex-direction:column;gap:13px;overflow:hidden;">
+            <h3>Technologies maîtrisées</h3>
+            <div style="display:flex;flex-direction:column;gap:11px;">
+              <div>
+                <div style="font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--accent);margin-bottom:5px;">Framework &amp; Langage</div>
+                <div style="display:flex;gap:5px;flex-wrap:wrap;">
+                  <span class="tech-chip" style="font-size:.67rem;padding:3px 9px;">NestJS</span>
+                  <span class="tech-chip" style="font-size:.67rem;padding:3px 9px;">TypeScript</span>
+                </div>
+              </div>
+              <div>
+                <div style="font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--purple);margin-bottom:5px;">Base de données</div>
+                <div style="display:flex;gap:5px;flex-wrap:wrap;">
+                  <span class="tech-chip" style="font-size:.67rem;padding:3px 9px;background:rgba(176,110,243,.08);border-color:rgba(176,110,243,.2);color:var(--purple);">PostgreSQL</span>
+                  <span class="tech-chip" style="font-size:.67rem;padding:3px 9px;background:rgba(176,110,243,.08);border-color:rgba(176,110,243,.2);color:var(--purple);">TypeORM</span>
+                  <span class="tech-chip" style="font-size:.67rem;padding:3px 9px;background:rgba(176,110,243,.08);border-color:rgba(176,110,243,.2);color:var(--purple);">Prisma</span>
+                </div>
+              </div>
+              <div>
+                <div style="font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--red);margin-bottom:5px;">Sécurité</div>
+                <div style="display:flex;gap:5px;flex-wrap:wrap;">
+                  <span class="tech-chip" style="font-size:.67rem;padding:3px 9px;background:rgba(247,97,95,.08);border-color:rgba(247,97,95,.2);color:var(--red);">JWT</span>
+                  <span class="tech-chip" style="font-size:.67rem;padding:3px 9px;background:rgba(247,97,95,.08);border-color:rgba(247,97,95,.2);color:var(--red);">Passport</span>
+                  <span class="tech-chip" style="font-size:.67rem;padding:3px 9px;background:rgba(247,97,95,.08);border-color:rgba(247,97,95,.2);color:var(--red);">bcrypt</span>
+                </div>
+              </div>
+              <div>
+                <div style="font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--teal);margin-bottom:5px;">Temps réel &amp; Documentation</div>
+                <div style="display:flex;gap:5px;flex-wrap:wrap;">
+                  <span class="tech-chip" style="font-size:.67rem;padding:3px 9px;background:rgba(45,212,191,.08);border-color:rgba(45,212,191,.2);color:var(--teal);">Socket.IO</span>
+                  <span class="tech-chip" style="font-size:.67rem;padding:3px 9px;background:rgba(45,212,191,.08);border-color:rgba(45,212,191,.2);color:var(--teal);">Swagger</span>
+                </div>
+              </div>
+              <div>
+                <div style="font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--green);margin-bottom:5px;">Tests</div>
+                <div style="display:flex;gap:5px;flex-wrap:wrap;">
+                  <span class="tech-chip" style="font-size:.67rem;padding:3px 9px;background:rgba(61,214,140,.08);border-color:rgba(61,214,140,.2);color:var(--green);">Jest</span>
+                  <span class="tech-chip" style="font-size:.67rem;padding:3px 9px;background:rgba(61,214,140,.08);border-color:rgba(61,214,140,.2);color:var(--green);">Supertest</span>
+                </div>
+              </div>
+              <div>
+                <div style="font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--gold);margin-bottom:5px;">DevOps</div>
+                <div style="display:flex;gap:5px;flex-wrap:wrap;">
+                  <span class="tech-chip" style="font-size:.67rem;padding:3px 9px;">Docker</span>
+                  <span class="tech-chip" style="font-size:.67rem;padding:3px 9px;">GitHub Actions</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
-    <div style="display:flex;align-items:center;color:var(--muted);font-size:1.1rem;padding:0 2px;">→</div>
-    <div style="display:flex;align-items:center;min-width:108px;">
-      <div class="card" style="border-top:2px solid var(--purple);padding:18px 14px;text-align:center;width:100%;">
-        <div style="font-family:var(--fm);font-size:.62rem;color:var(--purple);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;">PostgreSQL</div>
-        <div style="font-size:.72rem;color:var(--sub);margin-bottom:2px;">Docker volume</div>
-        <div class="gold-line" style="margin:10px 0 8px;"></div>
-        <div style="font-family:var(--fm);font-size:.67rem;color:var(--muted);line-height:1.9;">users<br>teams<br>team_members<br>projects<br>tasks<br>comments</div>
-      </div>
-    </div>
-  </div>
-</div>
+    <!-- /slides -->
 
-<!-- ══════ 04 — MODÈLE ══════ -->
-<div class="slide">
-  <div class="slide-num-badge">04 / 10</div>
-  <div class="deco-num">04</div>
-  <div class="accent-bar"></div>
-  <h2>Modèle de données</h2>
-  <div style="display:grid;grid-template-columns:1fr 28px 1fr 28px 1fr 28px 1fr;align-items:center;margin-bottom:20px;">
-    <div class="ent">
-      <div class="ent-head">User</div>
-      <div class="ent-body">
-        <div class="ef ef-pk">🔑 id: uuid</div>
-        <div class="ef ef-def">email: string</div>
-        <div class="ef ef-def">name: string</div>
-        <div class="ef ef-en">role: enum</div>
-        <div class="ef ef-dim">passwordHash ← select:false</div>
-      </div>
+    <div class="progress" id="progress"></div>
+    <div class="nav">
+      <button onclick="prev()">← Préc</button>
+      <span class="cnt" id="cnt">01 / 13</span>
+      <button onclick="next()">Suiv →</button>
     </div>
-    <div class="ent-arrow">⟷</div>
-    <div class="ent">
-      <div class="ent-head">Team</div>
-      <div class="ent-body">
-        <div class="ef ef-pk">🔑 id: uuid</div>
-        <div class="ef ef-def">name: string</div>
-        <div class="ef ef-fk">members: User[] M:M</div>
-        <div class="ef ef-fk">projects: Project[] 1:M</div>
-      </div>
-    </div>
-    <div class="ent-arrow">→</div>
-    <div class="ent">
-      <div class="ent-head">Project</div>
-      <div class="ent-body">
-        <div class="ef ef-pk">🔑 id: uuid</div>
-        <div class="ef ef-def">name: string</div>
-        <div class="ef ef-en">status: enum</div>
-        <div class="ef ef-fk">team ← CASCADE</div>
-        <div class="ef ef-fk">tasks: Task[] 1:M</div>
-      </div>
-    </div>
-    <div class="ent-arrow">→</div>
-    <div class="ent">
-      <div class="ent-head">Task</div>
-      <div class="ent-body">
-        <div class="ef ef-pk">🔑 id: uuid</div>
-        <div class="ef ef-en">status: enum</div>
-        <div class="ef ef-en">priority: enum</div>
-        <div class="ef ef-fk">project ← CASCADE</div>
-        <div class="ef ef-fk">assignee? ← SET NULL</div>
-      </div>
-    </div>
-  </div>
-  <div class="g2">
-    <div class="card" style="border-left:2px solid var(--green);">
-      <h3>Cascade suppression</h3>
-      <p style="font-size:.9rem;margin-top:6px;">Team → Project → Task : <span style="color:var(--red)">CASCADE</span><br>
-      Assignee supprimé : <span style="color:var(--gold)">SET NULL</span> — la tâche survit dans l'historique</p>
-    </div>
-    <div class="card" style="border-left:2px solid var(--accent);">
-      <h3>UUID + ENUMs natifs PostgreSQL</h3>
-      <p style="font-size:.9rem;margin-top:6px;">IDs non-prédictibles. Statuts et rôles en <span style="color:var(--teal)">ENUM</span> — intégrité garantie au niveau base, pas seulement en code.</p>
-    </div>
-  </div>
-</div>
 
-<!-- ══════ 05 — DEMO CRUD ══════ -->
-<div class="slide">
-  <div class="slide-num-badge">05 / 10</div>
-  <div class="deco-num">05</div>
-  <div class="accent-bar green"></div>
-  <h2>Démo — Démarrage &amp; CRUD</h2>
-  <ul class="checklist">
-    <li>
-      <span class="check-icon ci-green">npm run start:dev</span>
-      <span class="check-text">L'API démarre sans erreur sur <strong>localhost:3000/api</strong></span>
-    </li>
-    <li>
-      <span class="check-icon ci-blue">POST /api/users</span>
-      <span class="check-text">Créer un utilisateur → <strong>201 Created</strong> avec l'objet retourné (sans passwordHash)</span>
-    </li>
-    <li>
-      <span class="check-icon ci-blue">GET /api/users</span>
-      <span class="check-text">Lister tous les utilisateurs → <strong>200 OK</strong></span>
-    </li>
-    <li>
-      <span class="check-icon ci-gold">409 / 400</span>
-      <span class="check-text">Même email → <strong>409 Conflict</strong> &nbsp;·&nbsp; Email invalide → <strong>400 Bad Request</strong></span>
-    </li>
-    <li>
-      <span class="check-icon ci-gold">404</span>
-      <span class="check-text">Utilisateur inexistant → <strong>404 Not Found</strong> avec message lisible</span>
-    </li>
-  </ul>
-</div>
-
-<!-- ══════ 06 — DEMO AUTH ══════ -->
-<div class="slide">
-  <div class="slide-num-badge">06 / 10</div>
-  <div class="deco-num">06</div>
-  <div class="accent-bar red"></div>
-  <h2>Démo — Auth JWT &amp; Rôles</h2>
-  <div class="g2" style="gap:28px;">
-    <div>
-      <h3 style="margin-bottom:14px;">Authentification</h3>
-      <ul class="checklist">
-        <li>
-          <span class="check-icon ci-green">POST /auth/login</span>
-          <span class="check-text">Login avec <strong>alice@example.com</strong> → retourne un <strong>access_token</strong> JWT</span>
-        </li>
-        <li>
-          <span class="check-icon ci-red">401</span>
-          <span class="check-text">Même route <strong>sans token</strong> sur <code>/auth/me</code> → 401 Unauthorized</span>
-        </li>
-        <li>
-          <span class="check-icon ci-green">200</span>
-          <span class="check-text">Même route <strong>avec le token</strong> → 200 + profil complet</span>
-        </li>
-      </ul>
-    </div>
-    <div>
-      <h3 style="margin-bottom:14px;">Autorisation par rôles</h3>
-      <ul class="checklist">
-        <li>
-          <span class="check-icon ci-red">403</span>
-          <span class="check-text">Login <strong>bob@example.com</strong> (member) → tenter <code>POST /api/users</code> → <strong>403 Forbidden</strong></span>
-        </li>
-        <li>
-          <span class="check-icon ci-green">201</span>
-          <span class="check-text">Login <strong>alice@example.com</strong> (admin) → même action → <strong>201 Created</strong></span>
-        </li>
-      </ul>
-      <div class="card" style="margin-top:14px;border-left:2px solid var(--sub);">
-        <p style="font-size:.82rem;">Comptes seed : <code>alice</code> admin · <code>bob</code> member · <code>charlie</code> viewer<br>Mot de passe : <code>password123</code></p>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ══════ 07 — DEMO SWAGGER ══════ -->
-<div class="slide">
-  <div class="slide-num-badge">07 / 10</div>
-  <div class="deco-num">07</div>
-  <div class="accent-bar purple"></div>
-  <h2>Démo — Swagger UI</h2>
-  <div class="g32" style="align-items:start;gap:32px;">
-    <div>
-      <div class="sw-wrap">
-        <div class="sw-hd">
-          <span class="sw-logo">swagger</span>
-          <span class="sw-title">TaskFlow API</span>
-          <span class="sw-ver">v1.0</span>
-          <button class="sw-auth-btn">🔒 Authorize</button>
-        </div>
-        <div class="sw-body">
-          <div class="sw-tag"><span class="sw-tag-name">auth</span></div>
-          <div class="sw-route"><span class="swm swm-post">POST</span><span class="sw-path">/api/auth/login</span></div>
-          <div class="sw-route"><span class="swm swm-get">GET</span><span class="sw-path">/api/auth/me</span><span style="margin-left:auto;font-size:.75rem;color:#aaa;">🔒</span></div>
-          <div class="sw-tag" style="margin-top:6px;"><span class="sw-tag-name">users</span></div>
-          <div class="sw-route"><span class="swm swm-get">GET</span><span class="sw-path">/api/users</span><span style="margin-left:auto;font-size:.75rem;color:#aaa;">🔒</span></div>
-          <div class="sw-route"><span class="swm swm-post">POST</span><span class="sw-path">/api/users</span><span style="margin-left:auto;font-size:.75rem;color:#aaa;">🔒</span></div>
-          <div class="sw-route"><span class="swm swm-get">GET</span><span class="sw-path">/api/users/{id}</span><span style="margin-left:auto;font-size:.75rem;color:#aaa;">🔒</span></div>
-          <div class="sw-route"><span class="swm swm-pat">PATCH</span><span class="sw-path">/api/users/{id}</span><span style="margin-left:auto;font-size:.75rem;color:#aaa;">🔒</span></div>
-          <div class="sw-route"><span class="swm swm-del">DELETE</span><span class="sw-path">/api/users/{id}</span><span style="margin-left:auto;font-size:.75rem;color:#aaa;">🔒</span></div>
-        </div>
-      </div>
-    </div>
-    <div>
-      <h3 style="margin-bottom:14px;">Ce que je vais montrer</h3>
-      <ul class="checklist">
-        <li><span class="check-icon ci-purple">1</span><span class="check-text">Ouvrir <strong>localhost:3000/docs</strong></span></li>
-        <li><span class="check-icon ci-purple">2</span><span class="check-text"><code>POST /auth/login</code> → copier le token</span></li>
-        <li><span class="check-icon ci-purple">3</span><span class="check-text">Bouton <strong>Authorize</strong> → coller le token</span></li>
-        <li><span class="check-icon ci-purple">4</span><span class="check-text"><code>GET /auth/me</code> → 200 avec profil</span></li>
-      </ul>
-    </div>
-  </div>
-</div>
-
-<!-- ══════ 08 — DEMO TESTS ══════ -->
-<div class="slide">
-  <div class="slide-num-badge">08 / 10</div>
-  <div class="deco-num">08</div>
-  <div class="accent-bar teal"></div>
-  <h2>Démo — Tests automatisés</h2>
-  <div class="g2">
-    <div>
-      <h3 style="margin-bottom:14px;">Tests unitaires</h3>
-      <div class="cmd-block" style="margin-bottom:12px;">
-        <span class="acc">npm run test</span><br>
-        <span class="dim">npm run test:cov</span>
-      </div>
-      <ul class="checklist">
-        <li><span class="check-icon ci-teal">RolesGuard</span><span class="check-text">4 cas : no role · match · refus · multi-rôles</span></li>
-        <li><span class="check-icon ci-teal">UsersService</span><span class="check-text">findAll · findOne · create (doublon) · remove</span></li>
-      </ul>
-      <div class="card" style="margin-top:14px;border-left:2px solid var(--teal);">
-        <p style="font-size:.82rem;">Repositories TypeORM remplacés par des mocks — aucune base de données nécessaire.</p>
-      </div>
-    </div>
-    <div>
-      <h3 style="margin-bottom:14px;">Tests e2e</h3>
-      <div class="cmd-block" style="margin-bottom:12px;">
-        <span class="acc">npm run test:e2e</span>
-      </div>
-      <ul class="checklist">
-        <li><span class="check-icon ci-teal">auth</span><span class="check-text">Login · 401 mauvais mdp · GET /me protégé</span></li>
-        <li><span class="check-icon ci-teal">users</span><span class="check-text">CRUD complet · 403 par member · cycle créer→supprimer</span></li>
-      </ul>
-      <div class="card" style="margin-top:14px;border-left:2px solid var(--teal);">
-        <p style="font-size:.82rem;">Application complète + vraie base <code>taskflow_test</code> recréée avant chaque test.</p>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ══════ 09 — CHOIX TECHNIQUES ══════ -->
-<div class="slide">
-  <div class="slide-num-badge">09 / 10</div>
-  <div class="deco-num">09</div>
-  <div class="accent-bar"></div>
-  <h2>Choix techniques</h2>
-  <div class="g3" style="margin-bottom:22px;">
-    <div class="card" style="border-top:2px solid var(--accent);">
-      <h3>Guards globaux</h3>
-      <p style="font-size:.9rem;margin-top:8px;">Toutes les routes sont protégées par défaut. On opte-in avec <code>@Public()</code>. Une route oubliée reste protégée, jamais exposée.</p>
-    </div>
-    <div class="card" style="border-top:2px solid var(--gold);">
-      <h3>SET NULL vs CASCADE</h3>
-      <p style="font-size:.9rem;margin-top:8px;">Supprimer un user → <code>assignee = NULL</code>. Les tâches survivent. Supprimer un projet → CASCADE sur ses tâches.</p>
-    </div>
-    <div class="card" style="border-top:2px solid var(--purple);">
-      <h3>TypeORM + Prisma</h3>
-      <p style="font-size:.9rem;margin-top:8px;">Deux ORMs pour comparer en conditions réelles. TypeORM gère migrations et CRUD. Prisma sur quelques lectures.</p>
-    </div>
-  </div>
-  <div class="gold-line"></div>
-  <h3 style="margin-bottom:12px;">Difficultés rencontrées</h3>
-  <div class="g3">
-    <div class="card" style="border-left:2px solid var(--red);">
-      <h3>Double ORM</h3>
-      <p style="font-size:.88rem;margin-top:6px;">Deux sources de vérité à maintenir en sync. Résolu en faisant TypeORM la source principale des migrations.</p>
-    </div>
-    <div class="card" style="border-left:2px solid var(--red);">
-      <h3>Auth WebSocket</h3>
-      <p style="font-size:.88rem;margin-top:6px;">HTTP upgrade ne supporte pas <code>Authorization</code>. Token lu depuis <code>handshake.auth.token</code> côté Socket.io.</p>
-    </div>
-    <div class="card" style="border-left:2px solid var(--red);">
-      <h3>Isolation tests e2e</h3>
-      <p style="font-size:.88rem;margin-top:6px;"><code>dropSchema + seed</code> dans <code>beforeEach</code>. Chaque test part d'un état prévisible et indépendant.</p>
-    </div>
-  </div>
-</div>
-
-<!-- ══════ 10 — FIN ══════ -->
-<div class="slide">
-  <div class="slide-num-badge">10 / 10</div>
-  <div class="deco-num">10</div>
-  <div class="accent-bar"></div>
-  <h1 style="font-size:3.6rem;">Merci</h1>
-  <p class="sub-title">Questions ?</p>
-  <div class="gold-line" style="margin-top:36px;"></div>
-  <div class="g2" style="margin-top:24px;">
-    <div>
-      <h3>Améliorations futures</h3>
-      <ul style="list-style:none;margin-top:12px;display:flex;flex-direction:column;gap:9px;">
-        <li style="font-size:.92rem;color:var(--sub);display:flex;gap:10px;"><span style="color:var(--gold);font-family:var(--fm);">→</span>Refresh tokens</li>
-        <li style="font-size:.92rem;color:var(--sub);display:flex;gap:10px;"><span style="color:var(--gold);font-family:var(--fm);">→</span>Pagination sur toutes les listes</li>
-        <li style="font-size:.92rem;color:var(--sub);display:flex;gap:10px;"><span style="color:var(--gold);font-family:var(--fm);">→</span>Couverture de tests complète</li>
-        <li style="font-size:.92rem;color:var(--sub);display:flex;gap:10px;"><span style="color:var(--gold);font-family:var(--fm);">→</span>Unifier sur Prisma uniquement</li>
-        <li style="font-size:.92rem;color:var(--sub);display:flex;gap:10px;"><span style="color:var(--gold);font-family:var(--fm);">→</span>Rate limiting sur <code>/auth/login</code></li>
-      </ul>
-    </div>
-    <div>
-      <h3>Livrables</h3>
-      <ul style="list-style:none;margin-top:12px;display:flex;flex-direction:column;gap:9px;">
-        <li style="font-size:.92rem;color:var(--sub);display:flex;gap:10px;"><span style="color:var(--accent);font-family:var(--fm);">→</span><code>README.md</code> — toutes les commandes</li>
-        <li style="font-size:.92rem;color:var(--sub);display:flex;gap:10px;"><span style="color:var(--accent);font-family:var(--fm);">→</span><code>doc.md</code> — rapport technique</li>
-        <li style="font-size:.92rem;color:var(--sub);display:flex;gap:10px;"><span style="color:var(--accent);font-family:var(--fm);">→</span><code>.env.example</code> — config prête</li>
-        <li style="font-size:.92rem;color:var(--sub);display:flex;gap:10px;"><span style="color:var(--accent);font-family:var(--fm);">→</span><code>docker-compose.yml</code> + CI GitHub Actions</li>
-      </ul>
-    </div>
-  </div>
-</div>
-
-</div>
-
-<div class="nav">
-  <button onclick="prev()">← Préc</button>
-  <span class="cnt" id="cnt">01 / 10</span>
-  <button onclick="next()">Suiv →</button>
-</div>
-
-<script>
-  const slides = document.querySelectorAll('.slide');
-  const total = slides.length;
-  let cur = 0;
-  function show(n) {
-    slides[cur].classList.remove('active');
-    cur = ((n % total) + total) % total;
-    slides[cur].classList.add('active');
-    document.getElementById('cnt').textContent = String(cur+1).padStart(2,'0') + ' / ' + String(total).padStart(2,'0');
-  }
-  function next() { show(cur+1); }
-  function prev() { show(cur-1); }
-  document.addEventListener('keydown', e => {
-    if (['ArrowRight','Space','PageDown'].includes(e.key)) { e.preventDefault(); next(); }
-    if (['ArrowLeft','PageUp'].includes(e.key))           { e.preventDefault(); prev(); }
-  });
-</script>
-</body>
+    <script>
+      const slides = document.querySelectorAll('.slide');
+      const total = slides.length;
+      let cur = 0;
+      function show(n) {
+        slides[cur].classList.remove('active');
+        cur = ((n % total) + total) % total;
+        slides[cur].classList.add('active');
+        document.getElementById('cnt').textContent =
+          String(cur + 1).padStart(2, '0') +
+          ' / ' +
+          String(total).padStart(2, '0');
+        document.getElementById('progress').style.width =
+          ((cur + 1) / total) * 100 + '%';
+      }
+      function next() {
+        show(cur + 1);
+      }
+      function prev() {
+        show(cur - 1);
+      }
+      document.addEventListener('keydown', (e) => {
+        if (['ArrowRight', 'Space', 'PageDown'].includes(e.key)) {
+          e.preventDefault();
+          next();
+        }
+        if (['ArrowLeft', 'PageUp'].includes(e.key)) {
+          e.preventDefault();
+          prev();
+        }
+      });
+      document.getElementById('progress').style.width = (1 / total) * 100 + '%';
+    </script>
+  </body>
 </html>

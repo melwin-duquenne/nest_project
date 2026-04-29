@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>TP 06 &mdash; TypeORM &colon; Relations OneToMany &amp; ManyToMany</title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+/* From extension jebbs.markdown-extended */
+@font-face {
+  font-family: "Material Icons";
+  font-style: normal;
+  font-weight: 400;
+  src: local("Material Icons"), local("MaterialIcons-Regular"), url("data:application/x-font-woff;charset=utf-8;base64,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") format("woff");
+}
+
+.admonition {
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12), 0 3px 1px -2px rgba(0, 0, 0, .2);
+  position: relative;
+  margin: 1.5625em 0;
+  padding: 0 1.2rem;
+  border-left: .4rem solid rgba(68, 138, 255, .8);
+  border-radius: .2rem;
+  background-color: rgba(255, 255, 255, 0.05);
+  overflow: auto;
+}
+
+.admonition>p {
+  margin-top: .8rem;
+}
+
+.admonition>.admonition-title {
+  margin: 0 -1.2rem;
+  padding: .8rem 1.2rem .8rem 3.6rem;
+  border-bottom: 1px solid rgba(68, 138, 255, .2);
+  background-color: rgba(68, 138, 255, .1);
+  font-weight: 700;
+}
+
+.admonition>.admonition-title:before {
+  position: absolute;
+  left: 1.2rem;
+  font-size: 1.5rem;
+  color: rgba(68, 138, 255, .8);
+  content: "\E3C9";
+}
+
+.admonition>.admonition-title:before {
+  font-family: Material Icons;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: 400;
+  line-height: 2rem;
+  text-transform: none;
+  white-space: nowrap;
+  speak: none;
+  word-wrap: normal;
+  direction: ltr;
+}
+
+.admonition.summary,
+.admonition.abstract,
+.admonition.tldr {
+  border-left-color: rgba(0, 176, 255, .8);
+}
+
+.admonition.summary>.admonition-title,
+.admonition.abstract>.admonition-title,
+.admonition.tldr>.admonition-title {
+  background-color: rgba(0, 176, 255, .1);
+  border-bottom-color: rgba(0, 176, 255, .2);
+}
+
+.admonition.summary>.admonition-title:before,
+.admonition.abstract>.admonition-title:before,
+.admonition.tldr>.admonition-title:before {
+  color: rgba(0, 176, 255, 1);
+  ;
+  content: "\E8D2";
+}
+
+.admonition.hint,
+.admonition.tip {
+  border-left-color: rgba(0, 191, 165, .8);
+}
+
+.admonition.hint>.admonition-title,
+.admonition.tip>.admonition-title {
+  background-color: rgba(0, 191, 165, .1);
+  border-bottom-color: rgba(0, 191, 165, .2);
+}
+
+.admonition.hint>.admonition-title:before,
+.admonition.tip>.admonition-title:before {
+  color: rgba(0, 191, 165, 1);
+  content: "\E80E";
+}
+
+.admonition.info,
+.admonition.todo {
+  border-left-color: rgba(0, 184, 212, .8);
+}
+
+.admonition.info>.admonition-title,
+.admonition.todo>.admonition-title {
+  background-color: rgba(0, 184, 212, .1);
+  border-bottom-color: rgba(0, 184, 212, .2);
+}
+
+.admonition.info>.admonition-title:before,
+.admonition.todo>.admonition-title:before {
+  color: rgba(0, 184, 212, 1);
+  ;
+  content: "\E88E";
+}
+
+.admonition.success,
+.admonition.check,
+.admonition.done {
+  border-left-color: rgba(0, 200, 83, .8);
+}
+
+.admonition.success>.admonition-title,
+.admonition.check>.admonition-title,
+.admonition.done>.admonition-title {
+  background-color: rgba(0, 200, 83, .1);
+  border-bottom-color: rgba(0, 200, 83, .2);
+}
+
+.admonition.success>.admonition-title:before,
+.admonition.check>.admonition-title:before,
+.admonition.done>.admonition-title:before {
+  color: rgba(0, 200, 83, 1);
+  ;
+  content: "\E876";
+}
+
+.admonition.question,
+.admonition.help,
+.admonition.faq {
+  border-left-color: rgba(100, 221, 23, .8);
+}
+
+.admonition.question>.admonition-title,
+.admonition.help>.admonition-title,
+.admonition.faq>.admonition-title {
+  background-color: rgba(100, 221, 23, .1);
+  border-bottom-color: rgba(100, 221, 23, .2);
+}
+
+.admonition.question>.admonition-title:before,
+.admonition.help>.admonition-title:before,
+.admonition.faq>.admonition-title:before {
+  color: rgba(100, 221, 23, 1);
+  ;
+  content: "\E887";
+}
+
+.admonition.warning,
+.admonition.attention,
+.admonition.caution {
+  border-left-color: rgba(255, 145, 0, .8);
+}
+
+.admonition.warning>.admonition-title,
+.admonition.attention>.admonition-title,
+.admonition.caution>.admonition-title {
+  background-color: rgba(255, 145, 0, .1);
+  border-bottom-color: rgba(255, 145, 0, .2);
+}
+
+.admonition.attention>.admonition-title:before {
+  color: rgba(255, 145, 0, 1);
+  content: "\E417";
+}
+
+.admonition.warning>.admonition-title:before,
+.admonition.caution>.admonition-title:before {
+  color: rgba(255, 145, 0, 1);
+  content: "\E002";
+}
+
+.admonition.failure,
+.admonition.fail,
+.admonition.missing {
+  border-left-color: rgba(255, 82, 82, .8);
+}
+
+.admonition.failure>.admonition-title,
+.admonition.fail>.admonition-title,
+.admonition.missing>.admonition-title {
+  background-color: rgba(255, 82, 82, .1);
+  border-bottom-color: rgba(255, 82, 82, .2);
+}
+
+.admonition.failure>.admonition-title:before,
+.admonition.fail>.admonition-title:before,
+.admonition.missing>.admonition-title:before {
+  color: rgba(255, 82, 82, 1);
+  ;
+  content: "\E14C";
+}
+
+.admonition.danger,
+.admonition.error,
+.admonition.bug {
+  border-left-color: rgba(255, 23, 68, .8);
+}
+
+.admonition.danger>.admonition-title,
+.admonition.error>.admonition-title,
+.admonition.bug>.admonition-title {
+  background-color: rgba(255, 23, 68, .1);
+  border-bottom-color: rgba(255, 23, 68, .2);
+}
+
+.admonition.danger>.admonition-title:before {
+  color: rgba(255, 23, 68, 1);
+  content: "\E3E7";
+}
+
+.admonition.error>.admonition-title:before {
+  color: rgba(255, 23, 68, 1);
+  content: "\E14C";
+}
+
+.admonition.bug>.admonition-title:before {
+  color: rgba(255, 23, 68, 1);
+  content: "\E868";
+}
+
+.admonition.example,
+.admonition.snippet {
+  border-left-color: rgba(0, 184, 212, .8);
+}
+
+.admonition.example>.admonition-title,
+.admonition.snippet>.admonition-title {
+  background-color: rgba(0, 184, 212, .1);
+  border-bottom-color: rgba(0, 184, 212, .2);
+}
+
+.admonition.example>.admonition-title:before,
+.admonition.snippet>.admonition-title:before {
+  color: rgba(0, 184, 212, 1);
+  ;
+  content: "\E242";
+}
+
+.admonition.quote,
+.admonition.cite {
+  border-left-color: rgba(158, 158, 158, .8);
+}
+
+.admonition.quote>.admonition-title,
+.admonition.cite>.admonition-title {
+  background-color: rgba(158, 158, 158, .1);
+  border-bottom-color: rgba(158, 158, 158, .2);
+}
+
+.admonition.quote>.admonition-title:before,
+.admonition.cite>.admonition-title:before {
+  color: rgba(158, 158, 158, 1);
+  ;
+  content: "\E244";
+}
+.vscode-light kbd,
+.vscode-dark kbd,
+.vscode-high-contrast kbd {
+  display: inline-block;
+  padding: 3px 5px;
+  font: 11px "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  line-height: 10px;
+  vertical-align: middle;
+  border: solid 1px #d1d5da;
+  border-bottom-color: #c6cbd1;
+  border-radius: 3px;
+  box-shadow: inset 0 -1px 0 #c6cbd1;
+}
+
+.vscode-light kbd {
+  color: #444d56;
+  background-color: #fafbfc;
+}
+</style>
+            
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        
+        </head>
+        <body class="vscode-body vscode-light">
+            <h1 id="tp-06--typeorm--relations-onetomany--manytomany">TP 06 — TypeORM : Relations OneToMany &amp; ManyToMany</h1>
+<p><strong>Durée :</strong> 40 minutes
+<strong>Objectif :</strong> créer les entités Team et Project avec leurs relations, et implémenter la gestion des membres d'une équipe.</p>
+<hr>
+<h2 id="étape-1--entité-team">Étape 1 — Entité Team</h2>
+<p>Créer <code>src/teams/entities/team.entity.ts</code>.</p>
+<p>Propriétés de la table <code>teams</code> :</p>
+<ul>
+<li><code>id</code> — UUID, clé primaire</li>
+<li><code>name</code> — unique, max 100 caractères</li>
+<li><code>description</code> — texte nullable</li>
+<li><code>members</code> — <strong>relation ManyToMany</strong> avec <code>User</code> (table de jonction <code>team_members</code>)</li>
+<li><code>projects</code> — <strong>relation OneToMany</strong> vers <code>Project</code></li>
+<li><code>created_at</code> / <code>updated_at</code></li>
+</ul>
+<blockquote>
+<p>Pour <code>@ManyToMany</code> avec table de jonction personnalisée, utilisez <code>@JoinTable</code> avec <code>joinColumn</code> et <code>inverseJoinColumn</code>.</p>
+</blockquote>
+<hr>
+<h2 id="étape-2--mettre-à-jour-lentité-user">Étape 2 — Mettre à jour l'entité User</h2>
+<p>Ajouter dans <code>src/users/entities/user.entity.ts</code> la <strong>relation inverse</strong> ManyToMany vers Team.</p>
+<blockquote>
+<p>Pour éviter les imports circulaires, utilisez la notation string :</p>
+<pre><code class="language-ts"><span class="hljs-meta">@ManyToMany</span>(<span class="hljs-string">&#x27;Team&#x27;</span>, <span class="hljs-string">&#x27;members&#x27;</span>)
+<span class="hljs-attr">teams</span>: <span class="hljs-built_in">any</span>[];
+</code></pre>
+</blockquote>
+<hr>
+<h2 id="étape-3--entité-project">Étape 3 — Entité Project</h2>
+<p>Créer <code>src/projects/entities/project.entity.ts</code>.</p>
+<p>Propriétés de la table <code>projects</code> :</p>
+<ul>
+<li><code>id</code> — UUID, clé primaire</li>
+<li><code>name</code> — max 200 caractères</li>
+<li><code>description</code> — texte nullable</li>
+<li><code>status</code> — enum <code>ProjectStatus</code>, défaut <code>draft</code></li>
+<li><code>team</code> — <strong>relation ManyToOne</strong> vers <code>Team</code> (colonne <code>team_id</code>, <code>onDelete: 'CASCADE'</code>)</li>
+<li><code>created_at</code> / <code>updated_at</code></li>
+</ul>
+<hr>
+<h2 id="étape-4--enregistrer-les-entités-dans-leurs-modules">Étape 4 — Enregistrer les entités dans leurs modules</h2>
+<p><strong><code>src/teams/teams.module.ts</code></strong> :</p>
+<ul>
+<li>Importer <code>TypeOrmModule.forFeature([Team])</code></li>
+<li>Importer <code>UsersModule</code> (pour injecter <code>UsersService</code>)</li>
+<li>Exporter <code>TeamsService</code></li>
+</ul>
+<p><strong><code>src/projects/projects.module.ts</code></strong> :</p>
+<ul>
+<li>Importer <code>TypeOrmModule.forFeature([Project])</code></li>
+<li>Exporter <code>ProjectsService</code></li>
+</ul>
+<hr>
+<h2 id="étape-5--service-teams-avec-gestion-des-membres">Étape 5 — Service Teams avec gestion des membres</h2>
+<p>Implémenter <code>src/teams/teams.service.ts</code> :</p>
+<pre><code class="language-ts"><span class="hljs-meta">@Injectable</span>()
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">TeamsService</span> {
+  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">
+    <span class="hljs-meta">@InjectRepository</span>(Team)
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> teamsRepository: Repository&lt;Team&gt;,
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> usersService: UsersService,
+  </span>) {}
+
+  <span class="hljs-keyword">async</span> <span class="hljs-title function_">findAll</span>(): <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-title class_">Team</span>[]&gt; {
+    <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span> retourner toutes les teams avec leurs membres chargés</span>
+    <span class="hljs-comment">// Indice : { relations: [&#x27;members&#x27;] }</span>
+  }
+
+  <span class="hljs-keyword">async</span> <span class="hljs-title function_">findOne</span>(<span class="hljs-attr">id</span>: <span class="hljs-built_in">string</span>): <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-title class_">Team</span>&gt; {
+    <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span> charger avec relations [&#x27;members&#x27;, &#x27;projects&#x27;], lever 404 si null</span>
+  }
+
+  <span class="hljs-keyword">async</span> <span class="hljs-title function_">create</span>(<span class="hljs-attr">dto</span>: <span class="hljs-title class_">CreateTeamDto</span>): <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-title class_">Team</span>&gt; {
+    <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span> create + save</span>
+  }
+
+  <span class="hljs-keyword">async</span> <span class="hljs-title function_">update</span>(<span class="hljs-attr">id</span>: <span class="hljs-built_in">string</span>, <span class="hljs-attr">dto</span>: <span class="hljs-title class_">UpdateTeamDto</span>): <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-title class_">Team</span>&gt; {
+    <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span> findOne + Object.assign + save</span>
+  }
+
+  <span class="hljs-keyword">async</span> <span class="hljs-title function_">remove</span>(<span class="hljs-attr">id</span>: <span class="hljs-built_in">string</span>): <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-built_in">void</span>&gt; {
+    <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span> findOne + remove</span>
+  }
+
+  <span class="hljs-keyword">async</span> <span class="hljs-title function_">addMember</span>(<span class="hljs-attr">teamId</span>: <span class="hljs-built_in">string</span>, <span class="hljs-attr">userId</span>: <span class="hljs-built_in">string</span>): <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-title class_">Team</span>&gt; {
+    <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span></span>
+    <span class="hljs-comment">// 1. Charger la team (avec membres)</span>
+    <span class="hljs-comment">// 2. Charger l&#x27;user via usersService.findOne()</span>
+    <span class="hljs-comment">// 3. Vérifier que l&#x27;user n&#x27;est pas déjà membre (ConflictException)</span>
+    <span class="hljs-comment">// 4. Pousser l&#x27;user dans team.members et sauvegarder</span>
+  }
+
+  <span class="hljs-keyword">async</span> <span class="hljs-title function_">removeMember</span>(<span class="hljs-attr">teamId</span>: <span class="hljs-built_in">string</span>, <span class="hljs-attr">userId</span>: <span class="hljs-built_in">string</span>): <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-title class_">Team</span>&gt; {
+    <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span> filtrer team.members pour retirer l&#x27;user, puis sauvegarder</span>
+  }
+}
+</code></pre>
+<hr>
+<h2 id="étape-6--routes-membres-dans-teamscontroller">Étape 6 — Routes membres dans TeamsController</h2>
+<p>Mettre à jour <code>src/teams/teams.controller.ts</code> avec les routes CRUD standard, plus deux routes pour les membres :</p>
+<table>
+<thead>
+<tr>
+<th>Méthode</th>
+<th>Route</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>POST</td>
+<td><code>/teams/:id/members</code></td>
+<td>Ajouter un membre — body <code>{ userId: string }</code></td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td><code>/teams/:id/members/:userId</code></td>
+<td>Retirer un membre</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Pour extraire <code>userId</code> du body : <code>@Body('userId', ParseUUIDPipe) userId: string</code></p>
+</blockquote>
+<hr>
+<h2 id="étape-7--tests-http">Étape 7 — Tests HTTP</h2>
+<p>Créer <code>src/http/teams.http</code> :</p>
+<pre><code class="language-http">@baseUrl = http://localhost:3000/api
+
+### Créer une équipe
+POST {{baseUrl}}/teams
+<span class="hljs-attribute">Content-Type</span><span class="hljs-punctuation">: </span>application/json
+
+{
+  &quot;name&quot;: &quot;Équipe Alpha&quot;,
+  &quot;description&quot;: &quot;Équipe principale de développement&quot;
+}
+
+### Lister les équipes (avec membres)
+GET {{baseUrl}}/teams
+
+### Ajouter un membre (remplacer les IDs)
+POST {{baseUrl}}/teams/TEAM_UUID/members
+<span class="hljs-attribute">Content-Type</span><span class="hljs-punctuation">: </span>application/json
+
+{
+  &quot;userId&quot;: &quot;USER_UUID&quot;
+}
+
+### Voir l&#x27;équipe avec ses membres et projets
+GET {{baseUrl}}/teams/TEAM_UUID
+
+### Retirer un membre
+DELETE {{baseUrl}}/teams/TEAM_UUID/members/USER_UUID
+</code></pre>
+<hr>
+<h2 id="checkpoint-">Checkpoint ✓</h2>
+<ul class="contains-task-list">
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> Entité <code>Team</code> créée avec <code>@ManyToMany</code> et <code>@JoinTable</code></li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> Entité <code>User</code> mise à jour avec la relation inverse <code>@ManyToMany</code></li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> Entité <code>Project</code> créée avec <code>@ManyToOne</code> Team</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> Table <code>team_members</code> créée automatiquement par TypeORM</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> <code>POST /api/teams/:id/members</code> → ajoute un membre</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> <code>GET /api/teams/:id</code> → retourne l'équipe avec ses membres</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> <code>DELETE /api/teams/:id/members/:userId</code> → retire un membre</li>
+</ul>
+<hr>
+<h2 id="fil-rouge-après-s06">Fil rouge après S06</h2>
+<p>Entités User, Team, Project reliées, table <code>team_members</code> créée, ajout/retrait de membres fonctionnel.</p>
+<p><strong>Commit suggéré :</strong></p>
+<pre><code class="language-bash">git add .
+git commit -m <span class="hljs-string">&quot;feat: relations TypeORM (Team/User ManyToMany, Team/Project OneToMany)&quot;</span>
+</code></pre>
+
+            
+            
+        </body>
+        </html>

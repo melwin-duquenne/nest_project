@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>TP 16 &mdash; Prisma ORM &colon; Introduction &amp; Migration</title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+/* From extension jebbs.markdown-extended */
+@font-face {
+  font-family: "Material Icons";
+  font-style: normal;
+  font-weight: 400;
+  src: local("Material Icons"), local("MaterialIcons-Regular"), url("data:application/x-font-woff;charset=utf-8;base64,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") format("woff");
+}
+
+.admonition {
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12), 0 3px 1px -2px rgba(0, 0, 0, .2);
+  position: relative;
+  margin: 1.5625em 0;
+  padding: 0 1.2rem;
+  border-left: .4rem solid rgba(68, 138, 255, .8);
+  border-radius: .2rem;
+  background-color: rgba(255, 255, 255, 0.05);
+  overflow: auto;
+}
+
+.admonition>p {
+  margin-top: .8rem;
+}
+
+.admonition>.admonition-title {
+  margin: 0 -1.2rem;
+  padding: .8rem 1.2rem .8rem 3.6rem;
+  border-bottom: 1px solid rgba(68, 138, 255, .2);
+  background-color: rgba(68, 138, 255, .1);
+  font-weight: 700;
+}
+
+.admonition>.admonition-title:before {
+  position: absolute;
+  left: 1.2rem;
+  font-size: 1.5rem;
+  color: rgba(68, 138, 255, .8);
+  content: "\E3C9";
+}
+
+.admonition>.admonition-title:before {
+  font-family: Material Icons;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: 400;
+  line-height: 2rem;
+  text-transform: none;
+  white-space: nowrap;
+  speak: none;
+  word-wrap: normal;
+  direction: ltr;
+}
+
+.admonition.summary,
+.admonition.abstract,
+.admonition.tldr {
+  border-left-color: rgba(0, 176, 255, .8);
+}
+
+.admonition.summary>.admonition-title,
+.admonition.abstract>.admonition-title,
+.admonition.tldr>.admonition-title {
+  background-color: rgba(0, 176, 255, .1);
+  border-bottom-color: rgba(0, 176, 255, .2);
+}
+
+.admonition.summary>.admonition-title:before,
+.admonition.abstract>.admonition-title:before,
+.admonition.tldr>.admonition-title:before {
+  color: rgba(0, 176, 255, 1);
+  ;
+  content: "\E8D2";
+}
+
+.admonition.hint,
+.admonition.tip {
+  border-left-color: rgba(0, 191, 165, .8);
+}
+
+.admonition.hint>.admonition-title,
+.admonition.tip>.admonition-title {
+  background-color: rgba(0, 191, 165, .1);
+  border-bottom-color: rgba(0, 191, 165, .2);
+}
+
+.admonition.hint>.admonition-title:before,
+.admonition.tip>.admonition-title:before {
+  color: rgba(0, 191, 165, 1);
+  content: "\E80E";
+}
+
+.admonition.info,
+.admonition.todo {
+  border-left-color: rgba(0, 184, 212, .8);
+}
+
+.admonition.info>.admonition-title,
+.admonition.todo>.admonition-title {
+  background-color: rgba(0, 184, 212, .1);
+  border-bottom-color: rgba(0, 184, 212, .2);
+}
+
+.admonition.info>.admonition-title:before,
+.admonition.todo>.admonition-title:before {
+  color: rgba(0, 184, 212, 1);
+  ;
+  content: "\E88E";
+}
+
+.admonition.success,
+.admonition.check,
+.admonition.done {
+  border-left-color: rgba(0, 200, 83, .8);
+}
+
+.admonition.success>.admonition-title,
+.admonition.check>.admonition-title,
+.admonition.done>.admonition-title {
+  background-color: rgba(0, 200, 83, .1);
+  border-bottom-color: rgba(0, 200, 83, .2);
+}
+
+.admonition.success>.admonition-title:before,
+.admonition.check>.admonition-title:before,
+.admonition.done>.admonition-title:before {
+  color: rgba(0, 200, 83, 1);
+  ;
+  content: "\E876";
+}
+
+.admonition.question,
+.admonition.help,
+.admonition.faq {
+  border-left-color: rgba(100, 221, 23, .8);
+}
+
+.admonition.question>.admonition-title,
+.admonition.help>.admonition-title,
+.admonition.faq>.admonition-title {
+  background-color: rgba(100, 221, 23, .1);
+  border-bottom-color: rgba(100, 221, 23, .2);
+}
+
+.admonition.question>.admonition-title:before,
+.admonition.help>.admonition-title:before,
+.admonition.faq>.admonition-title:before {
+  color: rgba(100, 221, 23, 1);
+  ;
+  content: "\E887";
+}
+
+.admonition.warning,
+.admonition.attention,
+.admonition.caution {
+  border-left-color: rgba(255, 145, 0, .8);
+}
+
+.admonition.warning>.admonition-title,
+.admonition.attention>.admonition-title,
+.admonition.caution>.admonition-title {
+  background-color: rgba(255, 145, 0, .1);
+  border-bottom-color: rgba(255, 145, 0, .2);
+}
+
+.admonition.attention>.admonition-title:before {
+  color: rgba(255, 145, 0, 1);
+  content: "\E417";
+}
+
+.admonition.warning>.admonition-title:before,
+.admonition.caution>.admonition-title:before {
+  color: rgba(255, 145, 0, 1);
+  content: "\E002";
+}
+
+.admonition.failure,
+.admonition.fail,
+.admonition.missing {
+  border-left-color: rgba(255, 82, 82, .8);
+}
+
+.admonition.failure>.admonition-title,
+.admonition.fail>.admonition-title,
+.admonition.missing>.admonition-title {
+  background-color: rgba(255, 82, 82, .1);
+  border-bottom-color: rgba(255, 82, 82, .2);
+}
+
+.admonition.failure>.admonition-title:before,
+.admonition.fail>.admonition-title:before,
+.admonition.missing>.admonition-title:before {
+  color: rgba(255, 82, 82, 1);
+  ;
+  content: "\E14C";
+}
+
+.admonition.danger,
+.admonition.error,
+.admonition.bug {
+  border-left-color: rgba(255, 23, 68, .8);
+}
+
+.admonition.danger>.admonition-title,
+.admonition.error>.admonition-title,
+.admonition.bug>.admonition-title {
+  background-color: rgba(255, 23, 68, .1);
+  border-bottom-color: rgba(255, 23, 68, .2);
+}
+
+.admonition.danger>.admonition-title:before {
+  color: rgba(255, 23, 68, 1);
+  content: "\E3E7";
+}
+
+.admonition.error>.admonition-title:before {
+  color: rgba(255, 23, 68, 1);
+  content: "\E14C";
+}
+
+.admonition.bug>.admonition-title:before {
+  color: rgba(255, 23, 68, 1);
+  content: "\E868";
+}
+
+.admonition.example,
+.admonition.snippet {
+  border-left-color: rgba(0, 184, 212, .8);
+}
+
+.admonition.example>.admonition-title,
+.admonition.snippet>.admonition-title {
+  background-color: rgba(0, 184, 212, .1);
+  border-bottom-color: rgba(0, 184, 212, .2);
+}
+
+.admonition.example>.admonition-title:before,
+.admonition.snippet>.admonition-title:before {
+  color: rgba(0, 184, 212, 1);
+  ;
+  content: "\E242";
+}
+
+.admonition.quote,
+.admonition.cite {
+  border-left-color: rgba(158, 158, 158, .8);
+}
+
+.admonition.quote>.admonition-title,
+.admonition.cite>.admonition-title {
+  background-color: rgba(158, 158, 158, .1);
+  border-bottom-color: rgba(158, 158, 158, .2);
+}
+
+.admonition.quote>.admonition-title:before,
+.admonition.cite>.admonition-title:before {
+  color: rgba(158, 158, 158, 1);
+  ;
+  content: "\E244";
+}
+.vscode-light kbd,
+.vscode-dark kbd,
+.vscode-high-contrast kbd {
+  display: inline-block;
+  padding: 3px 5px;
+  font: 11px "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  line-height: 10px;
+  vertical-align: middle;
+  border: solid 1px #d1d5da;
+  border-bottom-color: #c6cbd1;
+  border-radius: 3px;
+  box-shadow: inset 0 -1px 0 #c6cbd1;
+}
+
+.vscode-light kbd {
+  color: #444d56;
+  background-color: #fafbfc;
+}
+</style>
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css">
+<link href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        
+        </head>
+        <body class="vscode-body vscode-light">
+            <h1 id="tp-16--prisma-orm--introduction--migration">TP 16 — Prisma ORM : Introduction &amp; Migration</h1>
+<p><strong>Durée :</strong> 45 minutes
+<strong>Objectif :</strong> configurer Prisma, définir le schéma TaskFlow, migrer, et réécrire <code>UsersService</code> avec Prisma Client.</p>
+<blockquote>
+<p>Note : on travaille sur une <strong>branche séparée</strong> pour ne pas casser le projet TypeORM.</p>
+</blockquote>
+<hr>
+<h2 id="étape-1--branche-et-installation">Étape 1 — Branche et installation</h2>
+<pre><code class="language-bash">git checkout -b feature/prisma
+npm install prisma @prisma/client
+npx prisma init
+</code></pre>
+<hr>
+<h2 id="étape-2--configurer-la-base-de-données-prisma">Étape 2 — Configurer la base de données Prisma</h2>
+<p>Dans <code>.env</code>, ajouter :</p>
+<pre><code class="language-env">DATABASE_URL=&quot;postgresql://taskflow:taskflow@localhost:5432/taskflow_prisma?schema=public&quot;
+</code></pre>
+<p>Créer la base :</p>
+<pre><code class="language-bash">docker <span class="hljs-built_in">exec</span> -it taskflow_postgres psql -U taskflow -c <span class="hljs-string">&quot;CREATE DATABASE taskflow_prisma;&quot;</span>
+</code></pre>
+<hr>
+<h2 id="étape-3--définir-le-schéma-prisma">Étape 3 — Définir le schéma Prisma</h2>
+<p>Remplacer le contenu de <code>prisma/schema.prisma</code> avec le schéma complet de TaskFlow :</p>
+<pre><code class="language-prisma">generator client {
+  provider = &quot;prisma-client-js&quot;
+}
+
+datasource db {
+  provider = &quot;postgresql&quot;
+  url      = env(&quot;DATABASE_URL&quot;)
+}
+
+enum UserRole     { admin member viewer }
+enum ProjectStatus { active archived draft }
+enum TaskStatus    { todo in_progress done }
+enum TaskPriority  { low medium high }
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String   @map(&quot;password_hash&quot;)
+  name         String
+  role         UserRole @default(member)
+  createdAt    DateTime @default(now()) @map(&quot;created_at&quot;)
+  updatedAt    DateTime @updatedAt @map(&quot;updated_at&quot;)
+
+  teams    Team[]    @relation(&quot;TeamMembers&quot;)
+  tasks    Task[]    @relation(&quot;TaskAssignee&quot;)
+  comments Comment[]
+
+  @@map(&quot;users&quot;)
+}
+
+model Team {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now()) @map(&quot;created_at&quot;)
+  updatedAt   DateTime @updatedAt @map(&quot;updated_at&quot;)
+
+  members  User[]    @relation(&quot;TeamMembers&quot;)
+  projects Project[]
+
+  @@map(&quot;teams&quot;)
+}
+
+model Project {
+  id          String        @id @default(uuid())
+  name        String
+  description String?
+  status      ProjectStatus @default(draft)
+  teamId      String        @map(&quot;team_id&quot;)
+  createdAt   DateTime      @default(now()) @map(&quot;created_at&quot;)
+  updatedAt   DateTime      @updatedAt @map(&quot;updated_at&quot;)
+
+  team  Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  tasks Task[]
+
+  @@map(&quot;projects&quot;)
+}
+
+model Task {
+  id          String       @id @default(uuid())
+  title       String
+  description String?
+  status      TaskStatus   @default(todo)
+  priority    TaskPriority @default(medium)
+  projectId   String       @map(&quot;project_id&quot;)
+  assigneeId  String?      @map(&quot;assignee_id&quot;)
+  createdAt   DateTime     @default(now()) @map(&quot;created_at&quot;)
+  updatedAt   DateTime     @updatedAt @map(&quot;updated_at&quot;)
+
+  project  Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  assignee User?     @relation(&quot;TaskAssignee&quot;, fields: [assigneeId], references: [id], onDelete: SetNull)
+  comments Comment[]
+
+  @@map(&quot;tasks&quot;)
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  content   String
+  authorId  String   @map(&quot;author_id&quot;)
+  taskId    String   @map(&quot;task_id&quot;)
+  createdAt DateTime @default(now()) @map(&quot;created_at&quot;)
+
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  task   Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@map(&quot;comments&quot;)
+}
+</code></pre>
+<blockquote>
+<p>Lisez ce schéma attentivement. Repérez les différences de syntaxe avec TypeORM.</p>
+</blockquote>
+<hr>
+<h2 id="étape-4--créer-et-appliquer-la-migration">Étape 4 — Créer et appliquer la migration</h2>
+<pre><code class="language-bash">npx prisma migrate dev --name init-taskflow
+</code></pre>
+<p>Explorer le schéma dans Prisma Studio :</p>
+<pre><code class="language-bash">npx prisma studio
+<span class="hljs-comment"># → http://localhost:5555</span>
+</code></pre>
+<hr>
+<h2 id="étape-5--prismamodule--prismaservice">Étape 5 — PrismaModule + PrismaService</h2>
+<p>Ces fichiers sont de la configuration standard — fournis :</p>
+<p><strong><code>src/prisma/prisma.service.ts</code></strong> :</p>
+<pre><code class="language-ts"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">Injectable</span>, <span class="hljs-title class_">OnModuleInit</span>, <span class="hljs-title class_">OnModuleDestroy</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@nestjs/common&#x27;</span>;
+<span class="hljs-keyword">import</span> { <span class="hljs-title class_">PrismaClient</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@prisma/client&#x27;</span>;
+
+<span class="hljs-meta">@Injectable</span>()
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">PrismaService</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_ inherited__">PrismaClient</span>
+  <span class="hljs-keyword">implements</span> <span class="hljs-title class_">OnModuleInit</span>, <span class="hljs-title class_">OnModuleDestroy</span> {
+  <span class="hljs-keyword">async</span> <span class="hljs-title function_">onModuleInit</span>(<span class="hljs-params"></span>) {
+    <span class="hljs-keyword">await</span> <span class="hljs-variable language_">this</span>.$connect();
+  }
+  <span class="hljs-keyword">async</span> <span class="hljs-title function_">onModuleDestroy</span>(<span class="hljs-params"></span>) {
+    <span class="hljs-keyword">await</span> <span class="hljs-variable language_">this</span>.$disconnect();
+  }
+}
+</code></pre>
+<p><strong><code>src/prisma/prisma.module.ts</code></strong> :</p>
+<pre><code class="language-ts"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">Global</span>, <span class="hljs-title class_">Module</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@nestjs/common&#x27;</span>;
+<span class="hljs-keyword">import</span> { <span class="hljs-title class_">PrismaService</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./prisma.service&#x27;</span>;
+
+<span class="hljs-meta">@Global</span>()
+<span class="hljs-meta">@Module</span>({
+  <span class="hljs-attr">providers</span>: [<span class="hljs-title class_">PrismaService</span>],
+  <span class="hljs-attr">exports</span>: [<span class="hljs-title class_">PrismaService</span>],
+})
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">PrismaModule</span> {}
+</code></pre>
+<p>Importer <code>PrismaModule</code> dans AppModule.</p>
+<hr>
+<h2 id="étape-6--réécrire-usersservice-avec-prisma">Étape 6 — Réécrire UsersService avec Prisma</h2>
+<p>Créer <code>src/users/users-prisma.service.ts</code>. <strong>Implémentez chaque méthode</strong> :</p>
+<pre><code class="language-ts"><span class="hljs-meta">@Injectable</span>()
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">UsersPrismaService</span> {
+  <span class="hljs-title function_">constructor</span>(<span class="hljs-params"><span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> prisma: PrismaService</span>) {}
+
+  <span class="hljs-keyword">async</span> <span class="hljs-title function_">findAll</span>(<span class="hljs-params"></span>) {
+    <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span> this.prisma.user.findMany()</span>
+    <span class="hljs-comment">// Utilisez select pour exclure passwordHash</span>
+    <span class="hljs-comment">// Triez par createdAt desc</span>
+  }
+
+  <span class="hljs-keyword">async</span> <span class="hljs-title function_">findOne</span>(<span class="hljs-params">id: <span class="hljs-built_in">string</span></span>) {
+    <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span> this.prisma.user.findUnique({ where: { id } })</span>
+    <span class="hljs-comment">// Lever NotFoundException si null</span>
+    <span class="hljs-comment">// Exclure passwordHash via select</span>
+  }
+
+  <span class="hljs-keyword">async</span> <span class="hljs-title function_">create</span>(<span class="hljs-params">dto: CreateUserDto</span>) {
+    <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span></span>
+    <span class="hljs-comment">// 1. Vérifier unicité email (findUnique)</span>
+    <span class="hljs-comment">// 2. Hacher le password</span>
+    <span class="hljs-comment">// 3. this.prisma.user.create({ data: {...}, select: {...} })</span>
+  }
+
+  <span class="hljs-keyword">async</span> <span class="hljs-title function_">update</span>(<span class="hljs-params">id: <span class="hljs-built_in">string</span>, dto: UpdateUserDto</span>) {
+    <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span></span>
+    <span class="hljs-comment">// 1. Vérifier que l&#x27;user existe (findOne)</span>
+    <span class="hljs-comment">// 2. this.prisma.user.update({ where: { id }, data: dto, select: {...} })</span>
+  }
+
+  <span class="hljs-keyword">async</span> <span class="hljs-title function_">remove</span>(<span class="hljs-params">id: <span class="hljs-built_in">string</span></span>) {
+    <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span></span>
+    <span class="hljs-comment">// 1. Vérifier que l&#x27;user existe</span>
+    <span class="hljs-comment">// 2. this.prisma.user.delete({ where: { id } })</span>
+  }
+}
+</code></pre>
+<hr>
+<h2 id="étape-7--comparer-typeorm-vs-prisma">Étape 7 — Comparer TypeORM vs Prisma</h2>
+<p>Testez les deux implémentations sur les mêmes routes et observez :</p>
+<ul>
+<li>La concision du code Prisma (<code>select</code> intégré vs <code>{ select: false }</code> sur la colonne)</li>
+<li><code>include</code> pour les relations vs <code>{ relations: [...] }</code></li>
+<li>L'absence de <code>@InjectRepository</code> et <code>Repository&lt;T&gt;</code></li>
+</ul>
+<p>Quels sont les avantages et inconvénients de chaque approche ?</p>
+<hr>
+<h2 id="checkpoint-">Checkpoint ✓</h2>
+<ul class="contains-task-list">
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> <code>npx prisma migrate dev</code> → migration appliquée sans erreur</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> <code>npx prisma studio</code> → données visibles dans l'UI</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> <code>PrismaService</code> démarre sans erreur</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> <code>UsersPrismaService.findAll()</code> retourne des users sans <code>passwordHash</code></li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> <code>UsersPrismaService.create()</code> crée un user et hache le mot de passe</li>
+</ul>
+<p><strong>Commit suggéré :</strong></p>
+<pre><code class="language-bash">git add .
+git commit -m <span class="hljs-string">&quot;feat: intégration Prisma ORM (schema + migration + PrismaService)&quot;</span>
+git checkout main
+</code></pre>
+
+            <script async src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script>
+            
+        </body>
+        </html>

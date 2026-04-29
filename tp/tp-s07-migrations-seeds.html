@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>TP 07 &mdash; Migrations&comma; Seeds &amp; Bonnes Pratiques TypeORM</title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+/* From extension jebbs.markdown-extended */
+@font-face {
+  font-family: "Material Icons";
+  font-style: normal;
+  font-weight: 400;
+  src: local("Material Icons"), local("MaterialIcons-Regular"), url("data:application/x-font-woff;charset=utf-8;base64,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") format("woff");
+}
+
+.admonition {
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12), 0 3px 1px -2px rgba(0, 0, 0, .2);
+  position: relative;
+  margin: 1.5625em 0;
+  padding: 0 1.2rem;
+  border-left: .4rem solid rgba(68, 138, 255, .8);
+  border-radius: .2rem;
+  background-color: rgba(255, 255, 255, 0.05);
+  overflow: auto;
+}
+
+.admonition>p {
+  margin-top: .8rem;
+}
+
+.admonition>.admonition-title {
+  margin: 0 -1.2rem;
+  padding: .8rem 1.2rem .8rem 3.6rem;
+  border-bottom: 1px solid rgba(68, 138, 255, .2);
+  background-color: rgba(68, 138, 255, .1);
+  font-weight: 700;
+}
+
+.admonition>.admonition-title:before {
+  position: absolute;
+  left: 1.2rem;
+  font-size: 1.5rem;
+  color: rgba(68, 138, 255, .8);
+  content: "\E3C9";
+}
+
+.admonition>.admonition-title:before {
+  font-family: Material Icons;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: 400;
+  line-height: 2rem;
+  text-transform: none;
+  white-space: nowrap;
+  speak: none;
+  word-wrap: normal;
+  direction: ltr;
+}
+
+.admonition.summary,
+.admonition.abstract,
+.admonition.tldr {
+  border-left-color: rgba(0, 176, 255, .8);
+}
+
+.admonition.summary>.admonition-title,
+.admonition.abstract>.admonition-title,
+.admonition.tldr>.admonition-title {
+  background-color: rgba(0, 176, 255, .1);
+  border-bottom-color: rgba(0, 176, 255, .2);
+}
+
+.admonition.summary>.admonition-title:before,
+.admonition.abstract>.admonition-title:before,
+.admonition.tldr>.admonition-title:before {
+  color: rgba(0, 176, 255, 1);
+  ;
+  content: "\E8D2";
+}
+
+.admonition.hint,
+.admonition.tip {
+  border-left-color: rgba(0, 191, 165, .8);
+}
+
+.admonition.hint>.admonition-title,
+.admonition.tip>.admonition-title {
+  background-color: rgba(0, 191, 165, .1);
+  border-bottom-color: rgba(0, 191, 165, .2);
+}
+
+.admonition.hint>.admonition-title:before,
+.admonition.tip>.admonition-title:before {
+  color: rgba(0, 191, 165, 1);
+  content: "\E80E";
+}
+
+.admonition.info,
+.admonition.todo {
+  border-left-color: rgba(0, 184, 212, .8);
+}
+
+.admonition.info>.admonition-title,
+.admonition.todo>.admonition-title {
+  background-color: rgba(0, 184, 212, .1);
+  border-bottom-color: rgba(0, 184, 212, .2);
+}
+
+.admonition.info>.admonition-title:before,
+.admonition.todo>.admonition-title:before {
+  color: rgba(0, 184, 212, 1);
+  ;
+  content: "\E88E";
+}
+
+.admonition.success,
+.admonition.check,
+.admonition.done {
+  border-left-color: rgba(0, 200, 83, .8);
+}
+
+.admonition.success>.admonition-title,
+.admonition.check>.admonition-title,
+.admonition.done>.admonition-title {
+  background-color: rgba(0, 200, 83, .1);
+  border-bottom-color: rgba(0, 200, 83, .2);
+}
+
+.admonition.success>.admonition-title:before,
+.admonition.check>.admonition-title:before,
+.admonition.done>.admonition-title:before {
+  color: rgba(0, 200, 83, 1);
+  ;
+  content: "\E876";
+}
+
+.admonition.question,
+.admonition.help,
+.admonition.faq {
+  border-left-color: rgba(100, 221, 23, .8);
+}
+
+.admonition.question>.admonition-title,
+.admonition.help>.admonition-title,
+.admonition.faq>.admonition-title {
+  background-color: rgba(100, 221, 23, .1);
+  border-bottom-color: rgba(100, 221, 23, .2);
+}
+
+.admonition.question>.admonition-title:before,
+.admonition.help>.admonition-title:before,
+.admonition.faq>.admonition-title:before {
+  color: rgba(100, 221, 23, 1);
+  ;
+  content: "\E887";
+}
+
+.admonition.warning,
+.admonition.attention,
+.admonition.caution {
+  border-left-color: rgba(255, 145, 0, .8);
+}
+
+.admonition.warning>.admonition-title,
+.admonition.attention>.admonition-title,
+.admonition.caution>.admonition-title {
+  background-color: rgba(255, 145, 0, .1);
+  border-bottom-color: rgba(255, 145, 0, .2);
+}
+
+.admonition.attention>.admonition-title:before {
+  color: rgba(255, 145, 0, 1);
+  content: "\E417";
+}
+
+.admonition.warning>.admonition-title:before,
+.admonition.caution>.admonition-title:before {
+  color: rgba(255, 145, 0, 1);
+  content: "\E002";
+}
+
+.admonition.failure,
+.admonition.fail,
+.admonition.missing {
+  border-left-color: rgba(255, 82, 82, .8);
+}
+
+.admonition.failure>.admonition-title,
+.admonition.fail>.admonition-title,
+.admonition.missing>.admonition-title {
+  background-color: rgba(255, 82, 82, .1);
+  border-bottom-color: rgba(255, 82, 82, .2);
+}
+
+.admonition.failure>.admonition-title:before,
+.admonition.fail>.admonition-title:before,
+.admonition.missing>.admonition-title:before {
+  color: rgba(255, 82, 82, 1);
+  ;
+  content: "\E14C";
+}
+
+.admonition.danger,
+.admonition.error,
+.admonition.bug {
+  border-left-color: rgba(255, 23, 68, .8);
+}
+
+.admonition.danger>.admonition-title,
+.admonition.error>.admonition-title,
+.admonition.bug>.admonition-title {
+  background-color: rgba(255, 23, 68, .1);
+  border-bottom-color: rgba(255, 23, 68, .2);
+}
+
+.admonition.danger>.admonition-title:before {
+  color: rgba(255, 23, 68, 1);
+  content: "\E3E7";
+}
+
+.admonition.error>.admonition-title:before {
+  color: rgba(255, 23, 68, 1);
+  content: "\E14C";
+}
+
+.admonition.bug>.admonition-title:before {
+  color: rgba(255, 23, 68, 1);
+  content: "\E868";
+}
+
+.admonition.example,
+.admonition.snippet {
+  border-left-color: rgba(0, 184, 212, .8);
+}
+
+.admonition.example>.admonition-title,
+.admonition.snippet>.admonition-title {
+  background-color: rgba(0, 184, 212, .1);
+  border-bottom-color: rgba(0, 184, 212, .2);
+}
+
+.admonition.example>.admonition-title:before,
+.admonition.snippet>.admonition-title:before {
+  color: rgba(0, 184, 212, 1);
+  ;
+  content: "\E242";
+}
+
+.admonition.quote,
+.admonition.cite {
+  border-left-color: rgba(158, 158, 158, .8);
+}
+
+.admonition.quote>.admonition-title,
+.admonition.cite>.admonition-title {
+  background-color: rgba(158, 158, 158, .1);
+  border-bottom-color: rgba(158, 158, 158, .2);
+}
+
+.admonition.quote>.admonition-title:before,
+.admonition.cite>.admonition-title:before {
+  color: rgba(158, 158, 158, 1);
+  ;
+  content: "\E244";
+}
+.vscode-light kbd,
+.vscode-dark kbd,
+.vscode-high-contrast kbd {
+  display: inline-block;
+  padding: 3px 5px;
+  font: 11px "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  line-height: 10px;
+  vertical-align: middle;
+  border: solid 1px #d1d5da;
+  border-bottom-color: #c6cbd1;
+  border-radius: 3px;
+  box-shadow: inset 0 -1px 0 #c6cbd1;
+}
+
+.vscode-light kbd {
+  color: #444d56;
+  background-color: #fafbfc;
+}
+</style>
+            
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        
+        </head>
+        <body class="vscode-body vscode-light">
+            <h1 id="tp-07--migrations-seeds--bonnes-pratiques-typeorm">TP 07 — Migrations, Seeds &amp; Bonnes Pratiques TypeORM</h1>
+<p><strong>Durée :</strong> 45 minutes
+<strong>Objectif :</strong> configurer le système de migrations, créer les entités Task et Comment, et seeder la base de données.</p>
+<hr>
+<h2 id="étape-1--dépendances-pour-les-migrations">Étape 1 — Dépendances pour les migrations</h2>
+<pre><code class="language-bash">npm install -D ts-node tsconfig-paths
+</code></pre>
+<p>Ajouter les scripts dans <code>package.json</code> :</p>
+<pre><code class="language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;scripts&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;typeorm&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;typeorm-ts-node-commonjs&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;migration:generate&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;npm run typeorm -- migration:generate -d src/database/data-source.ts&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;migration:run&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;npm run typeorm -- migration:run -d src/database/data-source.ts&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;migration:revert&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;npm run typeorm -- migration:revert -d src/database/data-source.ts&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;migration:show&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;npm run typeorm -- migration:show -d src/database/data-source.ts&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;seed&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;ts-node -r tsconfig-paths/register src/database/seeds/seed.ts&quot;</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
+<hr>
+<h2 id="étape-2--créer-le-datasource-cli">Étape 2 — Créer le DataSource CLI</h2>
+<pre><code class="language-bash"><span class="hljs-built_in">mkdir</span> -p src/database/migrations src/database/seeds
+</code></pre>
+<p>Créer <code>src/database/data-source.ts</code> :</p>
+<pre><code class="language-ts"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">DataSource</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;typeorm&#x27;</span>;
+<span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> dotenv <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;dotenv&#x27;</span>;
+<span class="hljs-keyword">import</span> { join } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;path&#x27;</span>;
+
+dotenv.<span class="hljs-title function_">config</span>();
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> <span class="hljs-title class_">AppDataSource</span> = <span class="hljs-keyword">new</span> <span class="hljs-title class_">DataSource</span>({
+  <span class="hljs-attr">type</span>: <span class="hljs-string">&#x27;postgres&#x27;</span>,
+  <span class="hljs-attr">host</span>: process.<span class="hljs-property">env</span>.<span class="hljs-property">DB_HOST</span> || <span class="hljs-string">&#x27;localhost&#x27;</span>,
+  <span class="hljs-attr">port</span>: <span class="hljs-built_in">parseInt</span>(process.<span class="hljs-property">env</span>.<span class="hljs-property">DB_PORT</span> || <span class="hljs-string">&#x27;5432&#x27;</span>, <span class="hljs-number">10</span>),
+  <span class="hljs-attr">database</span>: process.<span class="hljs-property">env</span>.<span class="hljs-property">DB_NAME</span> || <span class="hljs-string">&#x27;taskflow&#x27;</span>,
+  <span class="hljs-attr">username</span>: process.<span class="hljs-property">env</span>.<span class="hljs-property">DB_USER</span> || <span class="hljs-string">&#x27;taskflow&#x27;</span>,
+  <span class="hljs-attr">password</span>: process.<span class="hljs-property">env</span>.<span class="hljs-property">DB_PASSWORD</span> || <span class="hljs-string">&#x27;taskflow&#x27;</span>,
+
+  <span class="hljs-attr">entities</span>: [<span class="hljs-title function_">join</span>(__dirname, <span class="hljs-string">&#x27;/../**/*.entity{.ts,.js}&#x27;</span>)],
+  <span class="hljs-attr">migrations</span>: [<span class="hljs-title function_">join</span>(__dirname, <span class="hljs-string">&#x27;/migrations/*{.ts,.js}&#x27;</span>)],
+
+  <span class="hljs-attr">synchronize</span>: <span class="hljs-literal">false</span>,
+  <span class="hljs-attr">logging</span>: <span class="hljs-literal">true</span>,
+});
+</code></pre>
+<hr>
+<h2 id="étape-3--passer-synchronize-à-false-dans-appmodule">Étape 3 — Passer synchronize à false dans AppModule</h2>
+<p>Dans la configuration TypeORM de <code>src/app.module.ts</code>, changer <code>synchronize</code> à <code>false</code> et ajouter le chemin des migrations :</p>
+<pre><code class="language-ts"><span class="hljs-attr">synchronize</span>: <span class="hljs-literal">false</span>,
+<span class="hljs-attr">migrations</span>: [__dirname + <span class="hljs-string">&#x27;/database/migrations/*{.ts,.js}&#x27;</span>],
+</code></pre>
+<blockquote>
+<p>À partir de maintenant, les changements de schéma passent par des migrations.</p>
+</blockquote>
+<hr>
+<h2 id="étape-4--entité-task">Étape 4 — Entité Task</h2>
+<p>Créer <code>src/tasks/entities/task.entity.ts</code>.</p>
+<p>Propriétés de la table <code>tasks</code> :</p>
+<ul>
+<li><code>id</code> — UUID, clé primaire</li>
+<li><code>title</code> — max 200 caractères</li>
+<li><code>description</code> — texte nullable</li>
+<li><code>status</code> — enum <code>TaskStatus</code>, défaut <code>todo</code></li>
+<li><code>priority</code> — enum <code>TaskPriority</code>, défaut <code>medium</code></li>
+<li><code>project</code> — <strong>ManyToOne</strong> vers <code>Project</code> (colonne <code>project_id</code>, <code>onDelete: 'CASCADE'</code>, non nullable)</li>
+<li><code>assignee</code> — <strong>ManyToOne</strong> vers <code>User</code> (colonne <code>assignee_id</code>, <code>onDelete: 'SET NULL'</code>, <strong>nullable</strong>)</li>
+<li><code>created_at</code> / <code>updated_at</code></li>
+</ul>
+<hr>
+<h2 id="étape-5--entité-comment">Étape 5 — Entité Comment</h2>
+<p>Créer <code>src/comments/entities/comment.entity.ts</code>.</p>
+<p>Propriétés de la table <code>comments</code> :</p>
+<ul>
+<li><code>id</code> — UUID, clé primaire</li>
+<li><code>content</code> — texte</li>
+<li><code>author</code> — <strong>ManyToOne</strong> vers <code>User</code> (colonne <code>author_id</code>, <code>onDelete: 'CASCADE'</code>)</li>
+<li><code>task</code> — <strong>ManyToOne</strong> vers <code>Task</code> (colonne <code>task_id</code>, <code>onDelete: 'CASCADE'</code>)</li>
+<li><code>created_at</code> (pas de <code>updated_at</code> — un commentaire n'est pas modifiable)</li>
+</ul>
+<hr>
+<h2 id="étape-6--mettre-à-jour-project-pour-onetomany-tasks">Étape 6 — Mettre à jour Project pour OneToMany Tasks</h2>
+<p>Dans <code>src/projects/entities/project.entity.ts</code>, ajouter la relation inverse :</p>
+<pre><code class="language-ts"><span class="hljs-meta">@OneToMany</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-title class_">Task</span>, <span class="hljs-function">(<span class="hljs-params">task</span>) =&gt;</span> task.<span class="hljs-property">project</span>)
+<span class="hljs-attr">tasks</span>: <span class="hljs-title class_">Task</span>[];
+</code></pre>
+<hr>
+<h2 id="étape-7--enregistrer-les-nouvelles-entités">Étape 7 — Enregistrer les nouvelles entités</h2>
+<p>Mettre à jour <code>src/tasks/tasks.module.ts</code> et <code>src/comments/comments.module.ts</code> pour importer <code>TypeOrmModule.forFeature([Task])</code> et <code>TypeOrmModule.forFeature([Comment])</code> respectivement.</p>
+<hr>
+<h2 id="étape-8--générer-et-appliquer-la-migration">Étape 8 — Générer et appliquer la migration</h2>
+<pre><code class="language-bash"><span class="hljs-comment"># Générer la migration (TypeORM compare entités ↔ DB actuelle)</span>
+npm run migration:generate -- src/database/migrations/AddTasksAndComments
+
+<span class="hljs-comment"># Inspecter le fichier généré dans src/database/migrations/</span>
+<span class="hljs-comment"># Vérifiez que le SQL créé correspond à vos entités</span>
+
+<span class="hljs-comment"># Appliquer la migration</span>
+npm run migration:run
+
+<span class="hljs-comment"># Vérifier l&#x27;état</span>
+npm run migration:show
+</code></pre>
+<hr>
+<h2 id="étape-9--script-de-seed">Étape 9 — Script de seed</h2>
+<p>Créer <code>src/database/seeds/seed.ts</code>. Ce script doit :</p>
+<ol>
+<li>Initialiser <code>AppDataSource</code></li>
+<li>Vider les tables dans le bon ordre (respecter les FK) avec <code>TRUNCATE ... CASCADE</code></li>
+<li>Créer <strong>3 utilisateurs</strong> (alice admin, bob member, charlie viewer) — mot de passe haché</li>
+<li>Créer <strong>2 équipes</strong> (Alpha avec alice+bob, Beta avec charlie)</li>
+<li>Créer <strong>2 projets</strong> rattachés à Alpha</li>
+<li>Créer <strong>3 tâches</strong> rattachées au premier projet</li>
+<li>Créer <strong>2 commentaires</strong> sur les tâches</li>
+<li>Fermer la connexion avec <code>AppDataSource.destroy()</code></li>
+</ol>
+<blockquote>
+<p>Utilisez <code>AppDataSource.getRepository(User)</code> pour accéder aux repositories.
+Ajoutez des <code>console.log</code> pour suivre la progression.</p>
+</blockquote>
+<p>Lancer le seed :</p>
+<pre><code class="language-bash">npm run seed
+</code></pre>
+<hr>
+<h2 id="étape-10--vérification-finale">Étape 10 — Vérification finale</h2>
+<pre><code class="language-bash">npm run start:dev
+
+curl http://localhost:3000/api/projects
+<span class="hljs-comment"># → [{ &quot;id&quot;: &quot;...&quot;, &quot;name&quot;: &quot;TaskFlow v1&quot;, ... }]</span>
+</code></pre>
+<hr>
+<h2 id="checkpoint-">Checkpoint ✓</h2>
+<ul class="contains-task-list">
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> <code>package.json</code> contient les scripts <code>migration:*</code> et <code>seed</code></li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> <code>src/database/data-source.ts</code> créé</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> <code>synchronize: false</code> dans AppModule</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> <code>task.entity.ts</code> et <code>comment.entity.ts</code> créés</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> <code>npm run migration:run</code> s'exécute sans erreur</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> <code>npm run seed</code> crée 3 users, 2 teams, 2 projects, 3 tasks, 2 comments</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> <code>GET /api/projects</code> retourne les données seedées</li>
+</ul>
+<hr>
+<h2 id="fil-rouge-après-s07">Fil rouge après S07</h2>
+<p>Schéma complet (5 entités) en base, migrations versionnées, seed fonctionnel.</p>
+<p><strong>Commit suggéré :</strong></p>
+<pre><code class="language-bash">git add .
+git commit -m <span class="hljs-string">&quot;feat: migrations TypeORM + entités Task/Comment + script de seed&quot;</span>
+</code></pre>
+
+            
+            
+        </body>
+        </html>

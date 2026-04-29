@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>TP 14 &mdash; Tests End-to-End avec Supertest</title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+/* From extension jebbs.markdown-extended */
+@font-face {
+  font-family: "Material Icons";
+  font-style: normal;
+  font-weight: 400;
+  src: local("Material Icons"), local("MaterialIcons-Regular"), url("data:application/x-font-woff;charset=utf-8;base64,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") format("woff");
+}
+
+.admonition {
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12), 0 3px 1px -2px rgba(0, 0, 0, .2);
+  position: relative;
+  margin: 1.5625em 0;
+  padding: 0 1.2rem;
+  border-left: .4rem solid rgba(68, 138, 255, .8);
+  border-radius: .2rem;
+  background-color: rgba(255, 255, 255, 0.05);
+  overflow: auto;
+}
+
+.admonition>p {
+  margin-top: .8rem;
+}
+
+.admonition>.admonition-title {
+  margin: 0 -1.2rem;
+  padding: .8rem 1.2rem .8rem 3.6rem;
+  border-bottom: 1px solid rgba(68, 138, 255, .2);
+  background-color: rgba(68, 138, 255, .1);
+  font-weight: 700;
+}
+
+.admonition>.admonition-title:before {
+  position: absolute;
+  left: 1.2rem;
+  font-size: 1.5rem;
+  color: rgba(68, 138, 255, .8);
+  content: "\E3C9";
+}
+
+.admonition>.admonition-title:before {
+  font-family: Material Icons;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: 400;
+  line-height: 2rem;
+  text-transform: none;
+  white-space: nowrap;
+  speak: none;
+  word-wrap: normal;
+  direction: ltr;
+}
+
+.admonition.summary,
+.admonition.abstract,
+.admonition.tldr {
+  border-left-color: rgba(0, 176, 255, .8);
+}
+
+.admonition.summary>.admonition-title,
+.admonition.abstract>.admonition-title,
+.admonition.tldr>.admonition-title {
+  background-color: rgba(0, 176, 255, .1);
+  border-bottom-color: rgba(0, 176, 255, .2);
+}
+
+.admonition.summary>.admonition-title:before,
+.admonition.abstract>.admonition-title:before,
+.admonition.tldr>.admonition-title:before {
+  color: rgba(0, 176, 255, 1);
+  ;
+  content: "\E8D2";
+}
+
+.admonition.hint,
+.admonition.tip {
+  border-left-color: rgba(0, 191, 165, .8);
+}
+
+.admonition.hint>.admonition-title,
+.admonition.tip>.admonition-title {
+  background-color: rgba(0, 191, 165, .1);
+  border-bottom-color: rgba(0, 191, 165, .2);
+}
+
+.admonition.hint>.admonition-title:before,
+.admonition.tip>.admonition-title:before {
+  color: rgba(0, 191, 165, 1);
+  content: "\E80E";
+}
+
+.admonition.info,
+.admonition.todo {
+  border-left-color: rgba(0, 184, 212, .8);
+}
+
+.admonition.info>.admonition-title,
+.admonition.todo>.admonition-title {
+  background-color: rgba(0, 184, 212, .1);
+  border-bottom-color: rgba(0, 184, 212, .2);
+}
+
+.admonition.info>.admonition-title:before,
+.admonition.todo>.admonition-title:before {
+  color: rgba(0, 184, 212, 1);
+  ;
+  content: "\E88E";
+}
+
+.admonition.success,
+.admonition.check,
+.admonition.done {
+  border-left-color: rgba(0, 200, 83, .8);
+}
+
+.admonition.success>.admonition-title,
+.admonition.check>.admonition-title,
+.admonition.done>.admonition-title {
+  background-color: rgba(0, 200, 83, .1);
+  border-bottom-color: rgba(0, 200, 83, .2);
+}
+
+.admonition.success>.admonition-title:before,
+.admonition.check>.admonition-title:before,
+.admonition.done>.admonition-title:before {
+  color: rgba(0, 200, 83, 1);
+  ;
+  content: "\E876";
+}
+
+.admonition.question,
+.admonition.help,
+.admonition.faq {
+  border-left-color: rgba(100, 221, 23, .8);
+}
+
+.admonition.question>.admonition-title,
+.admonition.help>.admonition-title,
+.admonition.faq>.admonition-title {
+  background-color: rgba(100, 221, 23, .1);
+  border-bottom-color: rgba(100, 221, 23, .2);
+}
+
+.admonition.question>.admonition-title:before,
+.admonition.help>.admonition-title:before,
+.admonition.faq>.admonition-title:before {
+  color: rgba(100, 221, 23, 1);
+  ;
+  content: "\E887";
+}
+
+.admonition.warning,
+.admonition.attention,
+.admonition.caution {
+  border-left-color: rgba(255, 145, 0, .8);
+}
+
+.admonition.warning>.admonition-title,
+.admonition.attention>.admonition-title,
+.admonition.caution>.admonition-title {
+  background-color: rgba(255, 145, 0, .1);
+  border-bottom-color: rgba(255, 145, 0, .2);
+}
+
+.admonition.attention>.admonition-title:before {
+  color: rgba(255, 145, 0, 1);
+  content: "\E417";
+}
+
+.admonition.warning>.admonition-title:before,
+.admonition.caution>.admonition-title:before {
+  color: rgba(255, 145, 0, 1);
+  content: "\E002";
+}
+
+.admonition.failure,
+.admonition.fail,
+.admonition.missing {
+  border-left-color: rgba(255, 82, 82, .8);
+}
+
+.admonition.failure>.admonition-title,
+.admonition.fail>.admonition-title,
+.admonition.missing>.admonition-title {
+  background-color: rgba(255, 82, 82, .1);
+  border-bottom-color: rgba(255, 82, 82, .2);
+}
+
+.admonition.failure>.admonition-title:before,
+.admonition.fail>.admonition-title:before,
+.admonition.missing>.admonition-title:before {
+  color: rgba(255, 82, 82, 1);
+  ;
+  content: "\E14C";
+}
+
+.admonition.danger,
+.admonition.error,
+.admonition.bug {
+  border-left-color: rgba(255, 23, 68, .8);
+}
+
+.admonition.danger>.admonition-title,
+.admonition.error>.admonition-title,
+.admonition.bug>.admonition-title {
+  background-color: rgba(255, 23, 68, .1);
+  border-bottom-color: rgba(255, 23, 68, .2);
+}
+
+.admonition.danger>.admonition-title:before {
+  color: rgba(255, 23, 68, 1);
+  content: "\E3E7";
+}
+
+.admonition.error>.admonition-title:before {
+  color: rgba(255, 23, 68, 1);
+  content: "\E14C";
+}
+
+.admonition.bug>.admonition-title:before {
+  color: rgba(255, 23, 68, 1);
+  content: "\E868";
+}
+
+.admonition.example,
+.admonition.snippet {
+  border-left-color: rgba(0, 184, 212, .8);
+}
+
+.admonition.example>.admonition-title,
+.admonition.snippet>.admonition-title {
+  background-color: rgba(0, 184, 212, .1);
+  border-bottom-color: rgba(0, 184, 212, .2);
+}
+
+.admonition.example>.admonition-title:before,
+.admonition.snippet>.admonition-title:before {
+  color: rgba(0, 184, 212, 1);
+  ;
+  content: "\E242";
+}
+
+.admonition.quote,
+.admonition.cite {
+  border-left-color: rgba(158, 158, 158, .8);
+}
+
+.admonition.quote>.admonition-title,
+.admonition.cite>.admonition-title {
+  background-color: rgba(158, 158, 158, .1);
+  border-bottom-color: rgba(158, 158, 158, .2);
+}
+
+.admonition.quote>.admonition-title:before,
+.admonition.cite>.admonition-title:before {
+  color: rgba(158, 158, 158, 1);
+  ;
+  content: "\E244";
+}
+.vscode-light kbd,
+.vscode-dark kbd,
+.vscode-high-contrast kbd {
+  display: inline-block;
+  padding: 3px 5px;
+  font: 11px "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  line-height: 10px;
+  vertical-align: middle;
+  border: solid 1px #d1d5da;
+  border-bottom-color: #c6cbd1;
+  border-radius: 3px;
+  box-shadow: inset 0 -1px 0 #c6cbd1;
+}
+
+.vscode-light kbd {
+  color: #444d56;
+  background-color: #fafbfc;
+}
+</style>
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css">
+<link href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        
+        </head>
+        <body class="vscode-body vscode-light">
+            <h1 id="tp-14--tests-end-to-end-avec-supertest">TP 14 — Tests End-to-End avec Supertest</h1>
+<p><strong>Durée :</strong> 45 minutes
+<strong>Objectif :</strong> écrire des tests e2e pour les flux d'authentification et CRUD Users.</p>
+<hr>
+<h2 id="étape-1--configuration-teste2e">Étape 1 — Configuration test:e2e</h2>
+<p>Vérifier <code>package.json</code> :</p>
+<pre><code class="language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;scripts&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;test:e2e&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;jest --config ./test/jest-e2e.json&quot;</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
+<p>Vérifier <code>test/jest-e2e.json</code> (créé par NestJS CLI) :</p>
+<pre><code class="language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;moduleFileExtensions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;js&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;json&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;ts&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;rootDir&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;.&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;testEnvironment&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;node&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;testRegex&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;.e2e-spec.ts$&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;transform&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;^.+\\.(t|j)s$&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;ts-jest&quot;</span> <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;moduleNameMapper&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;^src/(.*)$&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;&lt;rootDir&gt;/../src/$1&quot;</span> <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
+<hr>
+<h2 id="étape-2--configuration-base-de-test">Étape 2 — Configuration base de test</h2>
+<p>Créer <code>.env.test</code> à la racine :</p>
+<pre><code class="language-env">NODE_ENV=test
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=taskflow_test
+DB_USER=taskflow
+DB_PASSWORD=taskflow
+JWT_SECRET=test-secret-key
+JWT_EXPIRES_IN=1h
+</code></pre>
+<p>Créer la base de test dans PostgreSQL :</p>
+<pre><code class="language-bash">docker <span class="hljs-built_in">exec</span> -it taskflow_postgres psql -U taskflow -c <span class="hljs-string">&quot;CREATE DATABASE taskflow_test;&quot;</span>
+</code></pre>
+<hr>
+<h2 id="étape-3--helpers-e2e">Étape 3 — Helpers e2e</h2>
+<p>Ces helpers sont fournis — ils constituent l'infrastructure de test :</p>
+<p><strong><code>test/helpers/app.helper.ts</code></strong> :</p>
+<pre><code class="language-ts"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">INestApplication</span>, <span class="hljs-title class_">ValidationPipe</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@nestjs/common&#x27;</span>;
+<span class="hljs-keyword">import</span> { <span class="hljs-title class_">Test</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@nestjs/testing&#x27;</span>;
+<span class="hljs-keyword">import</span> { <span class="hljs-title class_">DataSource</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;typeorm&#x27;</span>;
+<span class="hljs-keyword">import</span> { <span class="hljs-title class_">AppModule</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;../../src/app.module&#x27;</span>;
+<span class="hljs-keyword">import</span> { <span class="hljs-title class_">GlobalExceptionFilter</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;../../src/common/filters/global-exception.filter&#x27;</span>;
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">createTestApp</span>(<span class="hljs-params"></span>): <span class="hljs-title class_">Promise</span>&lt;{
+  <span class="hljs-attr">app</span>: <span class="hljs-title class_">INestApplication</span>;
+  <span class="hljs-attr">dataSource</span>: <span class="hljs-title class_">DataSource</span>;
+}&gt; {
+  <span class="hljs-keyword">const</span> moduleFixture = <span class="hljs-keyword">await</span> <span class="hljs-title class_">Test</span>.<span class="hljs-title function_">createTestingModule</span>({
+    <span class="hljs-attr">imports</span>: [<span class="hljs-title class_">AppModule</span>],
+  }).<span class="hljs-title function_">compile</span>();
+
+  <span class="hljs-keyword">const</span> app = moduleFixture.<span class="hljs-title function_">createNestApplication</span>();
+  app.<span class="hljs-title function_">setGlobalPrefix</span>(<span class="hljs-string">&#x27;api&#x27;</span>);
+  app.<span class="hljs-title function_">useGlobalPipes</span>(
+    <span class="hljs-keyword">new</span> <span class="hljs-title class_">ValidationPipe</span>({ <span class="hljs-attr">whitelist</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">forbidNonWhitelisted</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">transform</span>: <span class="hljs-literal">true</span> }),
+  );
+  app.<span class="hljs-title function_">useGlobalFilters</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">GlobalExceptionFilter</span>());
+
+  <span class="hljs-keyword">await</span> app.<span class="hljs-title function_">init</span>();
+  <span class="hljs-keyword">const</span> dataSource = app.<span class="hljs-title function_">get</span>(<span class="hljs-title class_">DataSource</span>);
+  <span class="hljs-keyword">return</span> { app, dataSource };
+}
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">cleanDatabase</span>(<span class="hljs-params">dataSource: DataSource</span>) {
+  <span class="hljs-keyword">await</span> dataSource.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;TRUNCATE TABLE team_members CASCADE&#x27;</span>);
+  <span class="hljs-keyword">await</span> dataSource.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;TRUNCATE TABLE comments CASCADE&#x27;</span>);
+  <span class="hljs-keyword">await</span> dataSource.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;TRUNCATE TABLE tasks CASCADE&#x27;</span>);
+  <span class="hljs-keyword">await</span> dataSource.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;TRUNCATE TABLE projects CASCADE&#x27;</span>);
+  <span class="hljs-keyword">await</span> dataSource.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;TRUNCATE TABLE teams CASCADE&#x27;</span>);
+  <span class="hljs-keyword">await</span> dataSource.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;TRUNCATE TABLE users CASCADE&#x27;</span>);
+}
+</code></pre>
+<p><strong><code>test/helpers/seed.helper.ts</code></strong> :</p>
+<pre><code class="language-ts"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">DataSource</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;typeorm&#x27;</span>;
+<span class="hljs-keyword">import</span> { <span class="hljs-title class_">User</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;../../src/users/entities/user.entity&#x27;</span>;
+<span class="hljs-keyword">import</span> { <span class="hljs-title class_">UserRole</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;../../src/users/dto/create-user.dto&#x27;</span>;
+<span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> bcrypt <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;bcrypt&#x27;</span>;
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">seedTestUsers</span>(<span class="hljs-params">dataSource: DataSource</span>) {
+  <span class="hljs-keyword">const</span> repo = dataSource.<span class="hljs-title function_">getRepository</span>(<span class="hljs-title class_">User</span>);
+  <span class="hljs-keyword">const</span> hash = <span class="hljs-keyword">await</span> bcrypt.<span class="hljs-title function_">hash</span>(<span class="hljs-string">&#x27;password123&#x27;</span>, <span class="hljs-number">10</span>);
+
+  <span class="hljs-keyword">const</span> admin = <span class="hljs-keyword">await</span> repo.<span class="hljs-title function_">save</span>(repo.<span class="hljs-title function_">create</span>({
+    <span class="hljs-attr">email</span>: <span class="hljs-string">&#x27;admin@test.com&#x27;</span>, <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;Admin Test&#x27;</span>,
+    <span class="hljs-attr">role</span>: <span class="hljs-title class_">UserRole</span>.<span class="hljs-property">ADMIN</span>, <span class="hljs-attr">passwordHash</span>: hash,
+  }));
+  <span class="hljs-keyword">const</span> member = <span class="hljs-keyword">await</span> repo.<span class="hljs-title function_">save</span>(repo.<span class="hljs-title function_">create</span>({
+    <span class="hljs-attr">email</span>: <span class="hljs-string">&#x27;member@test.com&#x27;</span>, <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;Member Test&#x27;</span>,
+    <span class="hljs-attr">role</span>: <span class="hljs-title class_">UserRole</span>.<span class="hljs-property">MEMBER</span>, <span class="hljs-attr">passwordHash</span>: hash,
+  }));
+
+  <span class="hljs-keyword">return</span> { admin, member };
+}
+</code></pre>
+<hr>
+<h2 id="étape-4--tests-e2e-auth">Étape 4 — Tests e2e Auth</h2>
+<p>Créer <code>test/auth.e2e-spec.ts</code>. La structure du fichier est fournie — <strong>écrivez les assertions</strong> :</p>
+<pre><code class="language-ts"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> request <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;supertest&#x27;</span>;
+<span class="hljs-keyword">import</span> { <span class="hljs-title class_">INestApplication</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@nestjs/common&#x27;</span>;
+<span class="hljs-keyword">import</span> { <span class="hljs-title class_">DataSource</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;typeorm&#x27;</span>;
+<span class="hljs-keyword">import</span> { createTestApp, cleanDatabase } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./helpers/app.helper&#x27;</span>;
+<span class="hljs-keyword">import</span> { seedTestUsers } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./helpers/seed.helper&#x27;</span>;
+
+<span class="hljs-title function_">describe</span>(<span class="hljs-string">&#x27;Auth (e2e)&#x27;</span>, <span class="hljs-function">() =&gt;</span> {
+  <span class="hljs-keyword">let</span> <span class="hljs-attr">app</span>: <span class="hljs-title class_">INestApplication</span>;
+  <span class="hljs-keyword">let</span> <span class="hljs-attr">dataSource</span>: <span class="hljs-title class_">DataSource</span>;
+  <span class="hljs-keyword">let</span> <span class="hljs-attr">accessToken</span>: <span class="hljs-built_in">string</span>;
+
+  <span class="hljs-title function_">beforeAll</span>(<span class="hljs-keyword">async</span> () =&gt; {
+    ({ app, dataSource } = <span class="hljs-keyword">await</span> <span class="hljs-title function_">createTestApp</span>());
+  });
+
+  <span class="hljs-title function_">beforeEach</span>(<span class="hljs-keyword">async</span> () =&gt; {
+    <span class="hljs-keyword">await</span> <span class="hljs-title function_">cleanDatabase</span>(dataSource);
+    <span class="hljs-keyword">await</span> <span class="hljs-title function_">seedTestUsers</span>(dataSource);
+  });
+
+  <span class="hljs-title function_">afterAll</span>(<span class="hljs-keyword">async</span> () =&gt; {
+    <span class="hljs-keyword">await</span> dataSource.<span class="hljs-title function_">destroy</span>();
+    <span class="hljs-keyword">await</span> app.<span class="hljs-title function_">close</span>();
+  });
+
+  <span class="hljs-title function_">describe</span>(<span class="hljs-string">&#x27;POST /api/auth/login&#x27;</span>, <span class="hljs-function">() =&gt;</span> {
+    <span class="hljs-title function_">it</span>(<span class="hljs-string">&#x27;200 + token avec les bons credentials&#x27;</span>, <span class="hljs-keyword">async</span> () =&gt; {
+      <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span></span>
+      <span class="hljs-comment">// - POST /api/auth/login avec email: &#x27;admin@test.com&#x27;, password: &#x27;password123&#x27;</span>
+      <span class="hljs-comment">// - Vérifier status 200</span>
+      <span class="hljs-comment">// - Vérifier que res.body contient &#x27;access_token&#x27; (string)</span>
+      <span class="hljs-comment">// - Vérifier que res.body.user.email === &#x27;admin@test.com&#x27;</span>
+    });
+
+    <span class="hljs-title function_">it</span>(<span class="hljs-string">&#x27;401 avec mauvais mot de passe&#x27;</span>, <span class="hljs-function">() =&gt;</span> {
+      <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span> même email, password: &#x27;wrong&#x27; → expect 401</span>
+    });
+
+    <span class="hljs-title function_">it</span>(<span class="hljs-string">&#x27;401 avec email inconnu&#x27;</span>, <span class="hljs-function">() =&gt;</span> {
+      <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span> email: &#x27;nobody@test.com&#x27; → expect 401</span>
+    });
+  });
+
+  <span class="hljs-title function_">describe</span>(<span class="hljs-string">&#x27;GET /api/auth/me&#x27;</span>, <span class="hljs-function">() =&gt;</span> {
+    <span class="hljs-title function_">beforeEach</span>(<span class="hljs-keyword">async</span> () =&gt; {
+      <span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> <span class="hljs-title function_">request</span>(app.<span class="hljs-title function_">getHttpServer</span>())
+        .<span class="hljs-title function_">post</span>(<span class="hljs-string">&#x27;/api/auth/login&#x27;</span>)
+        .<span class="hljs-title function_">send</span>({ <span class="hljs-attr">email</span>: <span class="hljs-string">&#x27;admin@test.com&#x27;</span>, <span class="hljs-attr">password</span>: <span class="hljs-string">&#x27;password123&#x27;</span> });
+      accessToken = res.<span class="hljs-property">body</span>.<span class="hljs-property">access_token</span>;
+    });
+
+    <span class="hljs-title function_">it</span>(<span class="hljs-string">&#x27;200 + profil connecté&#x27;</span>, <span class="hljs-keyword">async</span> () =&gt; {
+      <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span></span>
+      <span class="hljs-comment">// - GET /api/auth/me avec Authorization: Bearer {{accessToken}}</span>
+      <span class="hljs-comment">// - Vérifier status 200</span>
+      <span class="hljs-comment">// - Vérifier que res.body.email === &#x27;admin@test.com&#x27;</span>
+    });
+
+    <span class="hljs-title function_">it</span>(<span class="hljs-string">&#x27;401 sans token&#x27;</span>, <span class="hljs-function">() =&gt;</span> {
+      <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span> GET /api/auth/me sans header → expect 401</span>
+    });
+  });
+});
+</code></pre>
+<hr>
+<h2 id="étape-5--tests-e2e-users">Étape 5 — Tests e2e Users</h2>
+<p>Créer <code>test/users.e2e-spec.ts</code>. <strong>Écrivez les assertions</strong> :</p>
+<pre><code class="language-ts"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> request <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;supertest&#x27;</span>;
+<span class="hljs-keyword">import</span> { <span class="hljs-title class_">INestApplication</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@nestjs/common&#x27;</span>;
+<span class="hljs-keyword">import</span> { <span class="hljs-title class_">DataSource</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;typeorm&#x27;</span>;
+<span class="hljs-keyword">import</span> { createTestApp, cleanDatabase } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./helpers/app.helper&#x27;</span>;
+<span class="hljs-keyword">import</span> { seedTestUsers } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./helpers/seed.helper&#x27;</span>;
+
+<span class="hljs-title function_">describe</span>(<span class="hljs-string">&#x27;Users (e2e)&#x27;</span>, <span class="hljs-function">() =&gt;</span> {
+  <span class="hljs-keyword">let</span> <span class="hljs-attr">app</span>: <span class="hljs-title class_">INestApplication</span>;
+  <span class="hljs-keyword">let</span> <span class="hljs-attr">dataSource</span>: <span class="hljs-title class_">DataSource</span>;
+  <span class="hljs-keyword">let</span> <span class="hljs-attr">adminToken</span>: <span class="hljs-built_in">string</span>;
+  <span class="hljs-keyword">let</span> <span class="hljs-attr">memberToken</span>: <span class="hljs-built_in">string</span>;
+
+  <span class="hljs-title function_">beforeAll</span>(<span class="hljs-keyword">async</span> () =&gt; {
+    ({ app, dataSource } = <span class="hljs-keyword">await</span> <span class="hljs-title function_">createTestApp</span>());
+  });
+
+  <span class="hljs-title function_">beforeEach</span>(<span class="hljs-keyword">async</span> () =&gt; {
+    <span class="hljs-keyword">await</span> <span class="hljs-title function_">cleanDatabase</span>(dataSource);
+    <span class="hljs-keyword">await</span> <span class="hljs-title function_">seedTestUsers</span>(dataSource);
+
+    <span class="hljs-keyword">const</span> adminRes = <span class="hljs-keyword">await</span> <span class="hljs-title function_">request</span>(app.<span class="hljs-title function_">getHttpServer</span>())
+      .<span class="hljs-title function_">post</span>(<span class="hljs-string">&#x27;/api/auth/login&#x27;</span>)
+      .<span class="hljs-title function_">send</span>({ <span class="hljs-attr">email</span>: <span class="hljs-string">&#x27;admin@test.com&#x27;</span>, <span class="hljs-attr">password</span>: <span class="hljs-string">&#x27;password123&#x27;</span> });
+    adminToken = adminRes.<span class="hljs-property">body</span>.<span class="hljs-property">access_token</span>;
+
+    <span class="hljs-keyword">const</span> memberRes = <span class="hljs-keyword">await</span> <span class="hljs-title function_">request</span>(app.<span class="hljs-title function_">getHttpServer</span>())
+      .<span class="hljs-title function_">post</span>(<span class="hljs-string">&#x27;/api/auth/login&#x27;</span>)
+      .<span class="hljs-title function_">send</span>({ <span class="hljs-attr">email</span>: <span class="hljs-string">&#x27;member@test.com&#x27;</span>, <span class="hljs-attr">password</span>: <span class="hljs-string">&#x27;password123&#x27;</span> });
+    memberToken = memberRes.<span class="hljs-property">body</span>.<span class="hljs-property">access_token</span>;
+  });
+
+  <span class="hljs-title function_">afterAll</span>(<span class="hljs-keyword">async</span> () =&gt; {
+    <span class="hljs-keyword">await</span> dataSource.<span class="hljs-title function_">destroy</span>();
+    <span class="hljs-keyword">await</span> app.<span class="hljs-title function_">close</span>();
+  });
+
+  <span class="hljs-title function_">it</span>(<span class="hljs-string">&#x27;GET /api/users → 200 + liste non vide&#x27;</span>, <span class="hljs-keyword">async</span> () =&gt; {
+    <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span> GET avec adminToken → 200, body est un tableau non vide</span>
+  });
+
+  <span class="hljs-title function_">it</span>(<span class="hljs-string">&#x27;GET /api/users → 401 sans token&#x27;</span>, <span class="hljs-function">() =&gt;</span> {
+    <span class="hljs-comment">// TODO</span>
+  });
+
+  <span class="hljs-title function_">it</span>(<span class="hljs-string">&#x27;POST /api/users → 201 par admin&#x27;</span>, <span class="hljs-keyword">async</span> () =&gt; {
+    <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span></span>
+    <span class="hljs-comment">// - POST avec adminToken, body { email: &#x27;new@test.com&#x27;, name: &#x27;Nouveau&#x27;, password: &#x27;Password123&#x27; }</span>
+    <span class="hljs-comment">// - Vérifier 201, que res.body.id existe, que passwordHash n&#x27;est PAS dans la réponse</span>
+  });
+
+  <span class="hljs-title function_">it</span>(<span class="hljs-string">&#x27;POST /api/users → 400 email invalide&#x27;</span>, <span class="hljs-function">() =&gt;</span> {
+    <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span> body avec email malformé → expect 400</span>
+  });
+
+  <span class="hljs-title function_">it</span>(<span class="hljs-string">&#x27;POST /api/users → 403 par member (non admin)&#x27;</span>, <span class="hljs-function">() =&gt;</span> {
+    <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span> POST avec memberToken → expect 403</span>
+  });
+
+  <span class="hljs-title function_">it</span>(<span class="hljs-string">&#x27;Cycle complet : créer → récupérer → supprimer&#x27;</span>, <span class="hljs-keyword">async</span> () =&gt; {
+    <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span></span>
+    <span class="hljs-comment">// 1. POST → 201, récupérer id</span>
+    <span class="hljs-comment">// 2. GET /api/users/:id → 200</span>
+    <span class="hljs-comment">// 3. DELETE /api/users/:id → 204</span>
+    <span class="hljs-comment">// 4. GET /api/users/:id → 404</span>
+  });
+});
+</code></pre>
+<p>Lancer les tests e2e :</p>
+<pre><code class="language-bash">NODE_ENV=<span class="hljs-built_in">test</span> npm run <span class="hljs-built_in">test</span>:e2e
+</code></pre>
+<hr>
+<h2 id="checkpoint-">Checkpoint ✓</h2>
+<ul class="contains-task-list">
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> Base <code>taskflow_test</code> créée dans Docker</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> <code>NODE_ENV=test npm run test:e2e</code> → tous les tests passent</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> Tests Auth : login ok/ko, me ok/sans token</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> Tests Users : GET 200, POST 201, POST 400, POST 403, cycle CRUD complet</li>
+</ul>
+<p><strong>Commit suggéré :</strong></p>
+<pre><code class="language-bash">git add .
+git commit -m <span class="hljs-string">&quot;test: tests e2e Auth + Users (Supertest + base de test PostgreSQL)&quot;</span>
+</code></pre>
+
+            <script async src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script>
+            
+        </body>
+        </html>

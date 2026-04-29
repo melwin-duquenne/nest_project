@@ -4,6 +4,7 @@ import { Controller, Get } from '@nestjs/common';
 import { HealthCheck, HealthCheckService, TypeOrmHealthIndicator } from '@nestjs/terminus';
 import { Public } from '../auth/decorators/public.decorator';
 
+@Public()
 @Controller('health')
 export class HealthController {
   constructor(
@@ -11,8 +12,6 @@ export class HealthController {
     private db: TypeOrmHealthIndicator,
   ) {}
 
-  // Route publique (pas de JWT) — retourne { status: 'ok' } si la BDD répond, 503 sinon
-  @Public()
   @Get()
   @HealthCheck()
   check() {

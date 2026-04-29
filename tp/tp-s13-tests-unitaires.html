@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>TP 13 &mdash; Tests Unitaires avec Jest</title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+/* From extension jebbs.markdown-extended */
+@font-face {
+  font-family: "Material Icons";
+  font-style: normal;
+  font-weight: 400;
+  src: local("Material Icons"), local("MaterialIcons-Regular"), url("data:application/x-font-woff;charset=utf-8;base64,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") format("woff");
+}
+
+.admonition {
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12), 0 3px 1px -2px rgba(0, 0, 0, .2);
+  position: relative;
+  margin: 1.5625em 0;
+  padding: 0 1.2rem;
+  border-left: .4rem solid rgba(68, 138, 255, .8);
+  border-radius: .2rem;
+  background-color: rgba(255, 255, 255, 0.05);
+  overflow: auto;
+}
+
+.admonition>p {
+  margin-top: .8rem;
+}
+
+.admonition>.admonition-title {
+  margin: 0 -1.2rem;
+  padding: .8rem 1.2rem .8rem 3.6rem;
+  border-bottom: 1px solid rgba(68, 138, 255, .2);
+  background-color: rgba(68, 138, 255, .1);
+  font-weight: 700;
+}
+
+.admonition>.admonition-title:before {
+  position: absolute;
+  left: 1.2rem;
+  font-size: 1.5rem;
+  color: rgba(68, 138, 255, .8);
+  content: "\E3C9";
+}
+
+.admonition>.admonition-title:before {
+  font-family: Material Icons;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: 400;
+  line-height: 2rem;
+  text-transform: none;
+  white-space: nowrap;
+  speak: none;
+  word-wrap: normal;
+  direction: ltr;
+}
+
+.admonition.summary,
+.admonition.abstract,
+.admonition.tldr {
+  border-left-color: rgba(0, 176, 255, .8);
+}
+
+.admonition.summary>.admonition-title,
+.admonition.abstract>.admonition-title,
+.admonition.tldr>.admonition-title {
+  background-color: rgba(0, 176, 255, .1);
+  border-bottom-color: rgba(0, 176, 255, .2);
+}
+
+.admonition.summary>.admonition-title:before,
+.admonition.abstract>.admonition-title:before,
+.admonition.tldr>.admonition-title:before {
+  color: rgba(0, 176, 255, 1);
+  ;
+  content: "\E8D2";
+}
+
+.admonition.hint,
+.admonition.tip {
+  border-left-color: rgba(0, 191, 165, .8);
+}
+
+.admonition.hint>.admonition-title,
+.admonition.tip>.admonition-title {
+  background-color: rgba(0, 191, 165, .1);
+  border-bottom-color: rgba(0, 191, 165, .2);
+}
+
+.admonition.hint>.admonition-title:before,
+.admonition.tip>.admonition-title:before {
+  color: rgba(0, 191, 165, 1);
+  content: "\E80E";
+}
+
+.admonition.info,
+.admonition.todo {
+  border-left-color: rgba(0, 184, 212, .8);
+}
+
+.admonition.info>.admonition-title,
+.admonition.todo>.admonition-title {
+  background-color: rgba(0, 184, 212, .1);
+  border-bottom-color: rgba(0, 184, 212, .2);
+}
+
+.admonition.info>.admonition-title:before,
+.admonition.todo>.admonition-title:before {
+  color: rgba(0, 184, 212, 1);
+  ;
+  content: "\E88E";
+}
+
+.admonition.success,
+.admonition.check,
+.admonition.done {
+  border-left-color: rgba(0, 200, 83, .8);
+}
+
+.admonition.success>.admonition-title,
+.admonition.check>.admonition-title,
+.admonition.done>.admonition-title {
+  background-color: rgba(0, 200, 83, .1);
+  border-bottom-color: rgba(0, 200, 83, .2);
+}
+
+.admonition.success>.admonition-title:before,
+.admonition.check>.admonition-title:before,
+.admonition.done>.admonition-title:before {
+  color: rgba(0, 200, 83, 1);
+  ;
+  content: "\E876";
+}
+
+.admonition.question,
+.admonition.help,
+.admonition.faq {
+  border-left-color: rgba(100, 221, 23, .8);
+}
+
+.admonition.question>.admonition-title,
+.admonition.help>.admonition-title,
+.admonition.faq>.admonition-title {
+  background-color: rgba(100, 221, 23, .1);
+  border-bottom-color: rgba(100, 221, 23, .2);
+}
+
+.admonition.question>.admonition-title:before,
+.admonition.help>.admonition-title:before,
+.admonition.faq>.admonition-title:before {
+  color: rgba(100, 221, 23, 1);
+  ;
+  content: "\E887";
+}
+
+.admonition.warning,
+.admonition.attention,
+.admonition.caution {
+  border-left-color: rgba(255, 145, 0, .8);
+}
+
+.admonition.warning>.admonition-title,
+.admonition.attention>.admonition-title,
+.admonition.caution>.admonition-title {
+  background-color: rgba(255, 145, 0, .1);
+  border-bottom-color: rgba(255, 145, 0, .2);
+}
+
+.admonition.attention>.admonition-title:before {
+  color: rgba(255, 145, 0, 1);
+  content: "\E417";
+}
+
+.admonition.warning>.admonition-title:before,
+.admonition.caution>.admonition-title:before {
+  color: rgba(255, 145, 0, 1);
+  content: "\E002";
+}
+
+.admonition.failure,
+.admonition.fail,
+.admonition.missing {
+  border-left-color: rgba(255, 82, 82, .8);
+}
+
+.admonition.failure>.admonition-title,
+.admonition.fail>.admonition-title,
+.admonition.missing>.admonition-title {
+  background-color: rgba(255, 82, 82, .1);
+  border-bottom-color: rgba(255, 82, 82, .2);
+}
+
+.admonition.failure>.admonition-title:before,
+.admonition.fail>.admonition-title:before,
+.admonition.missing>.admonition-title:before {
+  color: rgba(255, 82, 82, 1);
+  ;
+  content: "\E14C";
+}
+
+.admonition.danger,
+.admonition.error,
+.admonition.bug {
+  border-left-color: rgba(255, 23, 68, .8);
+}
+
+.admonition.danger>.admonition-title,
+.admonition.error>.admonition-title,
+.admonition.bug>.admonition-title {
+  background-color: rgba(255, 23, 68, .1);
+  border-bottom-color: rgba(255, 23, 68, .2);
+}
+
+.admonition.danger>.admonition-title:before {
+  color: rgba(255, 23, 68, 1);
+  content: "\E3E7";
+}
+
+.admonition.error>.admonition-title:before {
+  color: rgba(255, 23, 68, 1);
+  content: "\E14C";
+}
+
+.admonition.bug>.admonition-title:before {
+  color: rgba(255, 23, 68, 1);
+  content: "\E868";
+}
+
+.admonition.example,
+.admonition.snippet {
+  border-left-color: rgba(0, 184, 212, .8);
+}
+
+.admonition.example>.admonition-title,
+.admonition.snippet>.admonition-title {
+  background-color: rgba(0, 184, 212, .1);
+  border-bottom-color: rgba(0, 184, 212, .2);
+}
+
+.admonition.example>.admonition-title:before,
+.admonition.snippet>.admonition-title:before {
+  color: rgba(0, 184, 212, 1);
+  ;
+  content: "\E242";
+}
+
+.admonition.quote,
+.admonition.cite {
+  border-left-color: rgba(158, 158, 158, .8);
+}
+
+.admonition.quote>.admonition-title,
+.admonition.cite>.admonition-title {
+  background-color: rgba(158, 158, 158, .1);
+  border-bottom-color: rgba(158, 158, 158, .2);
+}
+
+.admonition.quote>.admonition-title:before,
+.admonition.cite>.admonition-title:before {
+  color: rgba(158, 158, 158, 1);
+  ;
+  content: "\E244";
+}
+.vscode-light kbd,
+.vscode-dark kbd,
+.vscode-high-contrast kbd {
+  display: inline-block;
+  padding: 3px 5px;
+  font: 11px "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  line-height: 10px;
+  vertical-align: middle;
+  border: solid 1px #d1d5da;
+  border-bottom-color: #c6cbd1;
+  border-radius: 3px;
+  box-shadow: inset 0 -1px 0 #c6cbd1;
+}
+
+.vscode-light kbd {
+  color: #444d56;
+  background-color: #fafbfc;
+}
+</style>
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css">
+<link href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        
+        </head>
+        <body class="vscode-body vscode-light">
+            <h1 id="tp-13--tests-unitaires-avec-jest">TP 13 — Tests Unitaires avec Jest</h1>
+<p><strong>Durée :</strong> 45 minutes
+<strong>Objectif :</strong> écrire des tests unitaires pour <code>UsersService</code>, <code>TasksService</code>, et <code>RolesGuard</code>.</p>
+<hr>
+<h2 id="étape-1--helper--createmockrepository">Étape 1 — Helper : createMockRepository</h2>
+<p>Ce helper est fourni — il crée un repository TypeORM mocké :</p>
+<pre><code class="language-ts"><span class="hljs-comment">// src/common/helpers/mock-repository.helper.ts</span>
+<span class="hljs-keyword">import</span> { <span class="hljs-title class_">Repository</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;typeorm&#x27;</span>;
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> createMockRepository = &lt;T <span class="hljs-keyword">extends</span> <span class="hljs-built_in">object</span>&gt;(): jest.<span class="hljs-property">Mocked</span>&lt;
+  <span class="hljs-title class_">Pick</span>&lt;<span class="hljs-title class_">Repository</span>&lt;T&gt;, <span class="hljs-string">&#x27;find&#x27;</span> | <span class="hljs-string">&#x27;findOne&#x27;</span> | <span class="hljs-string">&#x27;findOneBy&#x27;</span> | <span class="hljs-string">&#x27;save&#x27;</span> | <span class="hljs-string">&#x27;create&#x27;</span> | <span class="hljs-string">&#x27;remove&#x27;</span> | <span class="hljs-string">&#x27;count&#x27;</span>&gt;
+&gt; =&gt; ({
+  <span class="hljs-attr">find</span>: jest.<span class="hljs-title function_">fn</span>(),
+  <span class="hljs-attr">findOne</span>: jest.<span class="hljs-title function_">fn</span>(),
+  <span class="hljs-attr">findOneBy</span>: jest.<span class="hljs-title function_">fn</span>(),
+  <span class="hljs-attr">save</span>: jest.<span class="hljs-title function_">fn</span>(),
+  <span class="hljs-attr">create</span>: jest.<span class="hljs-title function_">fn</span>(),
+  <span class="hljs-attr">remove</span>: jest.<span class="hljs-title function_">fn</span>(),
+  <span class="hljs-attr">count</span>: jest.<span class="hljs-title function_">fn</span>(),
+});
+</code></pre>
+<hr>
+<h2 id="étape-2--tests-usersservice">Étape 2 — Tests UsersService</h2>
+<p>Créer (ou remplacer) <code>src/users/users.service.spec.ts</code>.</p>
+<p>Le setup du module de test est fourni — <strong>écrivez les assertions</strong> :</p>
+<pre><code class="language-ts"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">Test</span>, <span class="hljs-title class_">TestingModule</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@nestjs/testing&#x27;</span>;
+<span class="hljs-keyword">import</span> { getRepositoryToken } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@nestjs/typeorm&#x27;</span>;
+<span class="hljs-keyword">import</span> { <span class="hljs-title class_">ConflictException</span>, <span class="hljs-title class_">NotFoundException</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@nestjs/common&#x27;</span>;
+<span class="hljs-keyword">import</span> { <span class="hljs-title class_">UsersService</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./users.service&#x27;</span>;
+<span class="hljs-keyword">import</span> { <span class="hljs-title class_">User</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./entities/user.entity&#x27;</span>;
+<span class="hljs-keyword">import</span> { <span class="hljs-title class_">UserRole</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./dto/create-user.dto&#x27;</span>;
+<span class="hljs-keyword">import</span> { createMockRepository } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;../common/helpers/mock-repository.helper&#x27;</span>;
+
+<span class="hljs-title function_">describe</span>(<span class="hljs-string">&#x27;UsersService&#x27;</span>, <span class="hljs-function">() =&gt;</span> {
+  <span class="hljs-keyword">let</span> <span class="hljs-attr">service</span>: <span class="hljs-title class_">UsersService</span>;
+  <span class="hljs-keyword">let</span> <span class="hljs-attr">repo</span>: <span class="hljs-title class_">ReturnType</span>&lt;<span class="hljs-keyword">typeof</span> createMockRepository&lt;<span class="hljs-title class_">User</span>&gt;&gt;;
+
+  <span class="hljs-keyword">const</span> <span class="hljs-attr">mockUser</span>: <span class="hljs-title class_">User</span> = {
+    <span class="hljs-attr">id</span>: <span class="hljs-string">&#x27;11111111-0000-0000-0000-000000000001&#x27;</span>,
+    <span class="hljs-attr">email</span>: <span class="hljs-string">&#x27;alice@test.com&#x27;</span>,
+    <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;Alice&#x27;</span>,
+    <span class="hljs-attr">role</span>: <span class="hljs-title class_">UserRole</span>.<span class="hljs-property">ADMIN</span>,
+    <span class="hljs-attr">passwordHash</span>: <span class="hljs-string">&#x27;$2b$10$hash&#x27;</span>,
+    <span class="hljs-attr">teams</span>: [],
+    <span class="hljs-attr">createdAt</span>: <span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>(),
+    <span class="hljs-attr">updatedAt</span>: <span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>(),
+  };
+
+  <span class="hljs-title function_">beforeEach</span>(<span class="hljs-keyword">async</span> () =&gt; {
+    repo = createMockRepository&lt;<span class="hljs-title class_">User</span>&gt;();
+
+    <span class="hljs-keyword">const</span> <span class="hljs-attr">module</span>: <span class="hljs-title class_">TestingModule</span> = <span class="hljs-keyword">await</span> <span class="hljs-title class_">Test</span>.<span class="hljs-title function_">createTestingModule</span>({
+      <span class="hljs-attr">providers</span>: [
+        <span class="hljs-title class_">UsersService</span>,
+        { <span class="hljs-attr">provide</span>: <span class="hljs-title function_">getRepositoryToken</span>(<span class="hljs-title class_">User</span>), <span class="hljs-attr">useValue</span>: repo },
+      ],
+    }).<span class="hljs-title function_">compile</span>();
+
+    service = <span class="hljs-variable language_">module</span>.<span class="hljs-property">get</span>&lt;<span class="hljs-title class_">UsersService</span>&gt;(<span class="hljs-title class_">UsersService</span>);
+  });
+
+  <span class="hljs-title function_">afterEach</span>(<span class="hljs-function">() =&gt;</span> jest.<span class="hljs-title function_">clearAllMocks</span>());
+
+  <span class="hljs-title function_">describe</span>(<span class="hljs-string">&#x27;findAll&#x27;</span>, <span class="hljs-function">() =&gt;</span> {
+    <span class="hljs-title function_">it</span>(<span class="hljs-string">&#x27;retourne un tableau d\&#x27;utilisateurs&#x27;</span>, <span class="hljs-keyword">async</span> () =&gt; {
+      repo.<span class="hljs-property">find</span>.<span class="hljs-title function_">mockResolvedValue</span>([mockUser]);
+      <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span> appeler service.findAll() et vérifier le résultat</span>
+      <span class="hljs-comment">// Vérifier aussi que repo.find a été appelé une fois</span>
+    });
+
+    <span class="hljs-title function_">it</span>(<span class="hljs-string">&#x27;retourne un tableau vide si aucun utilisateur&#x27;</span>, <span class="hljs-keyword">async</span> () =&gt; {
+      repo.<span class="hljs-property">find</span>.<span class="hljs-title function_">mockResolvedValue</span>([]);
+      <span class="hljs-comment">// TODO</span>
+    });
+  });
+
+  <span class="hljs-title function_">describe</span>(<span class="hljs-string">&#x27;findOne&#x27;</span>, <span class="hljs-function">() =&gt;</span> {
+    <span class="hljs-title function_">it</span>(<span class="hljs-string">&#x27;retourne l\&#x27;utilisateur quand il existe&#x27;</span>, <span class="hljs-keyword">async</span> () =&gt; {
+      repo.<span class="hljs-property">findOne</span>.<span class="hljs-title function_">mockResolvedValue</span>(mockUser);
+      <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span> vérifier que le résultat est mockUser</span>
+      <span class="hljs-comment">// Vérifier que repo.findOne a été appelé avec { where: { id: mockUser.id } }</span>
+    });
+
+    <span class="hljs-title function_">it</span>(<span class="hljs-string">&#x27;lève NotFoundException quand l\&#x27;utilisateur est introuvable&#x27;</span>, <span class="hljs-keyword">async</span> () =&gt; {
+      repo.<span class="hljs-property">findOne</span>.<span class="hljs-title function_">mockResolvedValue</span>(<span class="hljs-literal">null</span>);
+      <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span> vérifier que service.findOne(&#x27;id-inexistant&#x27;) rejette avec NotFoundException</span>
+    });
+  });
+
+  <span class="hljs-title function_">describe</span>(<span class="hljs-string">&#x27;create&#x27;</span>, <span class="hljs-function">() =&gt;</span> {
+    <span class="hljs-keyword">const</span> dto = {
+      <span class="hljs-attr">email</span>: <span class="hljs-string">&#x27;bob@test.com&#x27;</span>,
+      <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;Bob&#x27;</span>,
+      <span class="hljs-attr">password</span>: <span class="hljs-string">&#x27;secret123&#x27;</span>,
+      <span class="hljs-attr">role</span>: <span class="hljs-title class_">UserRole</span>.<span class="hljs-property">MEMBER</span>,
+    };
+
+    <span class="hljs-title function_">it</span>(<span class="hljs-string">&#x27;crée et retourne un utilisateur&#x27;</span>, <span class="hljs-keyword">async</span> () =&gt; {
+      repo.<span class="hljs-property">findOne</span>.<span class="hljs-title function_">mockResolvedValue</span>(<span class="hljs-literal">null</span>); <span class="hljs-comment">// pas de doublon</span>
+      <span class="hljs-keyword">const</span> newUser = { ...mockUser, <span class="hljs-attr">email</span>: dto.<span class="hljs-property">email</span>, <span class="hljs-attr">name</span>: dto.<span class="hljs-property">name</span> };
+      repo.<span class="hljs-property">create</span>.<span class="hljs-title function_">mockReturnValue</span>(newUser <span class="hljs-keyword">as</span> <span class="hljs-title class_">User</span>);
+      repo.<span class="hljs-property">save</span>.<span class="hljs-title function_">mockResolvedValue</span>(newUser <span class="hljs-keyword">as</span> <span class="hljs-title class_">User</span>);
+      <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span> appeler service.create(dto) et vérifier que save a été appelé</span>
+    });
+
+    <span class="hljs-title function_">it</span>(<span class="hljs-string">&#x27;lève ConflictException si l\&#x27;email existe déjà&#x27;</span>, <span class="hljs-keyword">async</span> () =&gt; {
+      repo.<span class="hljs-property">findOne</span>.<span class="hljs-title function_">mockResolvedValue</span>(mockUser); <span class="hljs-comment">// email déjà pris</span>
+      <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span> vérifier que service.create(dto) rejette avec ConflictException</span>
+      <span class="hljs-comment">// Vérifier aussi que repo.save n&#x27;a PAS été appelé</span>
+    });
+  });
+
+  <span class="hljs-title function_">describe</span>(<span class="hljs-string">&#x27;remove&#x27;</span>, <span class="hljs-function">() =&gt;</span> {
+    <span class="hljs-title function_">it</span>(<span class="hljs-string">&#x27;supprime l\&#x27;utilisateur existant&#x27;</span>, <span class="hljs-keyword">async</span> () =&gt; {
+      repo.<span class="hljs-property">findOne</span>.<span class="hljs-title function_">mockResolvedValue</span>(mockUser);
+      repo.<span class="hljs-property">remove</span>.<span class="hljs-title function_">mockResolvedValue</span>(mockUser);
+      <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span> vérifier que service.remove(mockUser.id) ne lève pas d&#x27;erreur</span>
+      <span class="hljs-comment">// Vérifier que repo.remove a été appelé avec mockUser</span>
+    });
+
+    <span class="hljs-title function_">it</span>(<span class="hljs-string">&#x27;lève NotFoundException si l\&#x27;utilisateur n\&#x27;existe pas&#x27;</span>, <span class="hljs-keyword">async</span> () =&gt; {
+      repo.<span class="hljs-property">findOne</span>.<span class="hljs-title function_">mockResolvedValue</span>(<span class="hljs-literal">null</span>);
+      <span class="hljs-comment">// TODO</span>
+    });
+  });
+});
+</code></pre>
+<p>Lancer les tests :</p>
+<pre><code class="language-bash">npm run <span class="hljs-built_in">test</span> -- --testPathPattern=users.service
+</code></pre>
+<hr>
+<h2 id="étape-3--tests-rolesguard">Étape 3 — Tests RolesGuard</h2>
+<p>Créer <code>src/auth/guards/roles.guard.spec.ts</code>.</p>
+<p>Le helper de contexte et le setup sont fournis — <strong>écrivez les corps des tests</strong> :</p>
+<pre><code class="language-ts"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">Test</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@nestjs/testing&#x27;</span>;
+<span class="hljs-keyword">import</span> { <span class="hljs-title class_">Reflector</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@nestjs/core&#x27;</span>;
+<span class="hljs-keyword">import</span> { <span class="hljs-title class_">ExecutionContext</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@nestjs/common&#x27;</span>;
+<span class="hljs-keyword">import</span> { <span class="hljs-title class_">RolesGuard</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./roles.guard&#x27;</span>;
+<span class="hljs-keyword">import</span> { <span class="hljs-title class_">UserRole</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;../../users/dto/create-user.dto&#x27;</span>;
+
+<span class="hljs-comment">// Helper pour créer un ExecutionContext mocké</span>
+<span class="hljs-keyword">const</span> createMockContext = (<span class="hljs-attr">role</span>: <span class="hljs-built_in">string</span>): <span class="hljs-function"><span class="hljs-params">ExecutionContext</span> =&gt;</span>
+  ({
+    <span class="hljs-attr">getHandler</span>: <span class="hljs-function">() =&gt;</span> ({}),
+    <span class="hljs-attr">getClass</span>: <span class="hljs-function">() =&gt;</span> ({}),
+    <span class="hljs-attr">switchToHttp</span>: <span class="hljs-function">() =&gt;</span> ({
+      <span class="hljs-attr">getRequest</span>: <span class="hljs-function">() =&gt;</span> ({ <span class="hljs-attr">user</span>: { <span class="hljs-attr">id</span>: <span class="hljs-string">&#x27;uuid&#x27;</span>, <span class="hljs-attr">email</span>: <span class="hljs-string">&#x27;test@test.com&#x27;</span>, role } }),
+    }),
+  } <span class="hljs-keyword">as</span> <span class="hljs-built_in">any</span>);
+
+<span class="hljs-title function_">describe</span>(<span class="hljs-string">&#x27;RolesGuard&#x27;</span>, <span class="hljs-function">() =&gt;</span> {
+  <span class="hljs-keyword">let</span> <span class="hljs-attr">guard</span>: <span class="hljs-title class_">RolesGuard</span>;
+  <span class="hljs-keyword">let</span> <span class="hljs-attr">reflector</span>: <span class="hljs-title class_">Reflector</span>;
+
+  <span class="hljs-title function_">beforeEach</span>(<span class="hljs-keyword">async</span> () =&gt; {
+    <span class="hljs-keyword">const</span> <span class="hljs-variable language_">module</span> = <span class="hljs-keyword">await</span> <span class="hljs-title class_">Test</span>.<span class="hljs-title function_">createTestingModule</span>({
+      <span class="hljs-attr">providers</span>: [<span class="hljs-title class_">RolesGuard</span>, <span class="hljs-title class_">Reflector</span>],
+    }).<span class="hljs-title function_">compile</span>();
+
+    guard = <span class="hljs-variable language_">module</span>.<span class="hljs-property">get</span>&lt;<span class="hljs-title class_">RolesGuard</span>&gt;(<span class="hljs-title class_">RolesGuard</span>);
+    reflector = <span class="hljs-variable language_">module</span>.<span class="hljs-property">get</span>&lt;<span class="hljs-title class_">Reflector</span>&gt;(<span class="hljs-title class_">Reflector</span>);
+  });
+
+  <span class="hljs-title function_">it</span>(<span class="hljs-string">&#x27;autorise si aucun rôle requis (pas de @Roles)&#x27;</span>, <span class="hljs-function">() =&gt;</span> {
+    jest.<span class="hljs-title function_">spyOn</span>(reflector, <span class="hljs-string">&#x27;getAllAndOverride&#x27;</span>).<span class="hljs-title function_">mockReturnValue</span>(<span class="hljs-literal">null</span>);
+    <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span> vérifier que guard.canActivate(...) retourne true pour un VIEWER</span>
+  });
+
+  <span class="hljs-title function_">it</span>(<span class="hljs-string">&#x27;autorise si le rôle correspond&#x27;</span>, <span class="hljs-function">() =&gt;</span> {
+    jest.<span class="hljs-title function_">spyOn</span>(reflector, <span class="hljs-string">&#x27;getAllAndOverride&#x27;</span>).<span class="hljs-title function_">mockReturnValue</span>([<span class="hljs-title class_">UserRole</span>.<span class="hljs-property">ADMIN</span>]);
+    <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span> vérifier que canActivate retourne true pour un ADMIN</span>
+  });
+
+  <span class="hljs-title function_">it</span>(<span class="hljs-string">&#x27;refuse si le rôle est insuffisant&#x27;</span>, <span class="hljs-function">() =&gt;</span> {
+    jest.<span class="hljs-title function_">spyOn</span>(reflector, <span class="hljs-string">&#x27;getAllAndOverride&#x27;</span>).<span class="hljs-title function_">mockReturnValue</span>([<span class="hljs-title class_">UserRole</span>.<span class="hljs-property">ADMIN</span>]);
+    <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span> vérifier que canActivate retourne false pour un VIEWER</span>
+  });
+
+  <span class="hljs-title function_">it</span>(<span class="hljs-string">&#x27;autorise si plusieurs rôles acceptés et l\&#x27;un correspond&#x27;</span>, <span class="hljs-function">() =&gt;</span> {
+    jest.<span class="hljs-title function_">spyOn</span>(reflector, <span class="hljs-string">&#x27;getAllAndOverride&#x27;</span>).<span class="hljs-title function_">mockReturnValue</span>([<span class="hljs-title class_">UserRole</span>.<span class="hljs-property">ADMIN</span>, <span class="hljs-title class_">UserRole</span>.<span class="hljs-property">MEMBER</span>]);
+    <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span> vérifier que canActivate retourne true pour un MEMBER</span>
+  });
+});
+</code></pre>
+<p>Lancer :</p>
+<pre><code class="language-bash">npm run <span class="hljs-built_in">test</span> -- --testPathPattern=roles.guard
+</code></pre>
+<hr>
+<h2 id="étape-4--rapport-de-couverture">Étape 4 — Rapport de couverture</h2>
+<pre><code class="language-bash">npm run <span class="hljs-built_in">test</span>:cov
+</code></pre>
+<p>Observer le rapport HTML :</p>
+<pre><code class="language-bash">open coverage/lcov-report/index.html
+</code></pre>
+<hr>
+<h2 id="checkpoint-">Checkpoint ✓</h2>
+<ul class="contains-task-list">
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> <code>npm run test</code> → tous les tests passent (vert)</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> <code>UsersService</code> : tests pour <code>findOne</code> (ok + 404), <code>create</code> (ok + conflit), <code>remove</code></li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> <code>RolesGuard</code> : 4 cas testés</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> <code>npm run test:cov</code> → coverage &gt; 70% sur les services testés</li>
+</ul>
+<p><strong>Commit suggéré :</strong></p>
+<pre><code class="language-bash">git add .
+git commit -m <span class="hljs-string">&quot;test: tests unitaires UsersService + RolesGuard (Jest + mocks)&quot;</span>
+</code></pre>
+
+            <script async src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script>
+            
+        </body>
+        </html>

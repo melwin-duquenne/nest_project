@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>TP 18 &mdash; Docker &plus; CI&sol;CD &plus; D&eacute;ploiement</title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+/* From extension jebbs.markdown-extended */
+@font-face {
+  font-family: "Material Icons";
+  font-style: normal;
+  font-weight: 400;
+  src: local("Material Icons"), local("MaterialIcons-Regular"), url("data:application/x-font-woff;charset=utf-8;base64,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") format("woff");
+}
+
+.admonition {
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12), 0 3px 1px -2px rgba(0, 0, 0, .2);
+  position: relative;
+  margin: 1.5625em 0;
+  padding: 0 1.2rem;
+  border-left: .4rem solid rgba(68, 138, 255, .8);
+  border-radius: .2rem;
+  background-color: rgba(255, 255, 255, 0.05);
+  overflow: auto;
+}
+
+.admonition>p {
+  margin-top: .8rem;
+}
+
+.admonition>.admonition-title {
+  margin: 0 -1.2rem;
+  padding: .8rem 1.2rem .8rem 3.6rem;
+  border-bottom: 1px solid rgba(68, 138, 255, .2);
+  background-color: rgba(68, 138, 255, .1);
+  font-weight: 700;
+}
+
+.admonition>.admonition-title:before {
+  position: absolute;
+  left: 1.2rem;
+  font-size: 1.5rem;
+  color: rgba(68, 138, 255, .8);
+  content: "\E3C9";
+}
+
+.admonition>.admonition-title:before {
+  font-family: Material Icons;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: 400;
+  line-height: 2rem;
+  text-transform: none;
+  white-space: nowrap;
+  speak: none;
+  word-wrap: normal;
+  direction: ltr;
+}
+
+.admonition.summary,
+.admonition.abstract,
+.admonition.tldr {
+  border-left-color: rgba(0, 176, 255, .8);
+}
+
+.admonition.summary>.admonition-title,
+.admonition.abstract>.admonition-title,
+.admonition.tldr>.admonition-title {
+  background-color: rgba(0, 176, 255, .1);
+  border-bottom-color: rgba(0, 176, 255, .2);
+}
+
+.admonition.summary>.admonition-title:before,
+.admonition.abstract>.admonition-title:before,
+.admonition.tldr>.admonition-title:before {
+  color: rgba(0, 176, 255, 1);
+  ;
+  content: "\E8D2";
+}
+
+.admonition.hint,
+.admonition.tip {
+  border-left-color: rgba(0, 191, 165, .8);
+}
+
+.admonition.hint>.admonition-title,
+.admonition.tip>.admonition-title {
+  background-color: rgba(0, 191, 165, .1);
+  border-bottom-color: rgba(0, 191, 165, .2);
+}
+
+.admonition.hint>.admonition-title:before,
+.admonition.tip>.admonition-title:before {
+  color: rgba(0, 191, 165, 1);
+  content: "\E80E";
+}
+
+.admonition.info,
+.admonition.todo {
+  border-left-color: rgba(0, 184, 212, .8);
+}
+
+.admonition.info>.admonition-title,
+.admonition.todo>.admonition-title {
+  background-color: rgba(0, 184, 212, .1);
+  border-bottom-color: rgba(0, 184, 212, .2);
+}
+
+.admonition.info>.admonition-title:before,
+.admonition.todo>.admonition-title:before {
+  color: rgba(0, 184, 212, 1);
+  ;
+  content: "\E88E";
+}
+
+.admonition.success,
+.admonition.check,
+.admonition.done {
+  border-left-color: rgba(0, 200, 83, .8);
+}
+
+.admonition.success>.admonition-title,
+.admonition.check>.admonition-title,
+.admonition.done>.admonition-title {
+  background-color: rgba(0, 200, 83, .1);
+  border-bottom-color: rgba(0, 200, 83, .2);
+}
+
+.admonition.success>.admonition-title:before,
+.admonition.check>.admonition-title:before,
+.admonition.done>.admonition-title:before {
+  color: rgba(0, 200, 83, 1);
+  ;
+  content: "\E876";
+}
+
+.admonition.question,
+.admonition.help,
+.admonition.faq {
+  border-left-color: rgba(100, 221, 23, .8);
+}
+
+.admonition.question>.admonition-title,
+.admonition.help>.admonition-title,
+.admonition.faq>.admonition-title {
+  background-color: rgba(100, 221, 23, .1);
+  border-bottom-color: rgba(100, 221, 23, .2);
+}
+
+.admonition.question>.admonition-title:before,
+.admonition.help>.admonition-title:before,
+.admonition.faq>.admonition-title:before {
+  color: rgba(100, 221, 23, 1);
+  ;
+  content: "\E887";
+}
+
+.admonition.warning,
+.admonition.attention,
+.admonition.caution {
+  border-left-color: rgba(255, 145, 0, .8);
+}
+
+.admonition.warning>.admonition-title,
+.admonition.attention>.admonition-title,
+.admonition.caution>.admonition-title {
+  background-color: rgba(255, 145, 0, .1);
+  border-bottom-color: rgba(255, 145, 0, .2);
+}
+
+.admonition.attention>.admonition-title:before {
+  color: rgba(255, 145, 0, 1);
+  content: "\E417";
+}
+
+.admonition.warning>.admonition-title:before,
+.admonition.caution>.admonition-title:before {
+  color: rgba(255, 145, 0, 1);
+  content: "\E002";
+}
+
+.admonition.failure,
+.admonition.fail,
+.admonition.missing {
+  border-left-color: rgba(255, 82, 82, .8);
+}
+
+.admonition.failure>.admonition-title,
+.admonition.fail>.admonition-title,
+.admonition.missing>.admonition-title {
+  background-color: rgba(255, 82, 82, .1);
+  border-bottom-color: rgba(255, 82, 82, .2);
+}
+
+.admonition.failure>.admonition-title:before,
+.admonition.fail>.admonition-title:before,
+.admonition.missing>.admonition-title:before {
+  color: rgba(255, 82, 82, 1);
+  ;
+  content: "\E14C";
+}
+
+.admonition.danger,
+.admonition.error,
+.admonition.bug {
+  border-left-color: rgba(255, 23, 68, .8);
+}
+
+.admonition.danger>.admonition-title,
+.admonition.error>.admonition-title,
+.admonition.bug>.admonition-title {
+  background-color: rgba(255, 23, 68, .1);
+  border-bottom-color: rgba(255, 23, 68, .2);
+}
+
+.admonition.danger>.admonition-title:before {
+  color: rgba(255, 23, 68, 1);
+  content: "\E3E7";
+}
+
+.admonition.error>.admonition-title:before {
+  color: rgba(255, 23, 68, 1);
+  content: "\E14C";
+}
+
+.admonition.bug>.admonition-title:before {
+  color: rgba(255, 23, 68, 1);
+  content: "\E868";
+}
+
+.admonition.example,
+.admonition.snippet {
+  border-left-color: rgba(0, 184, 212, .8);
+}
+
+.admonition.example>.admonition-title,
+.admonition.snippet>.admonition-title {
+  background-color: rgba(0, 184, 212, .1);
+  border-bottom-color: rgba(0, 184, 212, .2);
+}
+
+.admonition.example>.admonition-title:before,
+.admonition.snippet>.admonition-title:before {
+  color: rgba(0, 184, 212, 1);
+  ;
+  content: "\E242";
+}
+
+.admonition.quote,
+.admonition.cite {
+  border-left-color: rgba(158, 158, 158, .8);
+}
+
+.admonition.quote>.admonition-title,
+.admonition.cite>.admonition-title {
+  background-color: rgba(158, 158, 158, .1);
+  border-bottom-color: rgba(158, 158, 158, .2);
+}
+
+.admonition.quote>.admonition-title:before,
+.admonition.cite>.admonition-title:before {
+  color: rgba(158, 158, 158, 1);
+  ;
+  content: "\E244";
+}
+.vscode-light kbd,
+.vscode-dark kbd,
+.vscode-high-contrast kbd {
+  display: inline-block;
+  padding: 3px 5px;
+  font: 11px "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  line-height: 10px;
+  vertical-align: middle;
+  border: solid 1px #d1d5da;
+  border-bottom-color: #c6cbd1;
+  border-radius: 3px;
+  box-shadow: inset 0 -1px 0 #c6cbd1;
+}
+
+.vscode-light kbd {
+  color: #444d56;
+  background-color: #fafbfc;
+}
+</style>
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css">
+<link href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        
+        </head>
+        <body class="vscode-body vscode-light">
+            <h1 id="tp-18--docker--cicd--déploiement">TP 18 — Docker + CI/CD + Déploiement</h1>
+<p><strong>Durée :</strong> 45 minutes
+<strong>Objectif :</strong> écrire le Dockerfile multi-stage, docker-compose.prod.yml, et le pipeline GitHub Actions.</p>
+<hr>
+<h2 id="étape-1--dockerignore">Étape 1 — .dockerignore</h2>
+<p>Créer <code>.dockerignore</code> à la racine :</p>
+<pre><code>node_modules
+dist
+.git
+.env
+.env.*
+.env.example
+*.log
+coverage
+test
+*.md
+.github
+docker-compose*.yml
+</code></pre>
+<hr>
+<h2 id="étape-2--dockerfile-multi-stage">Étape 2 — Dockerfile multi-stage</h2>
+<p>Créer <code>Dockerfile</code> à la racine.</p>
+<p>Un Dockerfile multi-stage a deux étapes :</p>
+<ol>
+<li><strong>Builder</strong> — image complète avec devDependencies, compile TypeScript (<code>npm run build</code>)</li>
+<li><strong>Runner</strong> — image légère avec prod dependencies uniquement, copie le <code>dist/</code> depuis builder</li>
+</ol>
+<pre><code class="language-dockerfile"><span class="hljs-comment"># ───── Étape 1 : Builder ─────</span>
+<span class="hljs-keyword">FROM</span> node:<span class="hljs-number">20</span>-alpine AS builder
+<span class="hljs-keyword">WORKDIR</span><span class="language-bash"> /app</span>
+
+<span class="hljs-keyword">COPY</span><span class="language-bash"> package*.json ./</span>
+<span class="hljs-keyword">RUN</span><span class="language-bash"> npm ci</span>
+
+<span class="hljs-keyword">COPY</span><span class="language-bash"> . .</span>
+<span class="hljs-keyword">RUN</span><span class="language-bash"> npm run build</span>
+
+<span class="hljs-comment"># ───── Étape 2 : Runner ─────</span>
+<span class="hljs-keyword">FROM</span> node:<span class="hljs-number">20</span>-alpine AS runner
+<span class="hljs-keyword">WORKDIR</span><span class="language-bash"> /app</span>
+
+<span class="hljs-keyword">COPY</span><span class="language-bash"> package*.json ./</span>
+<span class="hljs-keyword">RUN</span><span class="language-bash"> npm ci --only=production &amp;&amp; npm cache clean --force</span>
+
+<span class="hljs-keyword">COPY</span><span class="language-bash"> --from=builder /app/dist ./dist</span>
+
+<span class="hljs-comment"># Sécurité : utilisateur non-root</span>
+<span class="hljs-keyword">RUN</span><span class="language-bash"> addgroup -S appgroup &amp;&amp; adduser -S appuser -G appgroup</span>
+<span class="hljs-keyword">USER</span> appuser
+
+<span class="hljs-keyword">ENV</span> NODE_ENV=production
+<span class="hljs-keyword">EXPOSE</span> <span class="hljs-number">3000</span>
+
+<span class="hljs-keyword">HEALTHCHECK</span><span class="language-bash"> --interval=30s --<span class="hljs-built_in">timeout</span>=5s --start-period=10s \
+  CMD wget -qO- http://localhost:3000/api/health || <span class="hljs-built_in">exit</span> 1</span>
+
+<span class="hljs-keyword">CMD</span><span class="language-bash"> [<span class="hljs-string">&quot;node&quot;</span>, <span class="hljs-string">&quot;dist/main.js&quot;</span>]</span>
+</code></pre>
+<p>Tester le build :</p>
+<pre><code class="language-bash">docker build -t taskflow-api:<span class="hljs-built_in">local</span> .
+docker images taskflow-api  <span class="hljs-comment"># vérifier la taille de l&#x27;image</span>
+</code></pre>
+<hr>
+<h2 id="étape-3--health-check-endpoint">Étape 3 — Health check endpoint</h2>
+<pre><code class="language-bash">npm install @nestjs/terminus
+</code></pre>
+<p>Créer <code>src/health/health.module.ts</code> et <code>src/health/health.controller.ts</code>.</p>
+<p>Le controller doit :</p>
+<ul>
+<li>Être marqué <code>@Public()</code> (accessible sans JWT)</li>
+<li>Utiliser <code>HealthCheckService</code> et <code>TypeOrmHealthIndicator</code> de <code>@nestjs/terminus</code></li>
+<li>Exposer <code>GET /health</code> qui vérifie que la base de données répond</li>
+</ul>
+<pre><code class="language-ts"><span class="hljs-meta">@Controller</span>(<span class="hljs-string">&#x27;health&#x27;</span>)
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">HealthController</span> {
+  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">
+    <span class="hljs-keyword">private</span> health: HealthCheckService,
+    <span class="hljs-keyword">private</span> db: TypeOrmHealthIndicator,
+  </span>) {}
+
+  <span class="hljs-meta">@Public</span>()
+  <span class="hljs-meta">@Get</span>()
+  <span class="hljs-meta">@HealthCheck</span>()
+  <span class="hljs-title function_">check</span>(<span class="hljs-params"></span>) {
+    <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span> return this.health.check([() =&gt; this.db.pingCheck(&#x27;database&#x27;)])</span>
+  }
+}
+</code></pre>
+<p>Importer <code>HealthModule</code> dans AppModule.</p>
+<p>Tester :</p>
+<pre><code class="language-bash">curl http://localhost:3000/api/health
+<span class="hljs-comment"># → { &quot;status&quot;: &quot;ok&quot;, &quot;info&quot;: { &quot;database&quot;: { &quot;status&quot;: &quot;up&quot; } } }</span>
+</code></pre>
+<hr>
+<h2 id="étape-4--docker-composeprodyml">Étape 4 — docker-compose.prod.yml</h2>
+<p>Créer <code>docker-compose.prod.yml</code> :</p>
+<pre><code class="language-yaml"><span class="hljs-attr">services:</span>
+  <span class="hljs-attr">api:</span>
+    <span class="hljs-attr">build:</span>
+      <span class="hljs-attr">context:</span> <span class="hljs-string">.</span>
+      <span class="hljs-attr">dockerfile:</span> <span class="hljs-string">Dockerfile</span>
+      <span class="hljs-attr">target:</span> <span class="hljs-string">runner</span>
+    <span class="hljs-attr">container_name:</span> <span class="hljs-string">taskflow_api</span>
+    <span class="hljs-attr">env_file:</span> <span class="hljs-string">.env.production</span>
+    <span class="hljs-attr">ports:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">&quot;3000:3000&quot;</span>
+    <span class="hljs-attr">depends_on:</span>
+      <span class="hljs-attr">postgres:</span>
+        <span class="hljs-attr">condition:</span> <span class="hljs-string">service_healthy</span>
+    <span class="hljs-attr">restart:</span> <span class="hljs-string">unless-stopped</span>
+    <span class="hljs-attr">networks:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">taskflow_net</span>
+
+  <span class="hljs-attr">postgres:</span>
+    <span class="hljs-attr">image:</span> <span class="hljs-string">postgres:16-alpine</span>
+    <span class="hljs-attr">container_name:</span> <span class="hljs-string">taskflow_postgres_prod</span>
+    <span class="hljs-attr">environment:</span>
+      <span class="hljs-attr">POSTGRES_DB:</span> <span class="hljs-string">${DB_NAME}</span>
+      <span class="hljs-attr">POSTGRES_USER:</span> <span class="hljs-string">${DB_USER}</span>
+      <span class="hljs-attr">POSTGRES_PASSWORD:</span> <span class="hljs-string">${DB_PASSWORD}</span>
+    <span class="hljs-attr">volumes:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">pgdata_prod:/var/lib/postgresql/data</span>
+    <span class="hljs-attr">healthcheck:</span>
+      <span class="hljs-attr">test:</span> [<span class="hljs-string">&quot;CMD-SHELL&quot;</span>, <span class="hljs-string">&quot;pg_isready -U ${DB_USER}&quot;</span>]
+      <span class="hljs-attr">interval:</span> <span class="hljs-string">10s</span>
+      <span class="hljs-attr">timeout:</span> <span class="hljs-string">5s</span>
+      <span class="hljs-attr">retries:</span> <span class="hljs-number">5</span>
+    <span class="hljs-attr">restart:</span> <span class="hljs-string">unless-stopped</span>
+    <span class="hljs-attr">networks:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">taskflow_net</span>
+
+<span class="hljs-attr">volumes:</span>
+  <span class="hljs-attr">pgdata_prod:</span>
+
+<span class="hljs-attr">networks:</span>
+  <span class="hljs-attr">taskflow_net:</span>
+    <span class="hljs-attr">driver:</span> <span class="hljs-string">bridge</span>
+</code></pre>
+<p>Créer <code>.env.production</code> (ne pas committer — l'ajouter au <code>.gitignore</code>) :</p>
+<pre><code class="language-env">NODE_ENV=production
+DB_HOST=postgres
+DB_PORT=5432
+DB_NAME=taskflow
+DB_USER=taskflow_prod
+DB_PASSWORD=CHANGER_MOT_DE_PASSE_FORT
+JWT_SECRET=CHANGER_SECRET_LONG_ET_ALEATOIRE_MIN_64_CHARS
+JWT_EXPIRES_IN=8h
+</code></pre>
+<p>Tester :</p>
+<pre><code class="language-bash">docker compose -f docker-compose.prod.yml up --build
+curl http://localhost:3000/api/health
+</code></pre>
+<hr>
+<h2 id="étape-5--pipeline-github-actions">Étape 5 — Pipeline GitHub Actions</h2>
+<p>Créer <code>.github/workflows/ci.yml</code> :</p>
+<pre><code class="language-yaml"><span class="hljs-attr">name:</span> <span class="hljs-string">CI</span> <span class="hljs-string">TaskFlow</span> <span class="hljs-string">API</span>
+
+<span class="hljs-attr">on:</span>
+  <span class="hljs-attr">push:</span>
+    <span class="hljs-attr">branches:</span> [<span class="hljs-string">main</span>, <span class="hljs-string">develop</span>]
+  <span class="hljs-attr">pull_request:</span>
+    <span class="hljs-attr">branches:</span> [<span class="hljs-string">main</span>]
+
+<span class="hljs-attr">env:</span>
+  <span class="hljs-attr">NODE_VERSION:</span> <span class="hljs-string">&#x27;20&#x27;</span>
+
+<span class="hljs-attr">jobs:</span>
+  <span class="hljs-attr">lint-and-test:</span>
+    <span class="hljs-attr">name:</span> <span class="hljs-string">Lint</span> <span class="hljs-string">&amp;</span> <span class="hljs-string">Tests</span>
+    <span class="hljs-attr">runs-on:</span> <span class="hljs-string">ubuntu-latest</span>
+
+    <span class="hljs-attr">services:</span>
+      <span class="hljs-attr">postgres:</span>
+        <span class="hljs-attr">image:</span> <span class="hljs-string">postgres:16-alpine</span>
+        <span class="hljs-attr">env:</span>
+          <span class="hljs-attr">POSTGRES_DB:</span> <span class="hljs-string">taskflow_test</span>
+          <span class="hljs-attr">POSTGRES_USER:</span> <span class="hljs-string">taskflow</span>
+          <span class="hljs-attr">POSTGRES_PASSWORD:</span> <span class="hljs-string">taskflow</span>
+        <span class="hljs-attr">ports:</span>
+          <span class="hljs-bullet">-</span> <span class="hljs-number">5432</span><span class="hljs-string">:5432</span>
+        <span class="hljs-attr">options:</span> <span class="hljs-string">&gt;-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+</span>
+    <span class="hljs-attr">steps:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Checkout</span>
+        <span class="hljs-attr">uses:</span> <span class="hljs-string">actions/checkout@v4</span>
+
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Setup</span> <span class="hljs-string">Node.js</span> <span class="hljs-string">${{</span> <span class="hljs-string">env.NODE_VERSION</span> <span class="hljs-string">}}</span>
+        <span class="hljs-attr">uses:</span> <span class="hljs-string">actions/setup-node@v4</span>
+        <span class="hljs-attr">with:</span>
+          <span class="hljs-attr">node-version:</span> <span class="hljs-string">${{</span> <span class="hljs-string">env.NODE_VERSION</span> <span class="hljs-string">}}</span>
+          <span class="hljs-attr">cache:</span> <span class="hljs-string">&#x27;npm&#x27;</span>
+
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Installer</span> <span class="hljs-string">les</span> <span class="hljs-string">dépendances</span>
+        <span class="hljs-attr">run:</span> <span class="hljs-string">npm</span> <span class="hljs-string">ci</span>
+
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Linter</span> <span class="hljs-string">ESLint</span>
+        <span class="hljs-attr">run:</span> <span class="hljs-string">npm</span> <span class="hljs-string">run</span> <span class="hljs-string">lint</span>
+
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Tests</span> <span class="hljs-string">unitaires</span>
+        <span class="hljs-attr">run:</span> <span class="hljs-string">npm</span> <span class="hljs-string">run</span> <span class="hljs-string">test</span> <span class="hljs-string">--</span> <span class="hljs-string">--coverage</span>
+
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Tests</span> <span class="hljs-string">e2e</span>
+        <span class="hljs-attr">run:</span> <span class="hljs-string">npm</span> <span class="hljs-string">run</span> <span class="hljs-string">test:e2e</span>
+        <span class="hljs-attr">env:</span>
+          <span class="hljs-attr">NODE_ENV:</span> <span class="hljs-string">test</span>
+          <span class="hljs-attr">DB_HOST:</span> <span class="hljs-string">localhost</span>
+          <span class="hljs-attr">DB_PORT:</span> <span class="hljs-number">5432</span>
+          <span class="hljs-attr">DB_NAME:</span> <span class="hljs-string">taskflow_test</span>
+          <span class="hljs-attr">DB_USER:</span> <span class="hljs-string">taskflow</span>
+          <span class="hljs-attr">DB_PASSWORD:</span> <span class="hljs-string">taskflow</span>
+          <span class="hljs-attr">JWT_SECRET:</span> <span class="hljs-string">test-secret-key-for-ci</span>
+          <span class="hljs-attr">JWT_EXPIRES_IN:</span> <span class="hljs-string">1h</span>
+
+  <span class="hljs-attr">build-docker:</span>
+    <span class="hljs-attr">name:</span> <span class="hljs-string">Build</span> <span class="hljs-string">Docker</span> <span class="hljs-string">Image</span>
+    <span class="hljs-attr">needs:</span> <span class="hljs-string">lint-and-test</span>
+    <span class="hljs-attr">runs-on:</span> <span class="hljs-string">ubuntu-latest</span>
+    <span class="hljs-attr">if:</span> <span class="hljs-string">github.ref</span> <span class="hljs-string">==</span> <span class="hljs-string">&#x27;refs/heads/main&#x27;</span> <span class="hljs-string">&amp;&amp;</span> <span class="hljs-string">github.event_name</span> <span class="hljs-string">==</span> <span class="hljs-string">&#x27;push&#x27;</span>
+
+    <span class="hljs-attr">steps:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">uses:</span> <span class="hljs-string">actions/checkout@v4</span>
+
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Build</span> <span class="hljs-string">image</span>
+        <span class="hljs-attr">run:</span> <span class="hljs-string">docker</span> <span class="hljs-string">build</span> <span class="hljs-string">-t</span> <span class="hljs-string">taskflow-api:${{</span> <span class="hljs-string">github.sha</span> <span class="hljs-string">}}</span> <span class="hljs-string">.</span>
+
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Vérifier</span> <span class="hljs-string">la</span> <span class="hljs-string">taille</span> <span class="hljs-string">de</span> <span class="hljs-string">l&#x27;image</span>
+        <span class="hljs-attr">run:</span> <span class="hljs-string">docker</span> <span class="hljs-string">images</span> <span class="hljs-string">taskflow-api</span>
+</code></pre>
+<hr>
+<h2 id="étape-6--sécurité-avec-helmet">Étape 6 — Sécurité avec Helmet</h2>
+<pre><code class="language-bash">npm install helmet
+</code></pre>
+<p>Dans <code>main.ts</code>, ajouter <strong>en premier</strong> (avant les autres middlewares) :</p>
+<pre><code class="language-ts"><span class="hljs-keyword">import</span> helmet <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;helmet&#x27;</span>;
+
+app.<span class="hljs-title function_">use</span>(<span class="hljs-title function_">helmet</span>());
+</code></pre>
+<hr>
+<h2 id="checkpoint-">Checkpoint ✓</h2>
+<ul class="contains-task-list">
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> <code>docker build -t taskflow-api:local .</code> → succès</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> <code>docker images taskflow-api</code> → image &lt; 300 MB (multi-stage)</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> <code>docker compose -f docker-compose.prod.yml up</code> → API accessible</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> <code>GET /api/health</code> → <code>{ status: 'ok', info: { database: { status: 'up' } } }</code></li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> <code>.github/workflows/ci.yml</code> créé et valide YAML</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> <code>.env.production</code> dans <code>.gitignore</code></li>
+</ul>
+<p><strong>Commit suggéré :</strong></p>
+<pre><code class="language-bash">git add Dockerfile .dockerignore docker-compose.prod.yml .github/ src/health/
+git commit -m <span class="hljs-string">&quot;feat: Dockerfile multi-stage + CI GitHub Actions + health check&quot;</span>
+</code></pre>
+
+            <script async src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script>
+            
+        </body>
+        </html>
