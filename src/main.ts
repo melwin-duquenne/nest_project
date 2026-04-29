@@ -6,6 +6,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { IoAdapter } from '@nestjs/platform-socket.io';
 import { join } from 'path';
 import helmet from 'helmet';
 
@@ -15,6 +16,9 @@ async function bootstrap() {
 
   // Ajoute des headers HTTP de sécurité (anti-XSS, anti-clickjacking, etc.)
   app.use(helmet());
+
+  // Branche l'adaptateur Socket.io sur le serveur Express
+  app.useWebSocketAdapter(new IoAdapter(app));
 
   // Autorise les requêtes cross-origin (utile pour Swagger UI et les clients front-end)
   app.enableCors();

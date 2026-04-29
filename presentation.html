@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TaskFlow API — Soutenance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:      #090d1a;
+  --bg2:     #0e1428;
+  --surface: rgba(255,255,255,.035);
+  --border:  rgba(255,255,255,.07);
+  --border2: rgba(255,255,255,.13);
+  --accent:  #4f9cf9;
+  --gold:    #e8b84b;
+  --green:   #3dd68c;
+  --red:     #f7615f;
+  --purple:  #b06ef3;
+  --teal:    #2dd4bf;
+  --text:    #eef2ff;
+  --sub:     #8899bb;
+  --muted:   #2d3a58;
+  --fd: 'Cormorant Garamond', Georgia, serif;
+  --fb: 'DM Sans', sans-serif;
+  --fm: 'JetBrains Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--fb);
+  background: var(--bg);
+  color: var(--text);
+  height: 100vh;
+  overflow: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0;
+  background-image: radial-gradient(circle, rgba(79,156,249,.13) 1px, transparent 1px);
+  background-size: 36px 36px;
+  pointer-events: none;
+}
+
+/* ── SLIDES ── */
+.slides { position: relative; z-index: 1; }
+.slide {
+  display: none; width: 100%; height: 100vh;
+  padding: 56px 88px;
+  flex-direction: column; justify-content: center;
+  position: relative; overflow: hidden;
+}
+.slide.active { display: flex; animation: fadeIn .3s ease; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.deco-num {
+  position: absolute; right: 64px; top: 50%; transform: translateY(-50%);
+  font-family: var(--fd); font-size: 20rem; font-weight: 700;
+  color: rgba(79,156,249,.035); line-height: 1;
+  pointer-events: none; user-select: none; letter-spacing: -.03em;
+}
+
+.accent-bar {
+  width: 44px; height: 3px; border-radius: 2px;
+  background: linear-gradient(90deg, var(--gold), transparent);
+  margin-bottom: 18px;
+}
+.accent-bar.green  { background: linear-gradient(90deg, var(--green), transparent); }
+.accent-bar.red    { background: linear-gradient(90deg, var(--red), transparent); }
+.accent-bar.purple { background: linear-gradient(90deg, var(--purple), transparent); }
+.accent-bar.teal   { background: linear-gradient(90deg, var(--teal), transparent); }
+
+h1 { font-family: var(--fd); font-size: 4rem; font-weight: 600; color: var(--text); line-height: 1.05; }
+h2 { font-family: var(--fd); font-size: 2.5rem; font-weight: 600; color: var(--text); line-height: 1.1; margin-bottom: 30px; }
+h3 { font-family: var(--fb); font-size: .65rem; font-weight: 600; text-transform: uppercase; letter-spacing: .13em; color: var(--sub); margin-bottom: 12px; }
+p  { font-size: 1rem; color: var(--sub); line-height: 1.65; }
+
+.sub-title { font-family: var(--fb); font-size: 1.1rem; color: var(--sub); margin-top: 10px; font-weight: 300; }
+.slide-num-badge { position: absolute; top: 28px; right: 36px; font-family: var(--fm); font-size: .7rem; color: var(--muted); letter-spacing: .06em; }
+
+/* ── TAGS ── */
+.tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 28px; }
+.tag { font-family: var(--fm); font-size: .72rem; padding: 4px 12px; border-radius: 3px; border: 1px solid var(--border2); color: var(--sub); background: var(--surface); transition: all .2s; }
+.tag:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ── STATS ── */
+.stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-top: 36px; }
+.stat-box { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px 24px; border-top: 2px solid var(--gold); }
+.stat-val { font-family: var(--fd); font-size: 2.6rem; font-weight: 600; color: var(--gold); line-height: 1; }
+.stat-lbl { font-size: .78rem; color: var(--sub); margin-top: 4px; }
+
+/* ── PLAN ── */
+.plan-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 13px; }
+.plan-card {
+  display: flex; align-items: center; gap: 20px;
+  padding: 20px 24px; border-radius: 10px;
+  background: var(--surface); border: 1px solid var(--border);
+  position: relative; overflow: hidden;
+  transition: background .2s;
+}
+.plan-card:hover { background: rgba(255,255,255,.055); }
+.plan-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; border-radius: 3px 0 0 3px; }
+.pc-blue::before   { background: var(--accent); }
+.pc-green::before  { background: var(--green); }
+.pc-red::before    { background: var(--red); }
+.pc-indigo::before { background: var(--purple); }
+.pc-teal::before   { background: var(--teal); }
+.pc-gray::before   { background: var(--sub); }
+.plan-n { font-family: var(--fd); font-size: 2.2rem; font-weight: 600; min-width: 30px; line-height: 1; }
+.pc-blue   .plan-n { color: var(--accent); }
+.pc-green  .plan-n { color: var(--green); }
+.pc-red    .plan-n { color: var(--red); }
+.pc-indigo .plan-n { color: var(--purple); }
+.pc-teal   .plan-n { color: var(--teal); }
+.pc-gray   .plan-n { color: var(--sub); }
+.plan-label { font-size: .62rem; text-transform: uppercase; letter-spacing: .1em; font-weight: 600; color: var(--sub); }
+.plan-title { font-size: 1rem; font-weight: 500; color: var(--text); margin-top: 3px; }
+
+/* ── CARD ── */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px 22px; }
+
+/* ── GRIDS ── */
+.g2  { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.g3  { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; }
+.g32 { display: grid; grid-template-columns: 3fr 2fr; gap: 28px; }
+
+/* ── GOLD LINE ── */
+.gold-line { width: 100%; height: 1px; background: linear-gradient(90deg,var(--gold),transparent); margin: 20px 0; }
+
+/* ── CHECKLIST (slides démo) ── */
+.checklist { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+.checklist li {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 16px 20px; border-radius: 8px;
+  background: var(--surface); border: 1px solid var(--border);
+  font-size: .98rem; color: var(--sub);
+  transition: border-color .2s;
+}
+.checklist li:hover { border-color: var(--border2); }
+.check-icon {
+  font-family: var(--fm); font-size: .72rem; font-weight: 600;
+  padding: 3px 8px; border-radius: 3px; flex-shrink: 0; margin-top: 1px;
+}
+.ci-green  { background: rgba(61,214,140,.12); color: var(--green); border: 1px solid rgba(61,214,140,.25); }
+.ci-blue   { background: rgba(79,156,249,.12); color: var(--accent); border: 1px solid rgba(79,156,249,.25); }
+.ci-red    { background: rgba(247,97,95,.12);  color: var(--red);    border: 1px solid rgba(247,97,95,.25); }
+.ci-gold   { background: rgba(232,184,75,.12); color: var(--gold);   border: 1px solid rgba(232,184,75,.25); }
+.ci-purple { background: rgba(176,110,243,.12);color: var(--purple); border: 1px solid rgba(176,110,243,.25); }
+.ci-teal   { background: rgba(45,212,191,.12); color: var(--teal);   border: 1px solid rgba(45,212,191,.25); }
+
+.check-text strong { color: var(--text); font-weight: 500; }
+
+/* ── HTTP BADGES (petits) ── */
+.b { display:inline-block; padding:2px 7px; border-radius:3px; font-family:var(--fm); font-size:.7rem; font-weight:600; }
+.b200 { background:rgba(61,214,140,.1);  color:var(--green);  border:1px solid rgba(61,214,140,.2); }
+.b201 { background:rgba(61,214,140,.1);  color:#86efac;       border:1px solid rgba(61,214,140,.2); }
+.b401 { background:rgba(247,97,95,.1);   color:var(--red);    border:1px solid rgba(247,97,95,.2); }
+.b403 { background:rgba(247,97,95,.1);   color:var(--red);    border:1px solid rgba(247,97,95,.2); }
+.b409 { background:rgba(176,110,243,.1); color:var(--purple); border:1px solid rgba(176,110,243,.2); }
+.b400 { background:rgba(232,184,75,.1);  color:var(--gold);   border:1px solid rgba(232,184,75,.2); }
+
+/* ── ENTITY ── */
+.ent { background: var(--bg2); border: 1px solid var(--border2); border-radius: 8px; overflow: hidden; }
+.ent-head { background: rgba(79,156,249,.08); border-bottom: 1px solid var(--border2); padding: 8px 14px; font-family: var(--fm); font-size: .78rem; font-weight: 600; color: var(--accent); }
+.ent-body { padding: 8px 14px; }
+.ef { font-family: var(--fm); font-size: .68rem; padding: 2px 0; }
+.ef-pk  { color: var(--gold); }
+.ef-fk  { color: var(--purple); }
+.ef-en  { color: var(--teal); }
+.ef-dim { color: var(--muted); }
+.ef-def { color: var(--sub); }
+.ent-arrow { display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:1rem; }
+
+/* ── PERM TABLE ── */
+.perm-table { width:100%; border-collapse:collapse; font-size:.83rem; }
+.perm-table th { padding:8px 14px; color:var(--sub); font-size:.62rem; text-transform:uppercase; letter-spacing:.1em; border-bottom:1px solid var(--border2); font-weight:500; text-align:left; }
+.perm-table td { padding:10px 14px; border-bottom:1px solid var(--border); }
+.perm-table tr:last-child td { border-bottom:none; }
+.role-admin  { color:var(--gold);   font-weight:600; font-family:var(--fm); font-size:.78rem; }
+.role-member { color:var(--accent); font-weight:600; font-family:var(--fm); font-size:.78rem; }
+.role-viewer { color:var(--sub);    font-weight:600; font-family:var(--fm); font-size:.78rem; }
+
+/* ── SWAGGER MOCK ── */
+.sw-wrap { background:#f8f8f8; border-radius:10px; overflow:hidden; border:1px solid #ddd; }
+.sw-hd { background:#1b1b1b; padding:10px 16px; display:flex; align-items:center; gap:10px; }
+.sw-logo { background:#85ea2d; color:#000; font-weight:800; font-size:.68rem; padding:3px 7px; border-radius:3px; }
+.sw-title { color:#fff; font-size:.85rem; font-weight:600; }
+.sw-ver { background:#383838; color:#aaa; font-size:.65rem; padding:2px 6px; border-radius:3px; }
+.sw-auth-btn { margin-left:auto; border:1px solid #49cc90; color:#49cc90; background:transparent; padding:4px 12px; border-radius:4px; font-size:.72rem; cursor:pointer; font-family:var(--fb); }
+.sw-body { padding:10px 14px; }
+.sw-tag { background:#ebf3fb; border:1px solid #b0d0eb; border-radius:4px; padding:7px 12px; margin-bottom:5px; display:flex; gap:8px; }
+.sw-tag-name { font-weight:700; font-size:.8rem; color:#3b4151; font-family:var(--fm); }
+.sw-route { display:flex; align-items:center; gap:8px; padding:5px 10px; border:1px solid #e2e8f0; border-radius:4px; margin-bottom:4px; background:#fff; }
+.swm { font-weight:700; font-size:.67rem; min-width:48px; text-align:center; padding:3px 6px; border-radius:3px; }
+.swm-get  { background:#61affe; color:#fff; }
+.swm-post { background:#49cc90; color:#fff; }
+.swm-del  { background:#f93e3e; color:#fff; }
+.swm-pat  { background:#fca130; color:#fff; }
+.sw-path  { font-family:var(--fm); font-size:.76rem; color:#3b4151; }
+
+/* ── CMD BLOCK ── */
+.cmd-block {
+  background: #040710; border: 1px solid var(--border2);
+  border-radius: 8px; padding: 14px 18px;
+  font-family: var(--fm); font-size: .8rem; color: var(--green);
+  line-height: 1.8;
+}
+.cmd-block .dim { color: var(--muted); }
+.cmd-block .acc { color: var(--accent); }
+
+/* ── NAV ── */
+.nav { position: fixed; bottom: 24px; right: 36px; z-index: 100; display: flex; align-items: center; gap: 10px; }
+.nav button { background: var(--surface); border: 1px solid var(--border2); color: var(--sub); padding: 8px 18px; border-radius: 6px; cursor: pointer; font-family: var(--fb); font-size: .85rem; transition: all .15s; }
+.nav button:hover { background: rgba(79,156,249,.1); border-color: var(--accent); color: var(--accent); }
+.nav .cnt { font-family: var(--fm); color: var(--muted); font-size: .78rem; min-width: 52px; text-align: center; }
+
+code { font-family: var(--fm); font-size: .82em; color: var(--accent); background: rgba(79,156,249,.08); padding: 1px 6px; border-radius: 3px; }
+</style>
+</head>
+<body>
+<div class="slides">
+
+<!-- ══════ 01 — TITRE ══════ -->
+<div class="slide active">
+  <div class="slide-num-badge">01 / 10</div>
+  <div class="deco-num">01</div>
+  <div class="accent-bar"></div>
+  <h1>TaskFlow<br>API</h1>
+  <p class="sub-title">API REST de gestion de projets &amp; tâches — NestJS · PostgreSQL</p>
+  <div class="tags">
+    <span class="tag">NestJS</span><span class="tag">TypeScript</span>
+    <span class="tag">PostgreSQL</span><span class="tag">TypeORM</span>
+    <span class="tag">Prisma</span><span class="tag">JWT · Passport</span>
+    <span class="tag">WebSocket Socket.io</span><span class="tag">Swagger</span>
+    <span class="tag">Jest · Supertest</span><span class="tag">Docker · GitHub CI</span>
+  </div>
+  <div class="stats">
+    <div class="stat-box"><div class="stat-val">7</div><div class="stat-lbl">Modules NestJS</div></div>
+    <div class="stat-box"><div class="stat-val">5</div><div class="stat-lbl">Entités PostgreSQL</div></div>
+    <div class="stat-box"><div class="stat-val">20+</div><div class="stat-lbl">Tests automatisés</div></div>
+  </div>
+</div>
+
+<!-- ══════ 02 — PLAN ══════ -->
+<div class="slide">
+  <div class="slide-num-badge">02 / 10</div>
+  <div class="deco-num">02</div>
+  <div class="accent-bar"></div>
+  <h2>Plan</h2>
+  <div class="plan-grid">
+    <div class="plan-card pc-blue">
+      <div class="plan-n">1</div>
+      <div><div class="plan-label">Architecture</div><div class="plan-title">Structure &amp; modèle de données</div></div>
+    </div>
+    <div class="plan-card pc-green">
+      <div class="plan-n">2</div>
+      <div><div class="plan-label">Démo live</div><div class="plan-title">Démarrage &amp; routes CRUD</div></div>
+    </div>
+    <div class="plan-card pc-red">
+      <div class="plan-n">3</div>
+      <div><div class="plan-label">Démo live</div><div class="plan-title">Auth JWT &amp; Autorisation par rôles</div></div>
+    </div>
+    <div class="plan-card pc-indigo">
+      <div class="plan-n">4</div>
+      <div><div class="plan-label">Démo live</div><div class="plan-title">Swagger UI</div></div>
+    </div>
+    <div class="plan-card pc-teal">
+      <div class="plan-n">5</div>
+      <div><div class="plan-label">Démo live</div><div class="plan-title">Tests automatisés</div></div>
+    </div>
+    <div class="plan-card pc-gray">
+      <div class="plan-n">6</div>
+      <div><div class="plan-label">Bilan</div><div class="plan-title">Choix techniques &amp; retour d'expérience</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ 03 — ARCHITECTURE ══════ -->
+<div class="slide">
+  <div class="slide-num-badge">03 / 10</div>
+  <div class="deco-num">03</div>
+  <div class="accent-bar"></div>
+  <h2>Architecture</h2>
+  <div style="display:flex;gap:14px;align-items:stretch;height:68%;">
+    <div style="display:flex;flex-direction:column;justify-content:space-around;gap:10px;min-width:100px;">
+      <div class="card" style="text-align:center;border-top:2px solid var(--accent);padding:16px 12px;">
+        <div style="font-family:var(--fm);font-size:.62rem;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;">Client HTTP</div>
+        <div style="font-size:.78rem;color:var(--sub);">Swagger · REST</div>
+      </div>
+      <div style="text-align:center;color:var(--muted);font-size:.7rem;font-family:var(--fm);">⟵ HTTP ⟶</div>
+      <div class="card" style="text-align:center;border-top:2px solid var(--teal);padding:16px 12px;">
+        <div style="font-family:var(--fm);font-size:.62rem;color:var(--teal);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;">Client WS</div>
+        <div style="font-size:.78rem;color:var(--sub);">Socket.io</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;color:var(--muted);font-size:1.1rem;padding:0 2px;">→</div>
+    <div style="flex:1;border:1px solid var(--border2);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px;position:relative;">
+      <div style="position:absolute;top:-10px;left:16px;background:var(--bg);padding:0 10px;font-family:var(--fm);font-size:.62rem;font-weight:600;color:var(--accent);letter-spacing:.1em;text-transform:uppercase;">NestJS Application — Docker</div>
+      <div style="background:rgba(232,184,75,.05);border:1px solid rgba(232,184,75,.18);border-radius:8px;padding:9px 14px;display:flex;align-items:center;gap:12px;">
+        <div style="font-family:var(--fm);font-size:.58rem;font-weight:600;color:var(--gold);text-transform:uppercase;letter-spacing:.1em;min-width:72px;">Middleware</div>
+        <div style="display:flex;gap:7px;flex-wrap:wrap;">
+          <span style="font-family:var(--fm);font-size:.67rem;color:var(--gold);background:rgba(232,184,75,.1);border:1px solid rgba(232,184,75,.2);padding:2px 8px;border-radius:3px;">Helmet</span>
+          <span style="font-family:var(--fm);font-size:.67rem;color:var(--gold);background:rgba(232,184,75,.1);border:1px solid rgba(232,184,75,.2);padding:2px 8px;border-radius:3px;">ValidationPipe</span>
+          <span style="font-family:var(--fm);font-size:.67rem;color:var(--gold);background:rgba(232,184,75,.1);border:1px solid rgba(232,184,75,.2);padding:2px 8px;border-radius:3px;">LoggingInterceptor</span>
+          <span style="font-family:var(--fm);font-size:.67rem;color:var(--gold);background:rgba(232,184,75,.1);border:1px solid rgba(232,184,75,.2);padding:2px 8px;border-radius:3px;">GlobalExceptionFilter</span>
+        </div>
+      </div>
+      <div style="background:rgba(79,156,249,.05);border:1px solid rgba(79,156,249,.18);border-radius:8px;padding:9px 14px;display:flex;align-items:center;gap:12px;">
+        <div style="font-family:var(--fm);font-size:.58rem;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;min-width:72px;">Auth</div>
+        <div style="display:flex;gap:7px;flex-wrap:wrap;">
+          <span style="font-family:var(--fm);font-size:.67rem;color:var(--accent);background:rgba(79,156,249,.1);border:1px solid rgba(79,156,249,.2);padding:2px 8px;border-radius:3px;">JwtAuthGuard</span>
+          <span style="font-family:var(--fm);font-size:.67rem;color:var(--accent);background:rgba(79,156,249,.1);border:1px solid rgba(79,156,249,.2);padding:2px 8px;border-radius:3px;">RolesGuard</span>
+          <span style="font-family:var(--fm);font-size:.67rem;color:var(--accent);background:rgba(79,156,249,.1);border:1px solid rgba(79,156,249,.2);padding:2px 8px;border-radius:3px;">LocalStrategy</span>
+          <span style="font-family:var(--fm);font-size:.67rem;color:var(--accent);background:rgba(79,156,249,.1);border:1px solid rgba(79,156,249,.2);padding:2px 8px;border-radius:3px;">JwtStrategy</span>
+        </div>
+      </div>
+      <div style="background:rgba(61,214,140,.05);border:1px solid rgba(61,214,140,.18);border-radius:8px;padding:9px 14px;display:flex;align-items:center;gap:12px;flex:1;">
+        <div style="font-family:var(--fm);font-size:.58rem;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:.1em;min-width:72px;">Domaines</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;width:100%;">
+          <span style="font-family:var(--fm);font-size:.67rem;color:var(--green);background:rgba(61,214,140,.08);border:1px solid rgba(61,214,140,.18);padding:5px 8px;border-radius:4px;text-align:center;">users</span>
+          <span style="font-family:var(--fm);font-size:.67rem;color:var(--green);background:rgba(61,214,140,.08);border:1px solid rgba(61,214,140,.18);padding:5px 8px;border-radius:4px;text-align:center;">teams</span>
+          <span style="font-family:var(--fm);font-size:.67rem;color:var(--green);background:rgba(61,214,140,.08);border:1px solid rgba(61,214,140,.18);padding:5px 8px;border-radius:4px;text-align:center;">projects</span>
+          <span style="font-family:var(--fm);font-size:.67rem;color:var(--green);background:rgba(61,214,140,.08);border:1px solid rgba(61,214,140,.18);padding:5px 8px;border-radius:4px;text-align:center;">tasks</span>
+          <span style="font-family:var(--fm);font-size:.67rem;color:var(--green);background:rgba(61,214,140,.08);border:1px solid rgba(61,214,140,.18);padding:5px 8px;border-radius:4px;text-align:center;">comments</span>
+          <span style="font-family:var(--fm);font-size:.67rem;color:var(--green);background:rgba(61,214,140,.08);border:1px solid rgba(61,214,140,.18);padding:5px 8px;border-radius:4px;text-align:center;">auth</span>
+          <span style="font-family:var(--fm);font-size:.67rem;color:var(--teal);background:rgba(45,212,191,.08);border:1px solid rgba(45,212,191,.18);padding:5px 8px;border-radius:4px;text-align:center;">notifications</span>
+          <span style="font-family:var(--fm);font-size:.67rem;color:var(--teal);background:rgba(45,212,191,.08);border:1px solid rgba(45,212,191,.18);padding:5px 8px;border-radius:4px;text-align:center;">health</span>
+        </div>
+      </div>
+      <div style="background:rgba(176,110,243,.05);border:1px solid rgba(176,110,243,.18);border-radius:8px;padding:9px 14px;display:flex;align-items:center;gap:12px;">
+        <div style="font-family:var(--fm);font-size:.58rem;font-weight:600;color:var(--purple);text-transform:uppercase;letter-spacing:.1em;min-width:72px;">ORM</div>
+        <div style="display:flex;gap:7px;">
+          <span style="font-family:var(--fm);font-size:.67rem;color:var(--purple);background:rgba(176,110,243,.1);border:1px solid rgba(176,110,243,.2);padding:2px 8px;border-radius:3px;">TypeORM (principal)</span>
+          <span style="font-family:var(--fm);font-size:.67rem;color:var(--purple);background:rgba(176,110,243,.1);border:1px solid rgba(176,110,243,.2);padding:2px 8px;border-radius:3px;">Prisma</span>
+          <span style="font-family:var(--fm);font-size:.67rem;color:var(--purple);background:rgba(176,110,243,.1);border:1px solid rgba(176,110,243,.2);padding:2px 8px;border-radius:3px;">Migrations</span>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;color:var(--muted);font-size:1.1rem;padding:0 2px;">→</div>
+    <div style="display:flex;align-items:center;min-width:108px;">
+      <div class="card" style="border-top:2px solid var(--purple);padding:18px 14px;text-align:center;width:100%;">
+        <div style="font-family:var(--fm);font-size:.62rem;color:var(--purple);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;">PostgreSQL</div>
+        <div style="font-size:.72rem;color:var(--sub);margin-bottom:2px;">Docker volume</div>
+        <div class="gold-line" style="margin:10px 0 8px;"></div>
+        <div style="font-family:var(--fm);font-size:.67rem;color:var(--muted);line-height:1.9;">users<br>teams<br>team_members<br>projects<br>tasks<br>comments</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ 04 — MODÈLE ══════ -->
+<div class="slide">
+  <div class="slide-num-badge">04 / 10</div>
+  <div class="deco-num">04</div>
+  <div class="accent-bar"></div>
+  <h2>Modèle de données</h2>
+  <div style="display:grid;grid-template-columns:1fr 28px 1fr 28px 1fr 28px 1fr;align-items:center;margin-bottom:20px;">
+    <div class="ent">
+      <div class="ent-head">User</div>
+      <div class="ent-body">
+        <div class="ef ef-pk">🔑 id: uuid</div>
+        <div class="ef ef-def">email: string</div>
+        <div class="ef ef-def">name: string</div>
+        <div class="ef ef-en">role: enum</div>
+        <div class="ef ef-dim">passwordHash ← select:false</div>
+      </div>
+    </div>
+    <div class="ent-arrow">⟷</div>
+    <div class="ent">
+      <div class="ent-head">Team</div>
+      <div class="ent-body">
+        <div class="ef ef-pk">🔑 id: uuid</div>
+        <div class="ef ef-def">name: string</div>
+        <div class="ef ef-fk">members: User[] M:M</div>
+        <div class="ef ef-fk">projects: Project[] 1:M</div>
+      </div>
+    </div>
+    <div class="ent-arrow">→</div>
+    <div class="ent">
+      <div class="ent-head">Project</div>
+      <div class="ent-body">
+        <div class="ef ef-pk">🔑 id: uuid</div>
+        <div class="ef ef-def">name: string</div>
+        <div class="ef ef-en">status: enum</div>
+        <div class="ef ef-fk">team ← CASCADE</div>
+        <div class="ef ef-fk">tasks: Task[] 1:M</div>
+      </div>
+    </div>
+    <div class="ent-arrow">→</div>
+    <div class="ent">
+      <div class="ent-head">Task</div>
+      <div class="ent-body">
+        <div class="ef ef-pk">🔑 id: uuid</div>
+        <div class="ef ef-en">status: enum</div>
+        <div class="ef ef-en">priority: enum</div>
+        <div class="ef ef-fk">project ← CASCADE</div>
+        <div class="ef ef-fk">assignee? ← SET NULL</div>
+      </div>
+    </div>
+  </div>
+  <div class="g2">
+    <div class="card" style="border-left:2px solid var(--green);">
+      <h3>Cascade suppression</h3>
+      <p style="font-size:.9rem;margin-top:6px;">Team → Project → Task : <span style="color:var(--red)">CASCADE</span><br>
+      Assignee supprimé : <span style="color:var(--gold)">SET NULL</span> — la tâche survit dans l'historique</p>
+    </div>
+    <div class="card" style="border-left:2px solid var(--accent);">
+      <h3>UUID + ENUMs natifs PostgreSQL</h3>
+      <p style="font-size:.9rem;margin-top:6px;">IDs non-prédictibles. Statuts et rôles en <span style="color:var(--teal)">ENUM</span> — intégrité garantie au niveau base, pas seulement en code.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ 05 — DEMO CRUD ══════ -->
+<div class="slide">
+  <div class="slide-num-badge">05 / 10</div>
+  <div class="deco-num">05</div>
+  <div class="accent-bar green"></div>
+  <h2>Démo — Démarrage &amp; CRUD</h2>
+  <ul class="checklist">
+    <li>
+      <span class="check-icon ci-green">npm run start:dev</span>
+      <span class="check-text">L'API démarre sans erreur sur <strong>localhost:3000/api</strong></span>
+    </li>
+    <li>
+      <span class="check-icon ci-blue">POST /api/users</span>
+      <span class="check-text">Créer un utilisateur → <strong>201 Created</strong> avec l'objet retourné (sans passwordHash)</span>
+    </li>
+    <li>
+      <span class="check-icon ci-blue">GET /api/users</span>
+      <span class="check-text">Lister tous les utilisateurs → <strong>200 OK</strong></span>
+    </li>
+    <li>
+      <span class="check-icon ci-gold">409 / 400</span>
+      <span class="check-text">Même email → <strong>409 Conflict</strong> &nbsp;·&nbsp; Email invalide → <strong>400 Bad Request</strong></span>
+    </li>
+    <li>
+      <span class="check-icon ci-gold">404</span>
+      <span class="check-text">Utilisateur inexistant → <strong>404 Not Found</strong> avec message lisible</span>
+    </li>
+  </ul>
+</div>
+
+<!-- ══════ 06 — DEMO AUTH ══════ -->
+<div class="slide">
+  <div class="slide-num-badge">06 / 10</div>
+  <div class="deco-num">06</div>
+  <div class="accent-bar red"></div>
+  <h2>Démo — Auth JWT &amp; Rôles</h2>
+  <div class="g2" style="gap:28px;">
+    <div>
+      <h3 style="margin-bottom:14px;">Authentification</h3>
+      <ul class="checklist">
+        <li>
+          <span class="check-icon ci-green">POST /auth/login</span>
+          <span class="check-text">Login avec <strong>alice@example.com</strong> → retourne un <strong>access_token</strong> JWT</span>
+        </li>
+        <li>
+          <span class="check-icon ci-red">401</span>
+          <span class="check-text">Même route <strong>sans token</strong> sur <code>/auth/me</code> → 401 Unauthorized</span>
+        </li>
+        <li>
+          <span class="check-icon ci-green">200</span>
+          <span class="check-text">Même route <strong>avec le token</strong> → 200 + profil complet</span>
+        </li>
+      </ul>
+    </div>
+    <div>
+      <h3 style="margin-bottom:14px;">Autorisation par rôles</h3>
+      <ul class="checklist">
+        <li>
+          <span class="check-icon ci-red">403</span>
+          <span class="check-text">Login <strong>bob@example.com</strong> (member) → tenter <code>POST /api/users</code> → <strong>403 Forbidden</strong></span>
+        </li>
+        <li>
+          <span class="check-icon ci-green">201</span>
+          <span class="check-text">Login <strong>alice@example.com</strong> (admin) → même action → <strong>201 Created</strong></span>
+        </li>
+      </ul>
+      <div class="card" style="margin-top:14px;border-left:2px solid var(--sub);">
+        <p style="font-size:.82rem;">Comptes seed : <code>alice</code> admin · <code>bob</code> member · <code>charlie</code> viewer<br>Mot de passe : <code>password123</code></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ 07 — DEMO SWAGGER ══════ -->
+<div class="slide">
+  <div class="slide-num-badge">07 / 10</div>
+  <div class="deco-num">07</div>
+  <div class="accent-bar purple"></div>
+  <h2>Démo — Swagger UI</h2>
+  <div class="g32" style="align-items:start;gap:32px;">
+    <div>
+      <div class="sw-wrap">
+        <div class="sw-hd">
+          <span class="sw-logo">swagger</span>
+          <span class="sw-title">TaskFlow API</span>
+          <span class="sw-ver">v1.0</span>
+          <button class="sw-auth-btn">🔒 Authorize</button>
+        </div>
+        <div class="sw-body">
+          <div class="sw-tag"><span class="sw-tag-name">auth</span></div>
+          <div class="sw-route"><span class="swm swm-post">POST</span><span class="sw-path">/api/auth/login</span></div>
+          <div class="sw-route"><span class="swm swm-get">GET</span><span class="sw-path">/api/auth/me</span><span style="margin-left:auto;font-size:.75rem;color:#aaa;">🔒</span></div>
+          <div class="sw-tag" style="margin-top:6px;"><span class="sw-tag-name">users</span></div>
+          <div class="sw-route"><span class="swm swm-get">GET</span><span class="sw-path">/api/users</span><span style="margin-left:auto;font-size:.75rem;color:#aaa;">🔒</span></div>
+          <div class="sw-route"><span class="swm swm-post">POST</span><span class="sw-path">/api/users</span><span style="margin-left:auto;font-size:.75rem;color:#aaa;">🔒</span></div>
+          <div class="sw-route"><span class="swm swm-get">GET</span><span class="sw-path">/api/users/{id}</span><span style="margin-left:auto;font-size:.75rem;color:#aaa;">🔒</span></div>
+          <div class="sw-route"><span class="swm swm-pat">PATCH</span><span class="sw-path">/api/users/{id}</span><span style="margin-left:auto;font-size:.75rem;color:#aaa;">🔒</span></div>
+          <div class="sw-route"><span class="swm swm-del">DELETE</span><span class="sw-path">/api/users/{id}</span><span style="margin-left:auto;font-size:.75rem;color:#aaa;">🔒</span></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <h3 style="margin-bottom:14px;">Ce que je vais montrer</h3>
+      <ul class="checklist">
+        <li><span class="check-icon ci-purple">1</span><span class="check-text">Ouvrir <strong>localhost:3000/docs</strong></span></li>
+        <li><span class="check-icon ci-purple">2</span><span class="check-text"><code>POST /auth/login</code> → copier le token</span></li>
+        <li><span class="check-icon ci-purple">3</span><span class="check-text">Bouton <strong>Authorize</strong> → coller le token</span></li>
+        <li><span class="check-icon ci-purple">4</span><span class="check-text"><code>GET /auth/me</code> → 200 avec profil</span></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ 08 — DEMO TESTS ══════ -->
+<div class="slide">
+  <div class="slide-num-badge">08 / 10</div>
+  <div class="deco-num">08</div>
+  <div class="accent-bar teal"></div>
+  <h2>Démo — Tests automatisés</h2>
+  <div class="g2">
+    <div>
+      <h3 style="margin-bottom:14px;">Tests unitaires</h3>
+      <div class="cmd-block" style="margin-bottom:12px;">
+        <span class="acc">npm run test</span><br>
+        <span class="dim">npm run test:cov</span>
+      </div>
+      <ul class="checklist">
+        <li><span class="check-icon ci-teal">RolesGuard</span><span class="check-text">4 cas : no role · match · refus · multi-rôles</span></li>
+        <li><span class="check-icon ci-teal">UsersService</span><span class="check-text">findAll · findOne · create (doublon) · remove</span></li>
+      </ul>
+      <div class="card" style="margin-top:14px;border-left:2px solid var(--teal);">
+        <p style="font-size:.82rem;">Repositories TypeORM remplacés par des mocks — aucune base de données nécessaire.</p>
+      </div>
+    </div>
+    <div>
+      <h3 style="margin-bottom:14px;">Tests e2e</h3>
+      <div class="cmd-block" style="margin-bottom:12px;">
+        <span class="acc">npm run test:e2e</span>
+      </div>
+      <ul class="checklist">
+        <li><span class="check-icon ci-teal">auth</span><span class="check-text">Login · 401 mauvais mdp · GET /me protégé</span></li>
+        <li><span class="check-icon ci-teal">users</span><span class="check-text">CRUD complet · 403 par member · cycle créer→supprimer</span></li>
+      </ul>
+      <div class="card" style="margin-top:14px;border-left:2px solid var(--teal);">
+        <p style="font-size:.82rem;">Application complète + vraie base <code>taskflow_test</code> recréée avant chaque test.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ 09 — CHOIX TECHNIQUES ══════ -->
+<div class="slide">
+  <div class="slide-num-badge">09 / 10</div>
+  <div class="deco-num">09</div>
+  <div class="accent-bar"></div>
+  <h2>Choix techniques</h2>
+  <div class="g3" style="margin-bottom:22px;">
+    <div class="card" style="border-top:2px solid var(--accent);">
+      <h3>Guards globaux</h3>
+      <p style="font-size:.9rem;margin-top:8px;">Toutes les routes sont protégées par défaut. On opte-in avec <code>@Public()</code>. Une route oubliée reste protégée, jamais exposée.</p>
+    </div>
+    <div class="card" style="border-top:2px solid var(--gold);">
+      <h3>SET NULL vs CASCADE</h3>
+      <p style="font-size:.9rem;margin-top:8px;">Supprimer un user → <code>assignee = NULL</code>. Les tâches survivent. Supprimer un projet → CASCADE sur ses tâches.</p>
+    </div>
+    <div class="card" style="border-top:2px solid var(--purple);">
+      <h3>TypeORM + Prisma</h3>
+      <p style="font-size:.9rem;margin-top:8px;">Deux ORMs pour comparer en conditions réelles. TypeORM gère migrations et CRUD. Prisma sur quelques lectures.</p>
+    </div>
+  </div>
+  <div class="gold-line"></div>
+  <h3 style="margin-bottom:12px;">Difficultés rencontrées</h3>
+  <div class="g3">
+    <div class="card" style="border-left:2px solid var(--red);">
+      <h3>Double ORM</h3>
+      <p style="font-size:.88rem;margin-top:6px;">Deux sources de vérité à maintenir en sync. Résolu en faisant TypeORM la source principale des migrations.</p>
+    </div>
+    <div class="card" style="border-left:2px solid var(--red);">
+      <h3>Auth WebSocket</h3>
+      <p style="font-size:.88rem;margin-top:6px;">HTTP upgrade ne supporte pas <code>Authorization</code>. Token lu depuis <code>handshake.auth.token</code> côté Socket.io.</p>
+    </div>
+    <div class="card" style="border-left:2px solid var(--red);">
+      <h3>Isolation tests e2e</h3>
+      <p style="font-size:.88rem;margin-top:6px;"><code>dropSchema + seed</code> dans <code>beforeEach</code>. Chaque test part d'un état prévisible et indépendant.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ 10 — FIN ══════ -->
+<div class="slide">
+  <div class="slide-num-badge">10 / 10</div>
+  <div class="deco-num">10</div>
+  <div class="accent-bar"></div>
+  <h1 style="font-size:3.6rem;">Merci</h1>
+  <p class="sub-title">Questions ?</p>
+  <div class="gold-line" style="margin-top:36px;"></div>
+  <div class="g2" style="margin-top:24px;">
+    <div>
+      <h3>Améliorations futures</h3>
+      <ul style="list-style:none;margin-top:12px;display:flex;flex-direction:column;gap:9px;">
+        <li style="font-size:.92rem;color:var(--sub);display:flex;gap:10px;"><span style="color:var(--gold);font-family:var(--fm);">→</span>Refresh tokens</li>
+        <li style="font-size:.92rem;color:var(--sub);display:flex;gap:10px;"><span style="color:var(--gold);font-family:var(--fm);">→</span>Pagination sur toutes les listes</li>
+        <li style="font-size:.92rem;color:var(--sub);display:flex;gap:10px;"><span style="color:var(--gold);font-family:var(--fm);">→</span>Couverture de tests complète</li>
+        <li style="font-size:.92rem;color:var(--sub);display:flex;gap:10px;"><span style="color:var(--gold);font-family:var(--fm);">→</span>Unifier sur Prisma uniquement</li>
+        <li style="font-size:.92rem;color:var(--sub);display:flex;gap:10px;"><span style="color:var(--gold);font-family:var(--fm);">→</span>Rate limiting sur <code>/auth/login</code></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Livrables</h3>
+      <ul style="list-style:none;margin-top:12px;display:flex;flex-direction:column;gap:9px;">
+        <li style="font-size:.92rem;color:var(--sub);display:flex;gap:10px;"><span style="color:var(--accent);font-family:var(--fm);">→</span><code>README.md</code> — toutes les commandes</li>
+        <li style="font-size:.92rem;color:var(--sub);display:flex;gap:10px;"><span style="color:var(--accent);font-family:var(--fm);">→</span><code>doc.md</code> — rapport technique</li>
+        <li style="font-size:.92rem;color:var(--sub);display:flex;gap:10px;"><span style="color:var(--accent);font-family:var(--fm);">→</span><code>.env.example</code> — config prête</li>
+        <li style="font-size:.92rem;color:var(--sub);display:flex;gap:10px;"><span style="color:var(--accent);font-family:var(--fm);">→</span><code>docker-compose.yml</code> + CI GitHub Actions</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div class="nav">
+  <button onclick="prev()">← Préc</button>
+  <span class="cnt" id="cnt">01 / 10</span>
+  <button onclick="next()">Suiv →</button>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  let cur = 0;
+  function show(n) {
+    slides[cur].classList.remove('active');
+    cur = ((n % total) + total) % total;
+    slides[cur].classList.add('active');
+    document.getElementById('cnt').textContent = String(cur+1).padStart(2,'0') + ' / ' + String(total).padStart(2,'0');
+  }
+  function next() { show(cur+1); }
+  function prev() { show(cur-1); }
+  document.addEventListener('keydown', e => {
+    if (['ArrowRight','Space','PageDown'].includes(e.key)) { e.preventDefault(); next(); }
+    if (['ArrowLeft','PageUp'].includes(e.key))           { e.preventDefault(); prev(); }
+  });
+</script>
+</body>
+</html>

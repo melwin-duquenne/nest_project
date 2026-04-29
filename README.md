@@ -140,6 +140,7 @@ npm run start:prod
 
 L'API est accessible sur `http://localhost:3000/api`.
 La documentation Swagger est disponible sur `http://localhost:3000/docs` (hors production).
+Interface de test WebSocket disponible sur `http://localhost:3000/test-ws.html`.
 
 ---
 
@@ -228,3 +229,4 @@ npm run start:dev
 
 API : `http://localhost:3000/api`
 Swagger : `http://localhost:3000/docs`
+WebSocket (test UI) : `http://localhost:3000/test-ws.html`

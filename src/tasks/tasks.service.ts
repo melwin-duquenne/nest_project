@@ -48,7 +48,18 @@ export class TasksService {
       project,
       assignee,
     });
-    return this.tasksRepository.save(task);
+    const saved = await this.tasksRepository.save(task);
+
+    if (assignee) {
+      this.notificationsGateway.sendToUser(assignee.id, 'task:assigned', {
+        taskId: saved.id,
+        taskTitle: saved.title,
+        message: `Vous avez été assigné à la tâche "${saved.title}"`,
+        timestamp: new Date().toISOString(),
+      });
+    }
+
+    return saved;
   }
 
   async update(id: string, dto: UpdateTaskDto): Promise<Task> {
